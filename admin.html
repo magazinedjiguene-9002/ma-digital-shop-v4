@@ -1,271 +1,41 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>MA DIGITAL SHOP — Administration</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
 <style>
-body{background:#f5f8ff}
-.admin{padding:35px 0}
-.panel{background:#fff;border:1px solid #e3ebf6;border-radius:22px;padding:22px;box-shadow:0 10px 35px rgba(10,15,45,.06);margin-bottom:18px}
-.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.form input,.form select,.form textarea{width:100%;padding:12px;border:1px solid #dfe8f3;border-radius:11px}
-.form textarea{min-height:100px;grid-column:1/-1}
-.full{grid-column:1/-1}
-.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
-.danger{background:#fff;border:1px solid #ffcaca;color:#c22;border-radius:10px;padding:10px;cursor:pointer}
-.list{display:grid;gap:8px}
-.item{display:grid;grid-template-columns:56px 1.3fr .8fr .7fr .7fr auto;align-items:center;gap:10px;border:1px solid #e7edf6;border-radius:13px;padding:12px;font-size:11px}
-.item img.thumb{width:56px;height:56px;object-fit:cover;border-radius:10px;background:#f0f4fa;border:1px solid #e7edf6}
-.item small{color:#66718d}
-.note{font-size:11px;color:#66718d;line-height:1.6}
-.imgpick{display:flex;gap:12px;align-items:center;grid-column:1/-1;border:1px dashed #cfdcee;border-radius:13px;padding:12px;flex-wrap:wrap}
-.imgpick img{width:70px;height:70px;object-fit:cover;border-radius:10px;background:#f0f4fa;border:1px solid #e7edf6}
-.imgpick .imgpick-controls{display:flex;flex-direction:column;gap:6px;flex:1;min-width:200px}
-.imgpick .imgpick-controls small{color:#66718d}
-.toprow{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-.lockbtn{border:1px solid #d7e4f3;background:#fff;color:var(--navy);border-radius:10px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer}
-
-/* Login gate */
-#login-gate{position:fixed;inset:0;background:linear-gradient(135deg,#07143b,#0b3d78);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px}
-.login-box{background:#fff;border-radius:22px;padding:34px;width:min(380px,100%);box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}
-.login-box img{width:56px;height:56px;border-radius:14px;margin-bottom:10px}
-.login-box h2{margin:0 0 6px;font-size:19px}
-.login-box p{color:#66718d;font-size:11px;margin:0 0 18px;line-height:1.6}
-.login-box input{width:100%;padding:13px;border:1px solid #dfe8f3;border-radius:11px;font-size:14px;margin-bottom:10px;text-align:center;letter-spacing:2px}
-.login-box button{width:100%;border:0;background:var(--blue);color:#fff;padding:13px;border-radius:11px;font-size:12px;font-weight:800;cursor:pointer}
-.login-error{color:#c22;font-size:11px;min-height:16px;margin-top:8px}
-#admin-content{display:none}
-</style>
-</head><body>
-
-<div id="login-gate">
-  <div class="login-box">
-    <img src="assets/logo.png" alt="MA Digital Shop">
-    <h2>Accès administrateur</h2>
-    <p>Cette zone est réservée à la gestion du catalogue. Merci de saisir le code d'accès.</p>
-    <form id="login-form" autocomplete="off">
-      <input id="login-password" type="password" placeholder="Code d'accès" required autofocus>
-      <button type="submit">Déverrouiller</button>
-    </form>
-    <div class="login-error" id="login-error"></div>
-  </div>
-</div>
-
-<div id="admin-content">
-<div class="top">ADMINISTRATION LOCALE — MA DIGITAL SHOP</div>
-<header class="header"><div class="container nav"><a class="brand" href="index.html"><img src="assets/logo.png"><div><strong><span>MA</span> DIGITAL SHOP</strong><small>Gestion du catalogue</small></div></a><div class="navtools"><a class="wa" href="index.html">Voir le site</a></div></div></header>
+body{background:#f5f8ff}.admin{padding:35px 0}.panel{background:#fff;border:1px solid #e3ebf6;border-radius:22px;padding:22px;box-shadow:0 10px 35px rgba(10,15,45,.06);margin-bottom:18px}.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.form input,.form select,.form textarea{width:100%;padding:12px;border:1px solid #dfe8f3;border-radius:11px}.form textarea{min-height:100px;grid-column:1/-1}.full{grid-column:1/-1}.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.danger{background:#fff;border:1px solid #ffcaca;color:#c22;border-radius:10px;padding:10px;cursor:pointer}.list{display:grid;gap:8px}.item{display:grid;grid-template-columns:56px 1.3fr .8fr .7fr .7fr auto;align-items:center;gap:10px;border:1px solid #e7edf6;border-radius:13px;padding:12px;font-size:11px}.item img.thumb{width:56px;height:56px;object-fit:cover;border-radius:10px;background:#f0f4fa;border:1px solid #e7edf6}.item small{color:#66718d}.note{font-size:11px;color:#66718d;line-height:1.6}.imgpick{display:flex;gap:12px;align-items:center;grid-column:1/-1;border:1px dashed #cfdcee;border-radius:13px;padding:12px;flex-wrap:wrap}.imgpick img{width:70px;height:70px;object-fit:cover;border-radius:10px;background:#f0f4fa;border:1px solid #e7edf6}.imgpick .imgpick-controls{display:flex;flex-direction:column;gap:6px;flex:1;min-width:200px}.imgpick .imgpick-controls small{color:#66718d}.toprow{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.lockbtn{border:1px solid #d7e4f3;background:#fff;color:var(--navy);border-radius:10px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer}.status{font-size:11px;font-weight:700;color:#1c7c43;background:#eaf8ef;border:1px solid #ccefd9;border-radius:10px;padding:9px 12px}.status.error{color:#b3261e;background:#fff0ef;border-color:#ffd0cc}
+#login-gate{position:fixed;inset:0;background:linear-gradient(135deg,#07143b,#0b3d78);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px}.login-box{background:#fff;border-radius:22px;padding:34px;width:min(390px,100%);box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}.login-box img{width:56px;height:56px;border-radius:14px;margin-bottom:10px}.login-box h2{margin:0 0 6px;font-size:19px}.login-box p{color:#66718d;font-size:11px;margin:0 0 18px;line-height:1.6}.login-box input{width:100%;padding:13px;border:1px solid #dfe8f3;border-radius:11px;font-size:14px;margin-bottom:10px}.login-box button{width:100%;border:0;background:var(--blue);color:#fff;padding:13px;border-radius:11px;font-size:12px;font-weight:800;cursor:pointer}.login-error{color:#c22;font-size:11px;min-height:16px;margin-top:8px}.login-link{display:block;margin-top:10px;color:var(--blue);font-size:11px;text-decoration:none;cursor:pointer}.loading{text-align:center;padding:25px;color:#66718d;font-size:11px}
+@media(max-width:800px){.form{grid-template-columns:1fr}.item{grid-template-columns:50px 1fr}.item>div:nth-child(n+3){display:none}.item>div:last-child{display:block}}
+</style></head><body>
+<div id="login-gate"><div class="login-box"><img src="assets/logo.png" alt="MA Digital Shop"><h2>Accès administrateur</h2><p>Connectez-vous avec le compte administrateur MA DIGITAL SHOP.</p><form id="login-form"><input id="login-email" type="email" placeholder="Adresse e-mail" autocomplete="username" required><input id="login-password" type="password" placeholder="Mot de passe" autocomplete="current-password" required><button type="submit">Se connecter</button></form><a class="login-link" id="reset-link">Mot de passe oublié ?</a><div class="login-error" id="login-error"></div></div></div>
+<div id="admin-content" style="display:none"><div class="top">ADMINISTRATION EN LIGNE — MA DIGITAL SHOP</div><header class="header"><div class="container nav"><a class="brand" href="index.html"><img src="assets/logo.png"><div><strong><span>MA</span> DIGITAL SHOP</strong><small>Gestion du catalogue</small></div></a><div class="navtools"><span class="status" id="status">Connecté</span><a class="wa" href="index.html">Voir le site</a><button class="lockbtn" type="button" onclick="logout()">Déconnexion</button></div></div></header>
 <main class="admin"><div class="container">
-
-<div class="panel"><div class="toprow"><h2 style="margin:0">Ajouter / modifier un produit</h2><div style="display:flex;gap:8px"><button class="lockbtn" type="button" onclick="openChangePassword()">Changer le code d'accès</button><button class="lockbtn" type="button" onclick="logout()">Verrouiller</button></div></div>
-<p class="note">Cette administration reste volontairement locale : les modifications sont enregistrées dans le navigateur (localStorage) de cet appareil, et s'appliquent directement à la boutique publique (index.html). Le code d'accès protège l'affichage de cette page dans ce navigateur ; pour une vraie protection côté serveur, il faudra plus tard un backend avec authentification.</p>
-<form class="form" id="product-form">
-  <input type="hidden" id="id">
-  <input id="name" placeholder="Nom du produit" required>
-  <input id="subtitle" placeholder="Sous-titre">
-  <select id="category"><option value="streaming">Streaming</option><option value="gaming">Gaming</option><option value="software">Logiciels</option><option value="accessory">Accessoires</option></select>
-  <input id="badge" placeholder="Badge / famille">
-  <input id="price" type="number" min="0" placeholder="Prix en FCFA (laisser vide = sur demande)">
-  <label class="full" style="font-size:11px;display:flex;gap:16px;align-items:center"><span><input id="stock" type="checkbox" checked> Disponible</span><span><input id="featured" type="checkbox"> Mettre en avant (badge Populaire)</span></label>
-  <textarea id="description" placeholder="Description"></textarea>
-
-  <div class="imgpick">
-    <img id="image-preview" src="assets/logo.png" alt="Aperçu">
-    <div class="imgpick-controls">
-      <input type="file" id="image-file" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif">
-      <small>Formats acceptés : PNG, JPG/JPEG, WEBP, GIF. L'image est redimensionnée automatiquement et enregistrée avec le produit.</small>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="image" placeholder="ou coller une URL / chemin d'image (optionnel)" style="flex:1">
-        <button type="button" class="outline" onclick="clearImage()">Retirer l'image</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="full admin-actions">
-    <button class="primary" type="submit">Enregistrer le produit</button>
-    <button class="outline" type="button" onclick="resetForm()">Nouveau</button>
-    <button class="outline" type="button" onclick="exportData()">Exporter le catalogue</button>
-    <label class="outline" style="cursor:pointer">Importer<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
-  </div>
-</form>
-</div>
-
-<div class="panel"><div class="toprow"><div><h2 style="margin:0">Catalogue</h2><p class="note">Modifie les prix, images et informations ici. Les produits ajoutés/supprimés apparaissent immédiatement sur la boutique publique dans ce navigateur.</p></div><button class="danger" onclick="resetAll()">Réinitialiser le catalogue</button></div><div id="list" class="list" style="margin-top:16px"></div></div>
-
-</div></main>
-</div>
-
+<div class="panel"><div class="toprow"><h2 style="margin:0">Ajouter / modifier un produit</h2></div><p class="note">Les modifications sont enregistrées directement dans Supabase et deviennent disponibles sur la boutique en ligne. Le catalogue public affiche uniquement les produits disponibles.</p>
+<form class="form" id="product-form"><input type="hidden" id="id"><input id="name" placeholder="Nom du produit" required><input id="subtitle" placeholder="Sous-titre"><select id="category"><option value="streaming">Streaming</option><option value="gaming">Gaming</option><option value="software">Logiciels</option><option value="accessory">Accessoires</option></select><input id="badge" placeholder="Badge / famille"><input id="price" type="number" min="0" placeholder="Prix en FCFA (laisser vide = sur demande)"><label class="full" style="font-size:11px;display:flex;gap:16px;align-items:center"><span><input id="stock" type="checkbox" checked> Disponible</span><span><input id="featured" type="checkbox"> Mettre en avant (badge Populaire)</span></label><textarea id="description" placeholder="Description"></textarea>
+<div class="imgpick"><img id="image-preview" src="assets/logo.png" alt="Aperçu"><div class="imgpick-controls"><input type="file" id="image-file" accept="image/png,image/jpeg,image/jpg,image/webp"><small>PNG, JPG/JPEG ou WEBP. L'image est envoyée dans le stockage Supabase.</small><div style="display:flex;gap:8px;align-items:center"><input id="image" placeholder="ou coller une URL / chemin d'image (optionnel)" style="flex:1"><button type="button" class="outline" onclick="clearImage()">Retirer l'image</button></div></div></div>
+<div class="full admin-actions"><button class="primary" type="submit">Enregistrer le produit</button><button class="outline" type="button" onclick="resetForm()">Nouveau</button><button class="outline" type="button" onclick="exportData()">Exporter le catalogue</button><label class="outline" style="cursor:pointer">Importer<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label></div></form></div>
+<div class="panel"><div class="toprow"><div><h2 style="margin:0">Catalogue</h2><p class="note">Modifie les prix, images et informations ici. Les changements sont enregistrés en ligne.</p></div><button class="danger" onclick="resetAll()">Réinitialiser le catalogue</button></div><div id="list" class="list" style="margin-top:16px"><div class="loading">Chargement du catalogue…</div></div></div>
+</div></main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script>window.supabaseClient=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_PUBLISHABLE_KEY);</script>
 <script>
-/* ================= SÉCURITÉ ACCÈS ADMIN ================= */
-const AUTH_PASS_KEY="ma_admin_pass_hash_v1";
-const AUTH_SESSION_KEY="ma_admin_session_v1";
-const SESSION_HOURS=12;
-// Hash SHA-256 du code d'accès par défaut : "MaDigital2026!"  (changez-le dès la première connexion)
-const DEFAULT_PASS_HASH="40746a61b817b3fb9f7dba3b44577a8692f74c9e65d41441910277ab4a17410e";
-
-async function sha256Hex(text){
-  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
-function currentPassHash(){return localStorage.getItem(AUTH_PASS_KEY)||DEFAULT_PASS_HASH}
-function hasValidSession(){
-  try{
-    const s=JSON.parse(localStorage.getItem(AUTH_SESSION_KEY)||"null");
-    return !!(s && s.exp && Date.now()<s.exp);
-  }catch{return false}
-}
-function grantSession(){
-  localStorage.setItem(AUTH_SESSION_KEY,JSON.stringify({exp:Date.now()+SESSION_HOURS*3600*1000}));
-}
-function unlock(){
-  document.getElementById("login-gate").style.display="none";
-  document.getElementById("admin-content").style.display="block";
-  if(typeof initAdmin==="function")initAdmin();
-}
-function logout(){
-  if(!confirm("Verrouiller l'administration ?"))return;
-  localStorage.removeItem(AUTH_SESSION_KEY);
-  location.reload();
-}
-document.getElementById("login-form").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const pwd=document.getElementById("login-password").value;
-  const errEl=document.getElementById("login-error");
-  try{
-    const hash=await sha256Hex(pwd);
-    if(hash===currentPassHash()){grantSession();unlock()}
-    else{errEl.textContent="Code d'accès incorrect.";document.getElementById("login-password").value=""}
-  }catch(err){errEl.textContent="Erreur de vérification (navigateur trop ancien)."}
-});
-async function openChangePassword(){
-  const current=prompt("Pour confirmer, saisissez le code d'accès actuel :");
-  if(current===null)return;
-  const currentHash=await sha256Hex(current);
-  if(currentHash!==currentPassHash()){alert("Code actuel incorrect.");return}
-  const next=prompt("Nouveau code d'accès (au moins 6 caractères) :");
-  if(!next)return;
-  if(next.length<6){alert("Le nouveau code doit contenir au moins 6 caractères.");return}
-  const confirmNext=prompt("Confirmez le nouveau code d'accès :");
-  if(next!==confirmNext){alert("Les deux codes ne correspondent pas.");return}
-  const newHash=await sha256Hex(next);
-  localStorage.setItem(AUTH_PASS_KEY,newHash);
-  alert("Code d'accès mis à jour pour ce navigateur/appareil.");
-}
-if(hasValidSession())unlock();
-
-/* ================= GESTION DU CATALOGUE ================= */
-const STORAGE_PRODUCTS="ma_products_v7_local_catalog"; // même clé que app.js (boutique publique)
-let data=null;
-const $=id=>document.getElementById(id);
-let pendingImage=""; // dataURL ou URL en attente pour le formulaire
-
-function initAdmin(){
-  if(data)return; // déjà initialisé
-  data=JSON.parse(localStorage.getItem(STORAGE_PRODUCTS)||"null");
-  if(!data){fetch("products.json").then(r=>r.json()).then(x=>{data=x;save();render()})}
-  else render();
-}
-function save(){localStorage.setItem(STORAGE_PRODUCTS,JSON.stringify(data))}
-function render(){
-  if(!data)return;
-  $("list").innerHTML=data.map((p,i)=>`<div class="item">
-    <img class="thumb" src="${p.image?attr(p.image):'assets/logo.png'}" alt="" onerror="this.src='assets/logo.png'">
-    <div><b>${esc(p.name)}</b><br><small>${esc(p.category)} · ${esc(p.badge||"")}</small></div>
-    <div>${p.price==null?"Sur demande":new Intl.NumberFormat("fr-FR").format(p.price)+" FCFA"}</div>
-    <div>${p.stock?"Disponible":"Indisponible"}</div>
-    <div>${p.image?"Image ✓":"Pas d'image"}</div>
-    <div><button class="outline" onclick="edit(${i})">Modifier</button> <button class="danger" onclick="del(${i})">Supprimer</button></div>
-  </div>`).join("")||"<p class='note'>Aucun produit pour le moment.</p>";
-}
-function attr(s){return String(s??"").replace(/"/g,"&quot;")}
-function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function slug(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"")}
-
-function edit(i){
-  const p=data[i];
-  ["id","name","subtitle","category","badge","price","description"].forEach(k=>$(k).value=p[k]??"");
-  $("stock").checked=p.stock!==false;
-  $("featured").checked=!!p.featured;
-  pendingImage=p.image||"";
-  $("image").value=pendingImage;
-  $("image-preview").src=pendingImage||"assets/logo.png";
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-function resetForm(){
-  $("product-form").reset();
-  $("id").value="";
-  $("stock").checked=true;
-  $("featured").checked=false;
-  pendingImage="";
-  $("image").value="";
-  $("image-preview").src="assets/logo.png";
-  $("image-file").value="";
-}
-function clearImage(){pendingImage="";$("image").value="";$("image-preview").src="assets/logo.png";$("image-file").value=""}
-
-// Upload d'image : lecture + redimensionnement/compression côté navigateur (aucun serveur nécessaire)
-$("image-file").addEventListener("change",e=>{
-  const file=e.target.files[0];
-  if(!file)return;
-  if(!/^image\/(png|jpe?g|webp|gif)$/i.test(file.type)){alert("Format d'image non supporté.");return}
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const img=new Image();
-    img.onload=()=>{
-      const maxDim=900;
-      let w=img.width,h=img.height;
-      if(w>maxDim||h>maxDim){const ratio=Math.min(maxDim/w,maxDim/h);w=Math.round(w*ratio);h=Math.round(h*ratio)}
-      const canvas=document.createElement("canvas");
-      canvas.width=w;canvas.height=h;
-      const ctx=canvas.getContext("2d");
-      ctx.drawImage(img,0,0,w,h);
-      const keepPng=/png|gif/i.test(file.type);
-      const dataUrl=canvas.toDataURL(keepPng?"image/png":"image/jpeg",0.85);
-      pendingImage=dataUrl;
-      $("image").value=dataUrl;
-      $("image-preview").src=dataUrl;
-    };
-    img.onerror=()=>alert("Impossible de lire cette image.");
-    img.src=ev.target.result;
-  };
-  reader.onerror=()=>alert("Erreur de lecture du fichier.");
-  reader.readAsDataURL(file);
-});
-// Si l'utilisateur colle une URL/chemin directement dans le champ texte
-$("image").addEventListener("input",e=>{
-  pendingImage=e.target.value;
-  $("image-preview").src=pendingImage||"assets/logo.png";
-});
-
-$("product-form").onsubmit=e=>{
-  e.preventDefault();
-  const id=$("id").value||slug($("name").value);
-  const existingIndex=data.findIndex(x=>x.id===id);
-  const existing=existingIndex>=0?data[existingIndex]:{};
-  const p={
-    ...existing,
-    id,
-    name:$("name").value,
-    subtitle:$("subtitle").value,
-    category:$("category").value,
-    badge:$("badge").value,
-    price:$("price").value===""?null:Number($("price").value),
-    image:pendingImage||$("image").value||"",
-    description:$("description").value,
-    stock:$("stock").checked,
-    featured:$("featured").checked
-  };
-  existingIndex>=0?data[existingIndex]=p:data.push(p);
-  save();render();resetForm();
-  alert("Produit enregistré.");
-};
-function del(i){if(confirm("Supprimer ce produit ?")){data.splice(i,1);save();render()}}
-function resetAll(){if(confirm("Réinitialiser le catalogue à partir de products.json ? Cette action affecte aussi la boutique publique dans ce navigateur.")){localStorage.removeItem(STORAGE_PRODUCTS);data=null;fetch("products.json").then(r=>r.json()).then(x=>{data=x;save();render()})}}
-function exportData(){
-  const b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),a=document.createElement("a");
-  a.href=URL.createObjectURL(b);a.download="ma-digital-shop-products.json";a.click();URL.revokeObjectURL(a.href);
-}
-function importData(e){
-  const f=e.target.files[0]; if(!f)return;
-  const r=new FileReader();
-  r.onload=()=>{try{data=JSON.parse(r.result);save();render();alert("Catalogue importé.")}catch{alert("Fichier JSON invalide.")}};
-  r.readAsText(f);
-}
-</script>
-</body></html>
+const ADMIN_UUID="abe1de6b-43bc-4f42-96f8-1b404fc5f7d1";const $=id=>document.getElementById(id);let data=[];let pendingImage="";let session=null;
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#039;"}[m]))}function attr(s){return esc(s)}function slug(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"")}function money(p){return p==null?"Sur demande":new Intl.NumberFormat("fr-FR").format(p)+" FCFA"}
+async function start(){const {data:d}=await supabaseClient.auth.getSession();session=d.session;if(session){unlock()}else{showLogin()}supabaseClient.auth.onAuthStateChange((_e,s)=>{session=s;if(s)unlock();else showLogin()})}
+function showLogin(){$('login-gate').style.display='flex';$('admin-content').style.display='none'}function unlock(){$('login-gate').style.display='none';$('admin-content').style.display='block';loadCatalog()}
+$('login-form').addEventListener('submit',async e=>{e.preventDefault();$('login-error').textContent='Connexion…';const {error}=await supabaseClient.auth.signInWithPassword({email:$('login-email').value.trim(),password:$('login-password').value});if(error){$('login-error').textContent=error.message;return}$('login-error').textContent=''})
+$('reset-link').onclick=async()=>{const email=prompt('Adresse e-mail administrateur :');if(!email)return;const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});alert(error?error.message:'Un e-mail de réinitialisation a été envoyé.')}
+async function logout(){await supabaseClient.auth.signOut()}
+function mapRow(p){return {dbId:p.id,id:p.slug||String(p.id),name:p.name,subtitle:p.subtitle||'',category:p.category,badge:p.badge||'',price:p.price==null?null:Number(p.price),image:p.image_url||'',description:p.description||'',stock:p.available,featured:!!p.featured,icon:p.icon||'✦',sort_order:p.sort_order||0}}
+async function loadCatalog(){const {data:d,error}=await supabaseClient.from('products').select('*').order('sort_order',{ascending:true}).order('id',{ascending:true});if(error){setStatus('Erreur de chargement',true);$('list').innerHTML='<p class="note">'+esc(error.message)+'</p>';return}data=(d||[]).map(mapRow);setStatus('Connecté');render()}
+function setStatus(t,err=false){$('status').textContent=t;$('status').classList.toggle('error',err)}
+function render(){if(!data.length){$('list').innerHTML='<p class="note">Aucun produit pour le moment.</p>';return}$('list').innerHTML=data.map((p,i)=>`<div class="item"><img class="thumb" src="${attr(p.image||'assets/logo.png')}" alt="" onerror="this.src='assets/logo.png'"><div><b>${esc(p.name)}</b><br><small>${esc(p.category)} · ${esc(p.badge)}</small></div><div>${money(p.price)}</div><div>${p.stock?'Disponible':'Indisponible'}</div><div>${p.image?'Image ✓':'Pas d'image'}</div><div><button class="outline" onclick="edit(${i})">Modifier</button> <button class="danger" onclick="del(${i})">Supprimer</button></div></div>`).join('')}
+function edit(i){const p=data[i];['name','subtitle','category','badge','price','description'].forEach(k=>$(k).value=p[k]??'');$('id').value=p.id;$('stock').checked=p.stock!==false;$('featured').checked=!!p.featured;pendingImage=p.image||'';$('image').value=pendingImage;$('image-preview').src=pendingImage||'assets/logo.png';$('image-file').value='';scrollTo({top:0,behavior:'smooth'})}
+function resetForm(){$('product-form').reset();$('id').value='';$('stock').checked=true;$('featured').checked=false;pendingImage='';$('image').value='';$('image-preview').src='assets/logo.png';$('image-file').value=''}function clearImage(){pendingImage='';$('image').value='';$('image-preview').src='assets/logo.png';$('image-file').value=''}
+$('image-file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;if(!/^image\/(png|jpe?g|webp)$/i.test(f.type)){alert('Format non supporté.');return}const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const max=1200;let w=img.width,h=img.height;if(w>max||h>max){const z=Math.min(max/w,max/h);w=Math.round(w*z);h=Math.round(h*z)}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);pendingImage=c.toDataURL('image/jpeg',.85);$('image').value='';$('image-preview').src=pendingImage};img.src=ev.target.result};r.readAsDataURL(f)})
+$('image').addEventListener('input',e=>{pendingImage='';$('image-preview').src=e.target.value||'assets/logo.png'})
+async function uploadImage(slugName){if(!pendingImage||!pendingImage.startsWith('data:'))return $('image').value.trim();const blob=await (await fetch(pendingImage)).blob();const path=slugName+'-'+Date.now()+'.jpg';const {error}=await supabaseClient.storage.from('product-images').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(error)throw error;const {data}=supabaseClient.storage.from('product-images').getPublicUrl(path);return data.publicUrl}
+$('product-form').addEventListener('submit',async e=>{e.preventDefault();if(!session){showLogin();return}try{setStatus('Enregistrement…');const existingId=$('id').value;const slugName=existingId||slug($('name').value);let image=await uploadImage(slugName);if(!image)image=$('image').value.trim();const row={slug:slugName,name:$('name').value.trim(),subtitle:$('subtitle').value.trim(),category:$('category').value,badge:$('badge').value.trim(),price:$('price').value===''?null:Number($('price').value),image_url:image||null,description:$('description').value.trim(),available:$('stock').checked,featured:$('featured').checked,icon:'✦'};let res;if(existingId){res=await supabaseClient.from('products').update(row).eq('slug',existingId)}else{res=await supabaseClient.from('products').insert(row)}if(res.error)throw res.error;await loadCatalog();resetForm();alert('Produit enregistré en ligne.')}catch(err){setStatus('Erreur',true);alert('Erreur : '+err.message)}})
+async function del(i){if(!confirm('Supprimer ce produit ?'))return;const p=data[i];const {error}=await supabaseClient.from('products').delete().eq('slug',p.id);if(error){alert('Erreur : '+error.message);return}await loadCatalog()}
+async function resetAll(){if(!confirm('Réinitialiser le catalogue avec les données de départ ? Les modifications actuelles seront remplacées.'))return;alert('Pour éviter une réinitialisation accidentelle, utilise le fichier SQL de réimport fourni avec le projet.');}
+function exportData(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ma-digital-shop-products.json';a.click();URL.revokeObjectURL(a.href)}
+async function importData(e){const f=e.target.files[0];if(!f)return;try{const rows=JSON.parse(await f.text());if(!Array.isArray(rows))throw new Error('Le JSON doit être un tableau.');for(const p of rows){const slugName=p.slug||p.id||slug(p.name||'produit');const row={slug:slugName,name:p.name,subtitle:p.subtitle||'',category:p.category,badge:p.badge||'',price:p.price==null?null:Number(p.price),image_url:p.image_url||p.image||null,description:p.description||'',available:p.available??p.stock!==false,featured:!!p.featured,sort_order:Number(p.sort_order||0),icon:p.icon||'✦'};const {error}=await supabaseClient.from('products').upsert(row,{onConflict:'slug'});if(error)throw error}await loadCatalog();alert('Catalogue importé en ligne.')}catch(err){alert('Import impossible : '+err.message)}e.target.value=''}
+start();
+</script></body></html>
