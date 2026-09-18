@@ -1,25 +1,271 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MA DIGITAL SHOP — Administration V3</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>MA DIGITAL SHOP — Administration</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
-<style>body{background:#f5f8ff}.admin{padding:35px 0}.panel{background:#fff;border:1px solid #e3ebf6;border-radius:22px;padding:22px;box-shadow:0 10px 35px rgba(10,15,45,.06);margin-bottom:18px}.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.form input,.form select,.form textarea{width:100%;padding:12px;border:1px solid #dfe8f3;border-radius:11px}.form textarea{min-height:100px;grid-column:1/-1}.full{grid-column:1/-1}.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.danger{background:#fff;border:1px solid #ffcaca;color:#c22;border-radius:10px;padding:10px;cursor:pointer}.list{display:grid;gap:8px}.item{display:grid;grid-template-columns:1.4fr .8fr .7fr .7fr auto;align-items:center;gap:10px;border:1px solid #e7edf6;border-radius:13px;padding:12px;font-size:11px}.item small{color:#66718d}.note{font-size:11px;color:#66718d;line-height:1.6}@media(max-width:700px){.form{grid-template-columns:1fr}.item{grid-template-columns:1fr 1fr}.item button{grid-column:1/-1}}</style>
-</head><body><div class="top">ADMINISTRATION LOCALE — MA DIGITAL SHOP</div><header class="header"><div class="container nav"><a class="brand" href="index.html"><img src="assets/logo.png"><div><strong><span>MA</span> DIGITAL SHOP</strong><small>Gestion du catalogue</small></div></a><div class="navtools"><a class="wa" href="index.html">Voir le site</a></div></div></header>
+<style>
+body{background:#f5f8ff}
+.admin{padding:35px 0}
+.panel{background:#fff;border:1px solid #e3ebf6;border-radius:22px;padding:22px;box-shadow:0 10px 35px rgba(10,15,45,.06);margin-bottom:18px}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form input,.form select,.form textarea{width:100%;padding:12px;border:1px solid #dfe8f3;border-radius:11px}
+.form textarea{min-height:100px;grid-column:1/-1}
+.full{grid-column:1/-1}
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.danger{background:#fff;border:1px solid #ffcaca;color:#c22;border-radius:10px;padding:10px;cursor:pointer}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:56px 1.3fr .8fr .7fr .7fr auto;align-items:center;gap:10px;border:1px solid #e7edf6;border-radius:13px;padding:12px;font-size:11px}
+.item img.thumb{width:56px;height:56px;object-fit:cover;border-radius:10px;background:#f0f4fa;border:1px solid #e7edf6}
+.item small{color:#66718d}
+.note{font-size:11px;color:#66718d;line-height:1.6}
+.imgpick{display:flex;gap:12px;align-items:center;grid-column:1/-1;border:1px dashed #cfdcee;border-radius:13px;padding:12px;flex-wrap:wrap}
+.imgpick img{width:70px;height:70px;object-fit:cover;border-radius:10px;background:#f0f4fa;border:1px solid #e7edf6}
+.imgpick .imgpick-controls{display:flex;flex-direction:column;gap:6px;flex:1;min-width:200px}
+.imgpick .imgpick-controls small{color:#66718d}
+.toprow{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.lockbtn{border:1px solid #d7e4f3;background:#fff;color:var(--navy);border-radius:10px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer}
+
+/* Login gate */
+#login-gate{position:fixed;inset:0;background:linear-gradient(135deg,#07143b,#0b3d78);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px}
+.login-box{background:#fff;border-radius:22px;padding:34px;width:min(380px,100%);box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}
+.login-box img{width:56px;height:56px;border-radius:14px;margin-bottom:10px}
+.login-box h2{margin:0 0 6px;font-size:19px}
+.login-box p{color:#66718d;font-size:11px;margin:0 0 18px;line-height:1.6}
+.login-box input{width:100%;padding:13px;border:1px solid #dfe8f3;border-radius:11px;font-size:14px;margin-bottom:10px;text-align:center;letter-spacing:2px}
+.login-box button{width:100%;border:0;background:var(--blue);color:#fff;padding:13px;border-radius:11px;font-size:12px;font-weight:800;cursor:pointer}
+.login-error{color:#c22;font-size:11px;min-height:16px;margin-top:8px}
+#admin-content{display:none}
+</style>
+</head><body>
+
+<div id="login-gate">
+  <div class="login-box">
+    <img src="assets/logo.png" alt="MA Digital Shop">
+    <h2>Accès administrateur</h2>
+    <p>Cette zone est réservée à la gestion du catalogue. Merci de saisir le code d'accès.</p>
+    <form id="login-form" autocomplete="off">
+      <input id="login-password" type="password" placeholder="Code d'accès" required autofocus>
+      <button type="submit">Déverrouiller</button>
+    </form>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<div id="admin-content">
+<div class="top">ADMINISTRATION LOCALE — MA DIGITAL SHOP</div>
+<header class="header"><div class="container nav"><a class="brand" href="index.html"><img src="assets/logo.png"><div><strong><span>MA</span> DIGITAL SHOP</strong><small>Gestion du catalogue</small></div></a><div class="navtools"><a class="wa" href="index.html">Voir le site</a></div></div></header>
 <main class="admin"><div class="container">
-<div class="panel"><h2 style="margin-top:0">Ajouter / modifier un produit</h2><p class="note">Cette administration reste volontairement locale : les modifications sont enregistrées dans le navigateur (localStorage). Pour une vraie administration en ligne, il faudra plus tard un backend et une authentification serveur. Ne mettez pas cette page admin publique avec des données sensibles.</p>
-<form class="form" id="product-form"><input type="hidden" id="id"><input id="name" placeholder="Nom du produit" required><input id="subtitle" placeholder="Sous-titre"><select id="category"><option value="streaming">Streaming</option><option value="gaming">Gaming</option><option value="software">Logiciels</option><option value="accessory">Accessoires</option></select><input id="badge" placeholder="Badge / famille"><input id="price" type="number" min="0" placeholder="Prix en FCFA (laisser vide = sur demande)"><input id="image" placeholder="URL de l'image (optionnel)"><textarea id="description" placeholder="Description"></textarea><label class="full" style="font-size:11px"><input id="stock" type="checkbox" checked> Disponible</label><div class="full admin-actions"><button class="primary" type="submit">Enregistrer le produit</button><button class="outline" type="button" onclick="resetForm()">Nouveau</button><button class="outline" type="button" onclick="exportData()">Exporter le catalogue</button><label class="outline" style="cursor:pointer">Importer<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label></div></form></div>
-<div class="panel"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div><h2 style="margin:0">Catalogue</h2><p class="note">Modifie les prix, images et informations ici. Les offres Streaming sont actuellement à 2 500 FCFA.</p></div><button class="danger" onclick="resetAll()">Réinitialiser le catalogue</button></div><div id="list" class="list" style="margin-top:16px"></div></div>
+
+<div class="panel"><div class="toprow"><h2 style="margin:0">Ajouter / modifier un produit</h2><div style="display:flex;gap:8px"><button class="lockbtn" type="button" onclick="openChangePassword()">Changer le code d'accès</button><button class="lockbtn" type="button" onclick="logout()">Verrouiller</button></div></div>
+<p class="note">Cette administration reste volontairement locale : les modifications sont enregistrées dans le navigateur (localStorage) de cet appareil, et s'appliquent directement à la boutique publique (index.html). Le code d'accès protège l'affichage de cette page dans ce navigateur ; pour une vraie protection côté serveur, il faudra plus tard un backend avec authentification.</p>
+<form class="form" id="product-form">
+  <input type="hidden" id="id">
+  <input id="name" placeholder="Nom du produit" required>
+  <input id="subtitle" placeholder="Sous-titre">
+  <select id="category"><option value="streaming">Streaming</option><option value="gaming">Gaming</option><option value="software">Logiciels</option><option value="accessory">Accessoires</option></select>
+  <input id="badge" placeholder="Badge / famille">
+  <input id="price" type="number" min="0" placeholder="Prix en FCFA (laisser vide = sur demande)">
+  <label class="full" style="font-size:11px;display:flex;gap:16px;align-items:center"><span><input id="stock" type="checkbox" checked> Disponible</span><span><input id="featured" type="checkbox"> Mettre en avant (badge Populaire)</span></label>
+  <textarea id="description" placeholder="Description"></textarea>
+
+  <div class="imgpick">
+    <img id="image-preview" src="assets/logo.png" alt="Aperçu">
+    <div class="imgpick-controls">
+      <input type="file" id="image-file" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif">
+      <small>Formats acceptés : PNG, JPG/JPEG, WEBP, GIF. L'image est redimensionnée automatiquement et enregistrée avec le produit.</small>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="image" placeholder="ou coller une URL / chemin d'image (optionnel)" style="flex:1">
+        <button type="button" class="outline" onclick="clearImage()">Retirer l'image</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="full admin-actions">
+    <button class="primary" type="submit">Enregistrer le produit</button>
+    <button class="outline" type="button" onclick="resetForm()">Nouveau</button>
+    <button class="outline" type="button" onclick="exportData()">Exporter le catalogue</button>
+    <label class="outline" style="cursor:pointer">Importer<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
+  </div>
+</form>
+</div>
+
+<div class="panel"><div class="toprow"><div><h2 style="margin:0">Catalogue</h2><p class="note">Modifie les prix, images et informations ici. Les produits ajoutés/supprimés apparaissent immédiatement sur la boutique publique dans ce navigateur.</p></div><button class="danger" onclick="resetAll()">Réinitialiser le catalogue</button></div><div id="list" class="list" style="margin-top:16px"></div></div>
+
 </div></main>
+</div>
+
 <script>
-let data=JSON.parse(localStorage.getItem("ma_products_v3")||"null");
-if(!data){fetch("products.json").then(r=>r.json()).then(x=>{data=x;save();render()})}else render();
+/* ================= SÉCURITÉ ACCÈS ADMIN ================= */
+const AUTH_PASS_KEY="ma_admin_pass_hash_v1";
+const AUTH_SESSION_KEY="ma_admin_session_v1";
+const SESSION_HOURS=12;
+// Hash SHA-256 du code d'accès par défaut : "MaDigital2026!"  (changez-le dès la première connexion)
+const DEFAULT_PASS_HASH="40746a61b817b3fb9f7dba3b44577a8692f74c9e65d41441910277ab4a17410e";
+
+async function sha256Hex(text){
+  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function currentPassHash(){return localStorage.getItem(AUTH_PASS_KEY)||DEFAULT_PASS_HASH}
+function hasValidSession(){
+  try{
+    const s=JSON.parse(localStorage.getItem(AUTH_SESSION_KEY)||"null");
+    return !!(s && s.exp && Date.now()<s.exp);
+  }catch{return false}
+}
+function grantSession(){
+  localStorage.setItem(AUTH_SESSION_KEY,JSON.stringify({exp:Date.now()+SESSION_HOURS*3600*1000}));
+}
+function unlock(){
+  document.getElementById("login-gate").style.display="none";
+  document.getElementById("admin-content").style.display="block";
+  if(typeof initAdmin==="function")initAdmin();
+}
+function logout(){
+  if(!confirm("Verrouiller l'administration ?"))return;
+  localStorage.removeItem(AUTH_SESSION_KEY);
+  location.reload();
+}
+document.getElementById("login-form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const pwd=document.getElementById("login-password").value;
+  const errEl=document.getElementById("login-error");
+  try{
+    const hash=await sha256Hex(pwd);
+    if(hash===currentPassHash()){grantSession();unlock()}
+    else{errEl.textContent="Code d'accès incorrect.";document.getElementById("login-password").value=""}
+  }catch(err){errEl.textContent="Erreur de vérification (navigateur trop ancien)."}
+});
+async function openChangePassword(){
+  const current=prompt("Pour confirmer, saisissez le code d'accès actuel :");
+  if(current===null)return;
+  const currentHash=await sha256Hex(current);
+  if(currentHash!==currentPassHash()){alert("Code actuel incorrect.");return}
+  const next=prompt("Nouveau code d'accès (au moins 6 caractères) :");
+  if(!next)return;
+  if(next.length<6){alert("Le nouveau code doit contenir au moins 6 caractères.");return}
+  const confirmNext=prompt("Confirmez le nouveau code d'accès :");
+  if(next!==confirmNext){alert("Les deux codes ne correspondent pas.");return}
+  const newHash=await sha256Hex(next);
+  localStorage.setItem(AUTH_PASS_KEY,newHash);
+  alert("Code d'accès mis à jour pour ce navigateur/appareil.");
+}
+if(hasValidSession())unlock();
+
+/* ================= GESTION DU CATALOGUE ================= */
+const STORAGE_PRODUCTS="ma_products_v7_local_catalog"; // même clé que app.js (boutique publique)
+let data=null;
 const $=id=>document.getElementById(id);
-function save(){localStorage.setItem("ma_products_v3",JSON.stringify(data))}
-function render(){if(!data)return;$("list").innerHTML=data.map((p,i)=>`<div class="item"><div><b>${esc(p.name)}</b><br><small>${esc(p.category)} · ${esc(p.badge||"")}</small></div><div>${p.price==null?"Sur demande":new Intl.NumberFormat("fr-FR").format(p.price)+" FCFA"}</div><div>${p.stock?"Disponible":"Indisponible"}</div><div>${p.image?"Image ✓":"Pas d'image"}</div><div><button class="outline" onclick="edit(${i})">Modifier</button> <button class="danger" onclick="del(${i})">Supprimer</button></div></div>`).join("")}
-function edit(i){let p=data[i];["id","name","subtitle","category","badge","price","image","description","stock"].forEach(k=>$(k).value=p[k]??"");$("stock").checked=!!p.stock;window.scrollTo({top:0,behavior:"smooth"})}
-function resetForm(){$("product-form").reset();$("id").value="";$("stock").checked=true}
-$("product-form").onsubmit=e=>{e.preventDefault();let p={id:$("id").value||slug($("name").value),name:$("name").value,subtitle:$("subtitle").value,category:$("category").value,badge:$("badge").value,price:$("price").value===""?null:Number($("price").value),image:$("image").value,description:$("description").value,stock:$("stock").checked};let i=data.findIndex(x=>x.id===p.id);i>=0?data[i]=p:data.push(p);save();render();resetForm();alert("Produit enregistré.")}
-function del(i){if(confirm("Supprimer ce produit ?")){data.splice(i,1);save();render()}}
-function resetAll(){if(confirm("Réinitialiser le catalogue initial ?")){localStorage.removeItem("ma_products_v3");location.reload()}}
-function exportData(){let b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="ma-digital-shop-products.json";a.click();URL.revokeObjectURL(a.href)}
-function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);save();render();alert("Catalogue importé.")}catch{alert("Fichier JSON invalide.")}};r.readAsText(f)}
-function slug(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"")}
+let pendingImage=""; // dataURL ou URL en attente pour le formulaire
+
+function initAdmin(){
+  if(data)return; // déjà initialisé
+  data=JSON.parse(localStorage.getItem(STORAGE_PRODUCTS)||"null");
+  if(!data){fetch("products.json").then(r=>r.json()).then(x=>{data=x;save();render()})}
+  else render();
+}
+function save(){localStorage.setItem(STORAGE_PRODUCTS,JSON.stringify(data))}
+function render(){
+  if(!data)return;
+  $("list").innerHTML=data.map((p,i)=>`<div class="item">
+    <img class="thumb" src="${p.image?attr(p.image):'assets/logo.png'}" alt="" onerror="this.src='assets/logo.png'">
+    <div><b>${esc(p.name)}</b><br><small>${esc(p.category)} · ${esc(p.badge||"")}</small></div>
+    <div>${p.price==null?"Sur demande":new Intl.NumberFormat("fr-FR").format(p.price)+" FCFA"}</div>
+    <div>${p.stock?"Disponible":"Indisponible"}</div>
+    <div>${p.image?"Image ✓":"Pas d'image"}</div>
+    <div><button class="outline" onclick="edit(${i})">Modifier</button> <button class="danger" onclick="del(${i})">Supprimer</button></div>
+  </div>`).join("")||"<p class='note'>Aucun produit pour le moment.</p>";
+}
+function attr(s){return String(s??"").replace(/"/g,"&quot;")}
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-</script></body></html>
+function slug(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"")}
+
+function edit(i){
+  const p=data[i];
+  ["id","name","subtitle","category","badge","price","description"].forEach(k=>$(k).value=p[k]??"");
+  $("stock").checked=p.stock!==false;
+  $("featured").checked=!!p.featured;
+  pendingImage=p.image||"";
+  $("image").value=pendingImage;
+  $("image-preview").src=pendingImage||"assets/logo.png";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function resetForm(){
+  $("product-form").reset();
+  $("id").value="";
+  $("stock").checked=true;
+  $("featured").checked=false;
+  pendingImage="";
+  $("image").value="";
+  $("image-preview").src="assets/logo.png";
+  $("image-file").value="";
+}
+function clearImage(){pendingImage="";$("image").value="";$("image-preview").src="assets/logo.png";$("image-file").value=""}
+
+// Upload d'image : lecture + redimensionnement/compression côté navigateur (aucun serveur nécessaire)
+$("image-file").addEventListener("change",e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  if(!/^image\/(png|jpe?g|webp|gif)$/i.test(file.type)){alert("Format d'image non supporté.");return}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      const maxDim=900;
+      let w=img.width,h=img.height;
+      if(w>maxDim||h>maxDim){const ratio=Math.min(maxDim/w,maxDim/h);w=Math.round(w*ratio);h=Math.round(h*ratio)}
+      const canvas=document.createElement("canvas");
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext("2d");
+      ctx.drawImage(img,0,0,w,h);
+      const keepPng=/png|gif/i.test(file.type);
+      const dataUrl=canvas.toDataURL(keepPng?"image/png":"image/jpeg",0.85);
+      pendingImage=dataUrl;
+      $("image").value=dataUrl;
+      $("image-preview").src=dataUrl;
+    };
+    img.onerror=()=>alert("Impossible de lire cette image.");
+    img.src=ev.target.result;
+  };
+  reader.onerror=()=>alert("Erreur de lecture du fichier.");
+  reader.readAsDataURL(file);
+});
+// Si l'utilisateur colle une URL/chemin directement dans le champ texte
+$("image").addEventListener("input",e=>{
+  pendingImage=e.target.value;
+  $("image-preview").src=pendingImage||"assets/logo.png";
+});
+
+$("product-form").onsubmit=e=>{
+  e.preventDefault();
+  const id=$("id").value||slug($("name").value);
+  const existingIndex=data.findIndex(x=>x.id===id);
+  const existing=existingIndex>=0?data[existingIndex]:{};
+  const p={
+    ...existing,
+    id,
+    name:$("name").value,
+    subtitle:$("subtitle").value,
+    category:$("category").value,
+    badge:$("badge").value,
+    price:$("price").value===""?null:Number($("price").value),
+    image:pendingImage||$("image").value||"",
+    description:$("description").value,
+    stock:$("stock").checked,
+    featured:$("featured").checked
+  };
+  existingIndex>=0?data[existingIndex]=p:data.push(p);
+  save();render();resetForm();
+  alert("Produit enregistré.");
+};
+function del(i){if(confirm("Supprimer ce produit ?")){data.splice(i,1);save();render()}}
+function resetAll(){if(confirm("Réinitialiser le catalogue à partir de products.json ? Cette action affecte aussi la boutique publique dans ce navigateur.")){localStorage.removeItem(STORAGE_PRODUCTS);data=null;fetch("products.json").then(r=>r.json()).then(x=>{data=x;save();render()})}}
+function exportData(){
+  const b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(b);a.download="ma-digital-shop-products.json";a.click();URL.revokeObjectURL(a.href);
+}
+function importData(e){
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{data=JSON.parse(r.result);save();render();alert("Catalogue importé.")}catch{alert("Fichier JSON invalide.")}};
+  r.readAsText(f);
+}
+</script>
+</body></html>
