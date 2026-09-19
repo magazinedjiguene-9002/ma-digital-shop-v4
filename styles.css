@@ -250,3 +250,122 @@ html,body{max-width:100%;overflow-x:hidden}
     height:160px;
   }
 }
+
+
+/* V5.3 — glow esthétique des cartes, identité MA DIGITAL SHOP conservée */
+/* Effet premium très subtil : fond clair, bordure fine et lueur douce */
+.card,.cat,.trust-card,.feature{
+  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+}
+.card{
+  border-color:#dfe9f5;
+  box-shadow:0 10px 28px rgba(8,119,255,.07),0 2px 8px rgba(10,15,45,.035);
+}
+.card:hover{
+  border-color:rgba(8,119,255,.42);
+  box-shadow:0 16px 38px rgba(8,119,255,.14),0 0 24px rgba(0,212,255,.10);
+}
+.visual{
+  position:relative;
+}
+.visual:after{
+  content:"";
+  position:absolute;
+  inset:auto 10% -45px;
+  height:90px;
+  border-radius:50%;
+  background:rgba(0,212,255,.12);
+  filter:blur(24px);
+  z-index:1;
+  pointer-events:none;
+}
+.featured-grid .card{
+  border-width:1px;
+  box-shadow:0 12px 32px rgba(8,119,255,.09),0 0 0 1px rgba(255,255,255,.8) inset;
+}
+.featured-grid .card:nth-child(2){
+  border-color:rgba(124,58,237,.30);
+  box-shadow:0 12px 32px rgba(124,58,237,.11),0 0 22px rgba(124,58,237,.08);
+}
+.featured-grid .card:nth-child(3){
+  border-color:rgba(37,211,102,.32);
+  box-shadow:0 12px 32px rgba(37,211,102,.10),0 0 22px rgba(37,211,102,.07);
+}
+
+/* Une signature lumineuse discrète par univers */
+#streaming .card{
+  border-color:rgba(124,58,237,.20);
+  box-shadow:0 10px 30px rgba(124,58,237,.08),0 0 20px rgba(124,58,237,.045);
+}
+#gaming .card{
+  border-color:rgba(8,119,255,.22);
+  box-shadow:0 10px 30px rgba(8,119,255,.09),0 0 20px rgba(0,212,255,.05);
+}
+#logiciels .card{
+  border-color:rgba(0,180,160,.20);
+  box-shadow:0 10px 30px rgba(0,180,160,.07),0 0 20px rgba(0,212,255,.045);
+}
+#accessoires .card{
+  border-color:rgba(245,158,11,.24);
+  box-shadow:0 10px 30px rgba(245,158,11,.07),0 0 20px rgba(245,158,11,.045);
+}
+#streaming .card:hover{
+  border-color:rgba(124,58,237,.48);
+  box-shadow:0 16px 38px rgba(124,58,237,.14),0 0 28px rgba(124,58,237,.10);
+}
+#gaming .card:hover{
+  border-color:rgba(8,119,255,.50);
+  box-shadow:0 16px 38px rgba(8,119,255,.15),0 0 28px rgba(0,212,255,.10);
+}
+#logiciels .card:hover{
+  border-color:rgba(0,180,160,.45);
+  box-shadow:0 16px 38px rgba(0,180,160,.12),0 0 28px rgba(0,212,255,.09);
+}
+#accessoires .card:hover{
+  border-color:rgba(245,158,11,.48);
+  box-shadow:0 16px 38px rgba(245,158,11,.12),0 0 28px rgba(245,158,11,.08);
+}
+
+/* Catégories : cartes plus vivantes sans changer les visuels */
+.category-carousel .cat{
+  border-color:#e0eaf6;
+  box-shadow:0 10px 28px rgba(8,119,255,.06);
+}
+.category-carousel .cat:nth-child(1):hover{
+  border-color:rgba(124,58,237,.38);
+  box-shadow:0 14px 34px rgba(124,58,237,.12),0 0 24px rgba(124,58,237,.07);
+}
+.category-carousel .cat:nth-child(2):hover{
+  border-color:rgba(8,119,255,.40);
+  box-shadow:0 14px 34px rgba(8,119,255,.13),0 0 24px rgba(0,212,255,.08);
+}
+.category-carousel .cat:nth-child(3):hover{
+  border-color:rgba(0,180,160,.38);
+  box-shadow:0 14px 34px rgba(0,180,160,.11),0 0 24px rgba(0,212,255,.07);
+}
+.category-carousel .cat:nth-child(4):hover{
+  border-color:rgba(245,158,11,.40);
+  box-shadow:0 14px 34px rgba(245,158,11,.11),0 0 24px rgba(245,158,11,.07);
+}
+
+/* Badge et prix un peu plus premium */
+.featured-grid .featured{
+  box-shadow:0 5px 14px rgba(8,119,255,.18);
+}
+.price{
+  text-shadow:0 0 14px rgba(8,119,255,.10);
+}
+
+/* Sur mobile, on garde la lueur légère pour éviter un rendu chargé */
+@media(max-width:700px){
+  .card{
+    box-shadow:0 8px 22px rgba(8,119,255,.07);
+  }
+  .featured-grid .card,
+  #streaming .card,#gaming .card,#logiciels .card,#accessoires .card{
+    box-shadow:0 9px 24px rgba(8,119,255,.075);
+  }
+  .visual:after{
+    opacity:.55;
+  }
+}
