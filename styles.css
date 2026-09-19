@@ -58,3 +58,14 @@ footer{background:var(--navy);color:#fff;padding:50px 0 20px}.foot{display:grid;
 .featured-grid.featured-expanded .card{min-width:0}
 @media(max-width:1050px){.featured-grid .card{min-width:calc((100% - 20px)/2)}.featured-grid.featured-expanded{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.featured-section{padding-top:42px}.featured-section .head{align-items:flex-start;gap:10px}.featured-wrap{gap:8px}.featured-grid .card{min-width:82%}.featured-grid.featured-expanded{grid-template-columns:1fr}.featured-grid.featured-expanded .card{min-width:0}}
+
+/* Bloc de réassurance */
+.trust-section{padding-top:46px;padding-bottom:54px}
+.trust-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.trust-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(10,15,45,.06);transition:transform .2s ease,box-shadow .2s ease}
+.trust-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(10,15,45,.1)}
+.trust-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:#eef6ff;font-size:22px;margin-bottom:15px}
+.trust-card h3{margin:0 0 8px;color:var(--text)}
+.trust-card p{margin:0;color:var(--muted);line-height:1.6;font-size:14px}
+@media(max-width:950px){.trust-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.trust-section{padding-top:34px}.trust-grid{grid-template-columns:1fr}.trust-card{padding:20px}}
