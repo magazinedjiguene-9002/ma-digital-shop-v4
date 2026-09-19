@@ -369,3 +369,295 @@ html,body{max-width:100%;overflow-x:hidden}
     opacity:.55;
   }
 }
+
+
+/* V5.4 — mobile-first exact layout: compact hero + 3-up featured cards */
+@media(max-width:700px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  .container{width:calc(100% - 28px);max-width:none}
+  
+  /* HERO : compact, contenu dans la largeur de l'écran */
+  .hero-v5{
+    padding:14px 0 20px;
+    overflow:hidden;
+  }
+  .hero-v5 .hero-slider{
+    min-height:0;
+    height:236px;
+    overflow:hidden;
+  }
+  .hero-v5 .hero-slide{
+    position:absolute;
+    inset:0;
+    height:236px;
+  }
+  .hero-v5 .hero-slide.active{
+    position:absolute;
+  }
+  .hero-v5 .hero-slide .hero-grid{
+    display:block;
+    width:100%;
+    height:100%;
+    position:relative;
+  }
+  .hero-v5 .hero-copy{
+    position:absolute;
+    z-index:5;
+    left:14px;
+    right:14px;
+    top:18px;
+    color:#fff;
+    text-shadow:0 2px 10px rgba(0,0,0,.35);
+  }
+  .hero-v5 .hero-copy .pill{
+    background:rgba(255,255,255,.16);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.25);
+    padding:6px 9px;
+    font-size:8px;
+  }
+  .hero-v5 .hero-copy h1{
+    font-size:26px;
+    line-height:1.05;
+    letter-spacing:-1px;
+    margin:10px 0 7px;
+    max-width:78%;
+    color:#fff;
+  }
+  .hero-v5 .hero-copy .grad{
+    color:#63e6ff;
+    background:none;
+  }
+  .hero-v5 .hero-copy p{
+    color:#fff;
+    font-size:10px;
+    line-height:1.35;
+    max-width:68%;
+    margin:0;
+  }
+  .hero-v5 .hero-copy .actions{
+    margin:10px 0 0;
+    display:block;
+  }
+  .hero-v5 .hero-copy .actions .primary{
+    display:inline-block;
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:9px;
+  }
+  .hero-v5 .hero-copy .actions .outline,
+  .hero-v5 .hero-copy .trust{
+    display:none;
+  }
+  .hero-v5 .hero-card.hero-showcase{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    min-height:0;
+    border-radius:20px;
+    box-shadow:0 10px 26px rgba(10,15,45,.10);
+    background:#dceeff;
+  }
+  .hero-v5 .hero-showcase .hero-services{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:20px;
+  }
+  .hero-v5 .hero-showcase:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg,rgba(3,15,50,.70),rgba(3,15,50,.18) 70%,rgba(3,15,50,.05));
+    z-index:2;
+  }
+  .hero-v5 .hero-showcase .mini{
+    z-index:5;
+    padding:6px 8px;
+    font-size:7px;
+    border-radius:10px;
+    bottom:10px;
+    top:auto;
+  }
+  .hero-v5 .hero-showcase .mini.one{right:10px;left:auto}
+  .hero-v5 .hero-showcase .mini.two{left:10px}
+  .hero-v5 .hero-controls{
+    width:100%;
+    margin-top:9px;
+    gap:8px;
+  }
+  .hero-v5 .hero-arrow{
+    width:32px;
+    height:32px;
+    font-size:17px;
+  }
+  .hero-v5 .hero-dots{gap:5px;min-width:38px}
+  .hero-v5 .hero-dot{width:6px;height:6px}
+  .hero-v5 .hero-dot.active{width:17px}
+
+  /* Sections compactes */
+  .section{padding:34px 0}
+  .head{margin-bottom:15px}
+  .head h2{font-size:22px;letter-spacing:-.7px}
+  .head p{font-size:10px;line-height:1.45}
+  .text-btn{font-size:9px}
+  
+  /* Catégories : petites cartes horizontales */
+  .category-carousel{gap:5px}
+  .category-carousel>.carousel-arrow{display:none}
+  .category-carousel .cats{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:7px;
+    overflow:visible;
+    padding:2px 0 8px;
+  }
+  .category-carousel .cat{
+    min-width:0;
+    width:auto;
+    padding:0;
+    border-radius:13px;
+    overflow:hidden;
+  }
+  .category-carousel .cat-image>img{
+    height:58px;
+    object-fit:cover;
+  }
+  .category-carousel .cat-content{
+    padding:8px 5px 9px;
+    text-align:center;
+  }
+  .category-carousel .cat-content h3{
+    font-size:8px;
+    margin:0 0 3px;
+  }
+  .category-carousel .cat-content p,
+  .category-carousel .cat-content .link,
+  .category-carousel .cat-icon{
+    display:none;
+  }
+
+  /* PRODUITS PHARES : trois cartes visibles comme dans la maquette */
+  .featured-section{
+    padding-top:34px;
+    padding-bottom:34px;
+  }
+  .featured-wrap{display:block}
+  .featured-wrap>.carousel-arrow{display:none}
+  .featured-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+    width:100%;
+    overflow:visible;
+    padding:3px 0 8px;
+    scroll-snap-type:none;
+  }
+  .featured-grid .card,
+  .featured-grid.featured-expanded .card{
+    min-width:0;
+    width:100%;
+    border-radius:13px;
+    box-shadow:0 7px 18px rgba(8,119,255,.08);
+  }
+  .featured-grid .visual{
+    height:105px;
+    aspect-ratio:auto;
+  }
+  .featured-grid .body{
+    padding:8px;
+  }
+  .featured-grid .featured{
+    left:6px;
+    top:6px;
+    padding:4px 6px;
+    font-size:6px;
+  }
+  .featured-grid .badge{
+    padding:3px 5px;
+    font-size:6px;
+    margin-bottom:4px;
+  }
+  .featured-grid .body h3{
+    font-size:8px;
+    line-height:1.2;
+    min-height:29px;
+    margin-bottom:3px;
+  }
+  .featured-grid .body p{
+    font-size:6.5px;
+    line-height:1.3;
+    min-height:25px;
+    margin-bottom:5px;
+  }
+  .featured-grid .price{
+    font-size:9px;
+    margin-bottom:6px;
+  }
+  .featured-grid .row{gap:3px}
+  .featured-grid .row button{
+    padding:6px 2px;
+    font-size:6.5px;
+    border-radius:7px;
+  }
+
+  /* Carrousels de catégories : deux petites cartes visibles */
+  .products-carousel>.carousel-arrow{display:none}
+  .products-carousel .product-track{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+    width:100%;
+    overflow:visible;
+    padding:3px 0 10px;
+    scroll-snap-type:none;
+  }
+  .products-carousel .product-track .card{
+    min-width:0;
+    width:100%;
+    border-radius:13px;
+    box-shadow:0 7px 18px rgba(8,119,255,.07);
+  }
+  .products-carousel .product-track .visual{
+    height:115px;
+  }
+  .products-carousel .product-track .body{
+    padding:9px;
+  }
+  .products-carousel .product-track .body h3{
+    font-size:9px;
+    line-height:1.25;
+    min-height:29px;
+    margin-bottom:3px;
+  }
+  .products-carousel .product-track .body p{
+    font-size:6.8px;
+    line-height:1.3;
+    min-height:26px;
+    margin-bottom:6px;
+  }
+  .products-carousel .product-track .price{
+    font-size:10px;
+    margin-bottom:6px;
+  }
+  .products-carousel .product-track .row{gap:3px}
+  .products-carousel .product-track .row button{
+    padding:6px 2px;
+    font-size:6.5px;
+    border-radius:7px;
+  }
+
+  /* Barre de réassurance plus proche de la maquette */
+  .trust-section{padding-top:28px;padding-bottom:32px}
+  .trust-grid{grid-template-columns:1fr;gap:8px}
+  .trust-card{padding:12px;border-radius:14px}
+  .trust-card:not(:first-child){display:none}
+  .trust-icon{width:34px;height:34px;border-radius:10px;font-size:16px;margin-bottom:7px}
+  .trust-card h3{font-size:13px;margin-bottom:4px}
+  .trust-card p{font-size:8px;line-height:1.4}
+
+  .floatwa{width:52px;height:52px;right:14px;bottom:14px}
+}
