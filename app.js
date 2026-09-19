@@ -57,7 +57,66 @@ function renderCart(){
 function openCart(){document.getElementById("cart").classList.add("open");renderCart()}
 function closeCart(){document.getElementById("cart").classList.remove("open")}
 function order(id){const p=productById(id);if(!p)return;wa(`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite commander :\nProduit : ${p.name}\nCatégorie : ${label(p.category)}\nPrix affiché : ${money(p.price)}\n\nMerci de m'indiquer la procédure de paiement.`)}
-function checkout(){if(!cart.length)return;const lines=cart.map(r=>{const p=productById(r.id);return `- ${p.name} × ${r.qty} — ${money(p.price)}`}).join("\n");wa(`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite passer cette commande :\n${lines}\n\nMerci de m'indiquer la procédure de paiement.`)}
+function checkout(){
+  if(!cart.length)return;
+  const modal=document.getElementById("checkout-modal");
+  if(!modal)return;
+  const total=cart.reduce((sum,r)=>{const p=productById(r.id);return p&&p.price!=null?sum+Number(p.price)*r.qty:sum},0);
+  const hasUnknownPrice=cart.some(r=>{const p=productById(r.id);return p&&p.price==null});
+  const totalEl=document.getElementById("checkout-total");
+  if(totalEl)totalEl.textContent=hasUnknownPrice?"À confirmer":money(total);
+  const error=document.getElementById("checkout-error");
+  if(error){error.hidden=true;error.textContent=""}
+  modal.classList.add("open");
+  document.getElementById("customer-name")?.focus();
+}
+
+function closeCheckout(){document.getElementById("checkout-modal")?.classList.remove("open")}
+
+function normalizeWhatsApp(value){
+  let digits=String(value||"").replace(/\D/g,"");
+  if(digits.startsWith("00"))digits=digits.slice(2);
+  if(digits.startsWith("0"))digits="221"+digits.slice(1);
+  return digits;
+}
+
+function createOrderCode(){
+  const stamp=Date.now().toString(36).toUpperCase();
+  const random=Math.random().toString(36).slice(2,7).toUpperCase();
+  return `MD-${stamp}-${random}`;
+}
+
+async function submitOrder(event){
+  event.preventDefault();
+  if(!cart.length)return;
+  const name=document.getElementById("customer-name")?.value.trim()||"";
+  const whatsapp=document.getElementById("customer-whatsapp")?.value.trim()||"";
+  const notes=document.getElementById("customer-notes")?.value.trim()||"";
+  const errorEl=document.getElementById("checkout-error");
+  const submitBtn=event.submitter;
+  if(!name||!whatsapp)return;
+  const items=cart.map(r=>{const p=productById(r.id);if(!p)return null;return {product_id:p.dbId??p.id,name:p.name,quantity:r.qty,unit_price:p.price==null?null:Number(p.price),subtotal:p.price==null?null:Number(p.price)*r.qty}}).filter(Boolean);
+  const totalKnown=cart.reduce((sum,r)=>{const p=productById(r.id);return p&&p.price!=null?sum+Number(p.price)*r.qty:sum},0);
+  const hasUnknownPrice=cart.some(r=>{const p=productById(r.id);return p&&p.price==null});
+  if(!window.supabaseClient){if(errorEl){errorEl.hidden=false;errorEl.textContent="Connexion Supabase indisponible. Réessayez dans un instant."}return}
+  if(submitBtn){submitBtn.disabled=true;submitBtn.textContent="Enregistrement..."}
+  const normalizedWhatsApp=normalizeWhatsApp(whatsapp);
+  const orderCode=createOrderCode();
+  try{
+    const {error}=await window.supabaseClient.from("orders").insert({order_code:orderCode,customer_name:name,customer_whatsapp:normalizedWhatsApp,items,total:hasUnknownPrice?0:totalKnown,status:"pending",notes:notes||null});
+    if(error)throw error;
+    const orderId=orderCode;
+    const lines=items.map(item=>`- ${item.name} × ${item.quantity} — ${item.unit_price==null?"Prix sur demande":money(item.subtotal)}`).join("\n");
+    const totalText=hasUnknownPrice?"À confirmer":money(totalKnown);
+    closeCheckout();
+    wa(`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite passer cette commande :\nCommande #${orderId}\nClient : ${name}\nWhatsApp : ${whatsapp}\n\n${lines}\n\nTotal : ${totalText}${notes?`\nNote : ${notes}`:""}\n\nMerci de m'indiquer la procédure de paiement.`);
+    clearCart();
+    closeCart();
+  }catch(err){
+    console.error("Création commande impossible :",err);
+    if(errorEl){errorEl.hidden=false;errorEl.textContent="Impossible d'enregistrer la commande. Vérifiez votre connexion puis réessayez."}
+  }finally{if(submitBtn){submitBtn.disabled=false;submitBtn.textContent="Confirmer la commande"}}
+}
 function goSearch(){document.getElementById("global-search")?.focus()}
 function globalSearch(v){const q=v.toLowerCase().trim();if(!q)return;const found=products.find(p=>(p.name+" "+p.description+" "+p.subtitle).toLowerCase().includes(q));if(!found){document.getElementById("search-message").textContent="Aucun produit ne correspond à votre recherche.";return}const section=document.getElementById(found.category);section?.scrollIntoView({behavior:"smooth",block:"start"});const gridId=found.category+"-grid";const searchId={gaming:"game-search",software:"software-search"}[found.category];if(searchId){document.getElementById(searchId).value=v;renderFiltered(found.category,gridId,searchId,found.category==="gaming"?"game-filter":"software-filter")}}
 function openMobileNav(){document.getElementById("mobile-nav")?.classList.toggle("open")}
