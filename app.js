@@ -31,7 +31,7 @@ function closeProductDetail(){document.getElementById('product-modal')?.classLis
 function productCard(p){
   const price=p.price==null?"Sur demande":money(p.price);
   const disabled=p.stock===false;
-  return `<article class="card" onclick="openProductDetail('${attr(p.id)}')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')openProductDetail('${attr(p.id)}')">`
+  return `<article class="card" onclick="if(!event.target.closest('button'))openProductDetail('${attr(p.id)}')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')openProductDetail('${attr(p.id)}')">`
     <div class="visual ${p.image?'has-image':''}">${productImage(p)}<div class="cover"><span>${esc(p.icon||"✦")}</span><b>${esc(p.name)}</b></div>${p.featured?'<span class="featured">Populaire</span>':''}</div>
     <div class="body"><span class="badge">${esc(p.badge||label(p.category))}</span><h3>${esc(p.name)}</h3><p>${esc(p.description||p.subtitle||"")}</p>
       <div class="price">${price}</div>
