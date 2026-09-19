@@ -69,3 +69,17 @@ footer{background:var(--navy);color:#fff;padding:50px 0 20px}.foot{display:grid;
 .trust-card p{margin:0;color:var(--muted);line-height:1.6;font-size:14px}
 @media(max-width:950px){.trust-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.trust-section{padding-top:34px}.trust-grid{grid-template-columns:1fr}.trust-card{padding:20px}}
+
+/* Finition premium des cartes produits */
+.products-carousel .card,.featured-grid .card{position:relative;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.products-carousel .card:hover,.featured-grid .card:hover{transform:translateY(-7px);box-shadow:0 18px 42px rgba(10,15,45,.12);border-color:#cfe0f5}
+.products-carousel .visual,.featured-grid .visual{background:linear-gradient(145deg,#f8fbff,#eef5ff)}
+.products-carousel .visual img,.featured-grid .visual img{transition:transform .4s ease}
+.products-carousel .card:hover .visual img,.featured-grid .card:hover .visual img{transform:scale(1.045)}
+.products-carousel .body,.featured-grid .body{position:relative}
+.products-carousel .price,.featured-grid .price{display:flex;align-items:center;gap:8px}
+.products-carousel .price::before,.featured-grid .price::before{content:"";width:4px;height:18px;border-radius:99px;background:linear-gradient(180deg,var(--blue),var(--cyan))}
+.products-carousel .row button,.featured-grid .row button{transition:.18s ease}
+.products-carousel .row button:hover:not(:disabled),.featured-grid .row button:hover:not(:disabled){transform:translateY(-1px)}
+.products-carousel .row .buy:hover,.featured-grid .row .buy:hover{filter:brightness(.95)}
+@media(max-width:700px){.products-carousel .card,.featured-grid .card{border-radius:17px}.products-carousel .visual,.featured-grid .visual{height:250px}}
