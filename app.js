@@ -134,7 +134,38 @@ async function loadProducts(){
   renderHome();renderCart();
 }
 
+/* V5 UI — logique des carrousels uniquement */
+let heroIndex=0, heroTimer=null;
+function initHero(){const slider=document.getElementById("hero-slider"),dots=document.getElementById("hero-dots");if(!slider||!dots)return;const slides=[...slider.querySelectorAll(".hero-slide")];dots.innerHTML=slides.map((_,i)=>`<button class="hero-dot ${i===0?"active":""}" type="button" aria-label="Aller à la slide ${i+1}" onclick="goHero(${i})"></button>`).join("");heroIndex=0;slides.forEach((s,i)=>s.classList.toggle("active",i===0));clearInterval(heroTimer);heroTimer=setInterval(()=>changeHero(1),6500);slider.addEventListener("mouseenter",()=>clearInterval(heroTimer));slider.addEventListener("mouseleave",()=>{clearInterval(heroTimer);heroTimer=setInterval(()=>changeHero(1),6500)})}
+function goHero(index){const slides=[...document.querySelectorAll("#hero-slider .hero-slide")],dots=[...document.querySelectorAll("#hero-dots .hero-dot")];if(!slides.length)return;heroIndex=(index+slides.length)%slides.length;slides.forEach((s,i)=>s.classList.toggle("active",i===heroIndex));dots.forEach((d,i)=>d.classList.toggle("active",i===heroIndex))}
+function changeHero(step){goHero(heroIndex+step)}
+function scrollTrack(id,direction){const el=document.getElementById(id);if(!el)return;el.scrollBy({left:Math.max(el.clientWidth*.82,260)*direction,behavior:"smooth"})}
+function initAutoTracks(){document.querySelectorAll(".product-track").forEach(track=>{let timer=setInterval(()=>track.scrollBy({left:Math.max(track.clientWidth*.78,260),behavior:"smooth"}),7000);const reset=()=>{clearInterval(timer);timer=setInterval(()=>track.scrollBy({left:Math.max(track.clientWidth*.78,260),behavior:"smooth"}),7000)};track.addEventListener("mouseenter",()=>clearInterval(timer));track.addEventListener("mouseleave",reset);track.addEventListener("touchstart",()=>clearInterval(timer),{passive:true});track.addEventListener("touchend",reset,{passive:true})})}
+
+function showAllCategory(category){
+  const section=document.getElementById(category==="software"?"logiciels":category==="accessory"?"accessoires":category);
+  if(!section)return;
+  const gridId=category==="accessory"?"accessory-grid":category+"-grid";
+  const track=document.getElementById(gridId);
+  const carousel=track?.closest(".products-carousel");
+  if(!track||!carousel)return;
+  document.querySelectorAll(".products-carousel.is-expanded").forEach(c=>{
+    c.classList.remove("is-expanded");
+    c.querySelector(".category-back")?.remove();
+  });
+  carousel.classList.add("is-expanded");
+  const back=document.createElement("button");
+  back.type="button";
+  back.className="category-back";
+  back.textContent="← Revenir au défilement";
+  back.onclick=()=>{carousel.classList.remove("is-expanded");back.remove()};
+  carousel.parentNode.insertBefore(back,carousel);
+  section.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
 document.addEventListener("DOMContentLoaded",()=>{
+  initHero();
+  initAutoTracks();
   loadProducts();
   const s=document.getElementById("global-search");if(s)s.addEventListener("keydown",e=>{if(e.key==="Enter")globalSearch(s.value)});
   document.querySelectorAll(".mobile-link").forEach(a=>a.addEventListener("click",()=>document.getElementById("mobile-nav")?.classList.remove("open")));
