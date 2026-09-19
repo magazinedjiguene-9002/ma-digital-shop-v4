@@ -32,6 +32,7 @@
 <div class="cart-actions"><button type="button" class="outline" onclick="closeCheckout()">Retour</button><button type="submit" class="wa">Confirmer la commande</button></div>
 </form>
 </div></div>
+<div class="modal" id="product-modal" onclick="if(event.target===this)closeProductDetail()"><div class="box product-detail-box"><div class="boxhead"><div><span class="pill">FICHE PRODUIT</span><h2 id="detail-title">Produit</h2></div><button class="close" onclick="closeProductDetail()">✕</button></div><div id="product-detail-content"></div></div></div>
 <div class="search-message" id="search-message"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>window.supabaseClient=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_PUBLISHABLE_KEY);</script>
