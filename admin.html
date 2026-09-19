@@ -987,7 +987,7 @@ async function loadOrders(){
 
   const {data:orders,error}=await supabaseClient
     .from("orders")
-    .select("id,customer_name,customer_whatsapp,items,total,status,notes,created_at,updated_at")
+    .select("id,order_code,customer_name,customer_whatsapp,items,total,status,notes,created_at,updated_at")
     .order("created_at",{ascending:false});
 
   if(error){
@@ -1007,7 +1007,7 @@ async function loadOrders(){
     const itemsHtml=items.map(i=>`<div>• ${esc(i.name)} × ${Number(i.quantity)||0}${i.unit_price==null?" — Prix sur demande":" — "+money(i.subtotal)}</div>`).join("");
     return `<article class="order-card">
       <div class="order-top">
-        <div><b>Commande #${esc(order.id)}</b><div class="order-meta">${esc(order.customer_name||"Client")} · ${esc(order.customer_whatsapp)}<br>${esc(formatOrderDate(order.created_at))}</div></div>
+        <div><b>Commande #${esc(order.order_code||order.id)}</b><div class="order-meta">${esc(order.customer_name||"Client")} · ${esc(order.customer_whatsapp)}<br>${esc(formatOrderDate(order.created_at))}</div></div>
         <div class="order-total">${totalText}</div>
       </div>
       <div class="order-items">${itemsHtml||"Aucun article"}</div>
@@ -1016,7 +1016,7 @@ async function loadOrders(){
         <select class="order-status" onchange="updateOrderStatus(${order.id},this.value)">
           ${["pending","confirmed","preparing","completed","cancelled"].map(st=>`<option value="${st}" ${order.status===st?"selected":""}>${orderStatusLabel(st)}</option>`).join("")}
         </select>
-        <button class="outline" type="button" onclick="openOrderWhatsApp('${attr(order.customer_whatsapp)}','${attr(order.customer_name||"Client")}',${order.id})">WhatsApp</button>
+        <button class="outline" type="button" onclick="openOrderWhatsApp('${attr(order.customer_whatsapp)}','${attr(order.customer_name||"Client")}','${attr(order.order_code||order.id)}')">WhatsApp</button>
       </div>
     </article>`;
   }).join("");
@@ -1032,9 +1032,9 @@ async function updateOrderStatus(id,status){
   setStatus("Commande mise à jour");
 }
 
-function openOrderWhatsApp(number,name,id){
+function openOrderWhatsApp(number,name,orderCode){
   const digits=String(number||"").replace(/\D/g,"");
-  const text=`Bonjour ${name} 👋\n\nConcernant votre commande #${id} chez MA DIGITAL SHOP.`;
+  const text=`Bonjour ${name} 👋\n\nConcernant votre commande #${orderCode} chez MA DIGITAL SHOP.`;
   window.open("https://wa.me/"+digits+"?text="+encodeURIComponent(text),"_blank","noopener,noreferrer");
 }
 
