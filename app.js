@@ -22,7 +22,7 @@ function openProductDetail(id){
   if(title)title.textContent=p.name;
   const price=p.price==null?'Prix sur demande':money(p.price);
   const cat=label(p.category);
-  content.innerHTML='<div class="product-detail"><div class="product-detail-media">'+productImage(p)+'</div><div class="product-detail-info"><span class="badge">'+esc(p.badge||cat)+'</span><h3>'+esc(p.name)+'</h3><p class="detail-subtitle">'+esc(p.subtitle||'')+'</p><p class="detail-description">'+esc(p.description||'')+'</p><div class="detail-price">'+price+'</div><div class="detail-meta"><span>✓ Produit disponible</span><span>✓ Commande WhatsApp</span></div><div class="detail-actions"><button class="primary" onclick="addFromDetail(\\''+attr(p.id)+'\\')">Ajouter au panier</button><button class="outline" onclick="order(\\''+attr(p.id)+'\\')">Commander sur WhatsApp</button></div></div></div>';
+  content.innerHTML=`<div class="product-detail"><div class="product-detail-media">${productImage(p)}</div><div class="product-detail-info"><span class="badge">${esc(p.badge||cat)}</span><h3>${esc(p.name)}</h3><p class="detail-subtitle">${esc(p.subtitle||'')}</p><p class="detail-description">${esc(p.description||'')}</p><div class="detail-price">${price}</div><div class="detail-meta"><span>✓ Produit disponible</span><span>✓ Commande WhatsApp</span></div><div class="detail-actions"><button class="primary" onclick="addFromDetail('${attr(p.id)}')">Ajouter au panier</button><button class="outline" onclick="order('${attr(p.id)}')">Commander sur WhatsApp</button></div></div></div>`;
   modal.classList.add('open');
 }
 function addFromDetail(id){ add(id); closeProductDetail(); }
@@ -31,7 +31,7 @@ function closeProductDetail(){document.getElementById('product-modal')?.classLis
 function productCard(p){
   const price=p.price==null?"Sur demande":money(p.price);
   const disabled=p.stock===false;
-  return `<article class="card" onclick="if(!event.target.closest('button'))openProductDetail('${attr(p.id)}')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')openProductDetail('${attr(p.id)}')">`
+  return `<article class="card" onclick="if(!event.target.closest('button'))openProductDetail('${attr(p.id)}')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')openProductDetail('${attr(p.id)}')">
     <div class="visual ${p.image?'has-image':''}">${productImage(p)}<div class="cover"><span>${esc(p.icon||"✦")}</span><b>${esc(p.name)}</b></div>${p.featured?'<span class="featured">Populaire</span>':''}</div>
     <div class="body"><span class="badge">${esc(p.badge||label(p.category))}</span><h3>${esc(p.name)}</h3><p>${esc(p.description||p.subtitle||"")}</p>
       <div class="price">${price}</div>
