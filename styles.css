@@ -162,3 +162,91 @@ html,body{max-width:100%;overflow-x:hidden}
   
   .floatwa{right:14px;bottom:14px;width:52px;height:52px}
 }
+
+
+/* V5.2 — cartes produits compactes sur mobile */
+@media(max-width:700px){
+  /* Cartes produits : format plus compact et davantage de contenu visible */
+  .products-carousel .product-track{
+    gap:12px;
+    padding-left:2px;
+    padding-right:2px;
+  }
+  .products-carousel .product-track .card{
+    min-width:78vw;
+    width:78vw;
+    max-width:290px;
+    border-radius:16px;
+  }
+  .products-carousel .product-track .visual{
+    height:175px;
+  }
+  .products-carousel .product-track .body{
+    padding:13px;
+  }
+  .products-carousel .product-track .body h3{
+    font-size:13px;
+    line-height:1.3;
+    min-height:0;
+    margin-bottom:5px;
+  }
+  .products-carousel .product-track .body p{
+    font-size:9px;
+    line-height:1.4;
+    min-height:0;
+    margin-bottom:9px;
+  }
+  .products-carousel .product-track .price{
+    font-size:15px;
+    margin-bottom:9px;
+  }
+  .products-carousel .product-track .row{
+    gap:6px;
+  }
+  .products-carousel .product-track .row button{
+    padding:8px 4px;
+    font-size:9px;
+    border-radius:9px;
+  }
+
+  /* Produits phares : même gabarit compact */
+  .featured-grid{
+    gap:12px;
+    padding-left:2px;
+    padding-right:2px;
+  }
+  .featured-grid .card{
+    min-width:78vw;
+    width:78vw;
+    max-width:290px;
+    border-radius:16px;
+  }
+  .featured-grid .visual{
+    height:175px;
+    aspect-ratio:auto;
+  }
+  .featured-grid .body{
+    padding:13px;
+  }
+  .featured-grid .body h3{
+    font-size:13px;
+    min-height:0;
+  }
+  .featured-grid .body p{
+    font-size:9px;
+    min-height:0;
+  }
+  .featured-grid .price{
+    font-size:15px;
+  }
+
+  /* Les catégories restent larges, mais pas disproportionnées */
+  .category-carousel .cat{
+    min-width:78vw;
+    width:78vw;
+    max-width:290px;
+  }
+  .category-carousel .cat-image>img{
+    height:160px;
+  }
+}
