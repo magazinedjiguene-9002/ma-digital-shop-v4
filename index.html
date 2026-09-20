@@ -27,12 +27,12 @@
 <label>Nom complet<input id="customer-name" type="text" required autocomplete="name" placeholder="Votre nom"></label>
 <label>Numéro WhatsApp<input id="customer-whatsapp" type="tel" required autocomplete="tel" placeholder="+221 77 000 00 00"></label>
 <label>Note <span>(facultatif)</span><textarea id="customer-notes" rows="3" placeholder="Une précision concernant votre commande"></textarea></label>
-<div class="checkout-summary"><span>Montant</span><strong id="checkout-total">À confirmer</strong></div>
+<div class="checkout-items-wrap"><div class="checkout-items-head"><strong>Votre sélection</strong><span id="checkout-item-count"></span></div><div id="checkout-items"></div></div><div class="checkout-summary"><span>Total de la commande</span><strong id="checkout-total">À confirmer</strong></div>
 <div id="checkout-error" class="form-error" hidden></div>
 <div class="cart-actions"><button type="button" class="outline" onclick="closeCheckout()">Retour</button><button type="submit" class="wa">Confirmer la commande</button></div>
 </form>
 </div></div>
-<div class="modal" id="product-modal" onclick="if(event.target===this)closeProductDetail()"><div class="box product-detail-box"><div class="boxhead"><div><span class="pill">FICHE PRODUIT</span><h2 id="detail-title">Produit</h2></div><button class="close" onclick="closeProductDetail()">✕</button></div><div id="product-detail-content"></div></div></div>
+<div class="modal" id="order-success-modal" onclick="if(event.target===this)closeOrderSuccess()"><div class="box success-box"><div class="success-icon">✓</div><span class="pill">COMMANDE ENREGISTRÉE</span><h2>Merci pour votre commande !</h2><p>Votre commande a bien été enregistrée et préparée pour WhatsApp.</p><div class="success-code"><span>Numéro de commande</span><strong id="success-order-code">MD-...</strong></div><div class="success-total"><span>Total</span><strong id="success-order-total">À confirmer</strong></div><button class="wa success-close" onclick="closeOrderSuccess()">Terminer</button></div></div><div class="modal" id="product-modal" onclick="if(event.target===this)closeProductDetail()"><div class="box product-detail-box"><div class="boxhead"><div><span class="pill">FICHE PRODUIT</span><h2 id="detail-title">Produit</h2></div><button class="close" onclick="closeProductDetail()">✕</button></div><div id="product-detail-content"></div></div></div>
 <div class="search-message" id="search-message"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>window.supabaseClient=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_PUBLISHABLE_KEY);</script>
