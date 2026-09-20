@@ -1073,7 +1073,28 @@ function openOrderWhatsApp(number,name,orderCode){
 // ================================
 let heroAdminData=[],pendingHeroImage="";
 async function loadHeroAdmin(){const el=$("hero-list");if(!el||!session)return;el.innerHTML='<div class="loading">Chargement des slides…</div>';const {data:d,error}=await supabaseClient.from("hero_slides").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true});if(error){el.innerHTML='<p class="note">Impossible de charger le Hero : '+esc(error.message)+'</p>';return}heroAdminData=d||[];renderHeroAdmin()}
-function renderHeroAdmin(){const el=$("hero-list");if(!el)return;if(!heroAdminData.length){el.innerHTML='<div class="loading">Aucune slide. Ajoutez votre première slide.</div>';return}el.innerHTML=heroAdminData.map((s,i)=>'<div class="hero-admin-item"><img src="'+attr(s.image_url||"assets/logo.png")+'" onerror="this.src=\\'assets/logo.png\\'"><div><b>'+esc(s.badge||s.title||"Slide")+'</b><small>Ordre '+Number(s.sort_order||0)+' · '+(s.active?"Visible":"Masquée")+'<br>'+esc((s.description||"").slice(0,90))+'</small></div><div class="hero-admin-actions"><button class="outline" type="button" onclick="editHero('+i+')">Modifier</button><button class="danger" type="button" onclick="deleteHero('+i+')">Supprimer</button></div></div>').join("")}
+function renderHeroAdmin(){
+  const el = $("hero-list");
+  if(!el) return;
+  if(!heroAdminData.length){
+    el.innerHTML = '<div class="loading">Aucune slide. Ajoutez votre première slide.</div>';
+    return;
+  }
+  el.innerHTML = heroAdminData.map((s,i) => {
+    const image = attr(s.image_url || "assets/logo.png");
+    const label = esc(s.badge || s.title || "Slide");
+    const description = esc((s.description || "").slice(0,90));
+    const visibility = s.active ? "Visible" : "Masquée";
+    return '<div class="hero-admin-item">'
+      + '<img src="' + image + '" alt="">'
+      + '<div><b>' + label + '</b><small>Ordre ' + Number(s.sort_order || 0)
+      + ' · ' + visibility + '<br>' + description + '</small></div>'
+      + '<div class="hero-admin-actions">'
+      + '<button class="outline" type="button" onclick="editHero(' + i + ')">Modifier</button>'
+      + '<button class="danger" type="button" onclick="deleteHero(' + i + ')">Supprimer</button>'
+      + '</div></div>';
+  }).join("");
+}
 function resetHeroForm(){$("hero-form")?.reset();$("hero-id").value="";$("hero-order").value=heroAdminData.length;$("hero-active").checked=true;$("hero-image-preview").src="assets/hero-services.jpg";$("hero-image-file").value="";pendingHeroImage=""}
 function editHero(i){const s=heroAdminData[i];if(!s)return;$("hero-id").value=s.id;$("hero-badge").value=s.badge||"";$("hero-title").value=s.title||"";$("hero-description").value=s.description||"";$("hero-button-text").value=s.button_text||"";$("hero-button-link").value=s.button_link||"#catalogue";$("hero-secondary-action").value=s.secondary_action||"whatsapp";$("hero-secondary-text").value=s.secondary_text||"";$("hero-secondary-link").value=s.secondary_link||"";$("hero-trust").value=s.trust||"";$("hero-mini-one").value=s.mini_one||"";$("hero-mini-two").value=s.mini_two||"";$("hero-image").value=s.image_url||"";$("hero-image-preview").src=s.image_url||"assets/hero-services.jpg";$("hero-image-file").value="";$("hero-order").value=s.sort_order||0;$("hero-active").checked=s.active!==false;pendingHeroImage="";scrollTo({top:document.querySelector(".hero-form")?.getBoundingClientRect().top+scrollY-100||0,behavior:"smooth"})}
 $("hero-image-file")?.addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;if(!/^image\\/(png|jpe?g|webp|gif)$/i.test(f.type)){alert("Format non supporté.");e.target.value="";return}const r=new FileReader();r.onload=ev=>{pendingHeroImage=ev.target.result;$("hero-image").value="";$("hero-image-preview").src=ev.target.result};r.readAsDataURL(f)});
