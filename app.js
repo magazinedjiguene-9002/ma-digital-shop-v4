@@ -224,9 +224,31 @@ async function loadProducts(){
   renderHome();renderCart();
 }
 
+
+// ================================
+// HERO DYNAMIQUE
+// ================================
+let heroSlides=[];
+const HERO_FALLBACK=[
+{id:"hero-main",badge:"VOTRE BOUTIQUE DIGITALE",title:"Tout le digital,<br><span class=\"grad\">au même endroit.</span>",description:"Streaming, jeux PC, logiciels et accessoires. Choisissez vos produits, ajoutez-les au panier et envoyez votre commande sur WhatsApp.",button_text:"Découvrir la boutique →",button_link:"#catalogue",secondary_text:"Nous contacter",secondary_action:"whatsapp",trust:"✓ Panier simple|✓ Commande WhatsApp|✓ Mobile & PC",image_url:"assets/hero-services.jpg",mini_one:"🎮 Gaming & logiciels",mini_two:"🛒 Panier prêt à commander"},
+{id:"hero-streaming",badge:"STREAMING PREMIUM",title:"Vos services préférés,<br><span class=\"grad\">au même endroit.</span>",description:"Découvrez notre sélection streaming et trouvez rapidement l'offre qui vous intéresse.",button_text:"Voir le streaming →",button_link:"#streaming",secondary_text:"Voir mon panier",secondary_action:"cart",trust:"✓ Netflix|✓ Prime Video|✓ Crunchyroll",image_url:"assets/category-streaming.jpg",mini_one:"📺 Streaming premium",mini_two:"⚡ Commande rapide"},
+{id:"hero-gaming",badge:"GAMING & ACCESSOIRES",title:"Équipez votre setup,<br><span class=\"grad\">jouez à votre façon.</span>",description:"Jeux PC, manettes, souris, claviers, casques et accessoires : parcourez le catalogue et ajoutez vos choix au panier.",button_text:"Explorer le gaming →",button_link:"#gaming",secondary_text:"Voir les accessoires",secondary_action:"link",secondary_link:"#accessoires",trust:"✓ Jeux PC|✓ Accessoires|✓ Catalogue évolutif",image_url:"assets/category-gaming.jpg",mini_one:"🎮 Jeux PC",mini_two:"🖱️ Accessoires gaming"}];
+function heroSlideMarkup(s){
+ const trust=(s.trust||"").split("|").filter(Boolean).map(x=>"<span>"+esc(x)+"</span>").join("");
+ let secondary=s.secondary_action==="whatsapp"?'<button class="outline" onclick="wa(\\'Bonjour MA DIGITAL SHOP 👋 Je souhaite avoir des informations.\\')">'+esc(s.secondary_text||"Nous contacter")+"</button>":s.secondary_action==="cart"?'<button class="outline" onclick="openCart()">'+esc(s.secondary_text||"Voir mon panier")+"</button>":'<a class="outline" href="'+attr(s.secondary_link||"#catalogue")+'">'+esc(s.secondary_text||"En savoir plus")+"</a>";
+ return '<article class="hero-slide"><div class="container hero-grid"><div class="hero-copy"><span class="pill">'+esc(s.badge||"MA DIGITAL SHOP")+"</span><h1>"+(s.title||"")+"</h1><p>"+esc(s.description||"")+'</p><div class="actions"><a class="primary" href="'+attr(s.button_link||"#catalogue")+'">'+esc(s.button_text||"Découvrir →")+"</a>"+secondary+'</div><div class="trust">'+trust+'</div></div><div class="hero-card hero-showcase"><img class="hero-services" src="'+attr(s.image_url||"assets/logo.png")+'" alt="'+attr(s.badge||"MA DIGITAL SHOP")+'"><div class="mini one">'+esc(s.mini_one||"MA DIGITAL SHOP")+'</div><div class="mini two">'+esc(s.mini_two||"Commande rapide")+"</div></div></div></article>";
+}
+async function loadHero(){
+ const slider=document.getElementById("hero-slider"); if(!slider)return;
+ try{const {data,error}=await window.supabaseClient.from("hero_slides").select("*").eq("active",true).order("sort_order",{ascending:true}).order("created_at",{ascending:true});if(error)throw error;heroSlides=data||[]}catch(err){console.warn("Hero Supabase indisponible.",err);heroSlides=HERO_FALLBACK}
+ if(!heroSlides.length)heroSlides=HERO_FALLBACK;
+ slider.innerHTML=heroSlides.map(heroSlideMarkup).join("");
+ initHero();
+}
+
 /* V5 UI — logique des carrousels uniquement */
 let heroIndex=0, heroTimer=null;
-function initHero(){const slider=document.getElementById("hero-slider"),dots=document.getElementById("hero-dots");if(!slider||!dots)return;const slides=[...slider.querySelectorAll(".hero-slide")];dots.innerHTML=slides.map((_,i)=>`<button class="hero-dot ${i===0?"active":""}" type="button" aria-label="Aller à la slide ${i+1}" onclick="goHero(${i})"></button>`).join("");heroIndex=0;slides.forEach((s,i)=>s.classList.toggle("active",i===0));clearInterval(heroTimer);heroTimer=setInterval(()=>changeHero(1),6500);slider.addEventListener("mouseenter",()=>clearInterval(heroTimer));slider.addEventListener("mouseleave",()=>{clearInterval(heroTimer);heroTimer=setInterval(()=>changeHero(1),6500)})}
+function initHero(){const slider=document.getElementById("hero-slider"),dots=document.getElementById("hero-dots");if(!slider||!dots)return;const slides=[...slider.querySelectorAll(".hero-slide")];if(!slides.length)return;dots.innerHTML=slides.map((_,i)=>`<button class="hero-dot ${i===0?"active":""}" type="button" aria-label="Aller à la slide ${i+1}" onclick="goHero(${i})"></button>`).join("");heroIndex=0;slides.forEach((s,i)=>s.classList.toggle("active",i===0));clearInterval(heroTimer);heroTimer=setInterval(()=>changeHero(1),6500);slider.onmouseenter=()=>clearInterval(heroTimer);slider.onmouseleave=()=>{clearInterval(heroTimer);heroTimer=setInterval(()=>changeHero(1),6500)}}
 function goHero(index){const slides=[...document.querySelectorAll("#hero-slider .hero-slide")],dots=[...document.querySelectorAll("#hero-dots .hero-dot")];if(!slides.length)return;heroIndex=(index+slides.length)%slides.length;slides.forEach((s,i)=>s.classList.toggle("active",i===heroIndex));dots.forEach((d,i)=>d.classList.toggle("active",i===heroIndex))}
 function changeHero(step){goHero(heroIndex+step)}
 function scrollTrack(id,direction){const el=document.getElementById(id);if(!el)return;el.scrollBy({left:Math.max(el.clientWidth*.82,260)*direction,behavior:"smooth"})}
@@ -253,8 +275,8 @@ function showAllCategory(category){
   section.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
-  initHero();
+document.addEventListener("DOMContentLoaded",async()=>{
+  await loadHero();
   initAutoTracks();
   loadCategories();
   loadProducts();
