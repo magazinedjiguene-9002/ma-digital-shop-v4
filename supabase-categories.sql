@@ -1,0 +1,2 @@
+-- MA DIGITAL SHOP categories migration
+-- Run this file in Supabase SQL Editor.
