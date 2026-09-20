@@ -77,6 +77,7 @@ function checkout(){
   if(!cart.length)return;
   const modal=document.getElementById("checkout-modal");
   if(!modal)return;
+  renderCheckoutSummary();
   const total=cart.reduce((sum,r)=>{const p=productById(r.id);return p&&p.price!=null?sum+Number(p.price)*r.qty:sum},0);
   const hasUnknownPrice=cart.some(r=>{const p=productById(r.id);return p&&p.price==null});
   const totalEl=document.getElementById("checkout-total");
@@ -87,6 +88,33 @@ function checkout(){
   document.getElementById("customer-name")?.focus();
 }
 
+function renderCheckoutSummary(){
+  const el=document.getElementById("checkout-items");
+  if(!el)return;
+  el.innerHTML="";
+  cart.forEach(r=>{
+    const p=productById(r.id); if(!p)return;
+    const row=document.createElement("div"); row.className="checkout-item";
+    const info=document.createElement("div");
+    const name=document.createElement("b"); name.textContent=p.name;
+    const meta=document.createElement("small"); meta.textContent=r.qty+" × "+(p.price==null?"Prix sur demande":money(p.price));
+    info.append(name,meta);
+    const subtotal=document.createElement("strong"); subtotal.textContent=p.price==null?"À confirmer":money(Number(p.price)*r.qty);
+    row.append(info,subtotal); el.appendChild(row);
+  });
+  const count=document.getElementById("checkout-item-count");
+  if(count)count.textContent=cart.reduce((s,r)=>s+r.qty,0)+" article(s)";
+}
+function showOrderSuccess(orderCode,totalText){
+  const modal=document.getElementById("order-success-modal");
+  if(!modal)return;
+  const code=document.getElementById("success-order-code");
+  const total=document.getElementById("success-order-total");
+  if(code)code.textContent=orderCode;
+  if(total)total.textContent=totalText;
+  modal.classList.add("open");
+}
+function closeOrderSuccess(){document.getElementById("order-success-modal")?.classList.remove("open")}
 function closeCheckout(){document.getElementById("checkout-modal")?.classList.remove("open")}
 
 function normalizeWhatsApp(value){
@@ -110,13 +138,14 @@ async function submitOrder(event){
   const notes=document.getElementById("customer-notes")?.value.trim()||"";
   const errorEl=document.getElementById("checkout-error");
   const submitBtn=event.submitter;
-  if(!name||!whatsapp)return;
+  if(!name){if(errorEl){errorEl.hidden=false;errorEl.textContent="Veuillez renseigner votre nom complet."}return;}
+  const normalizedWhatsApp=normalizeWhatsApp(whatsapp);
+  if(normalizedWhatsApp.length<9){if(errorEl){errorEl.hidden=false;errorEl.textContent="Veuillez renseigner un numéro WhatsApp valide."}return;}
   const items=cart.map(r=>{const p=productById(r.id);if(!p)return null;return {product_id:p.dbId??p.id,name:p.name,quantity:r.qty,unit_price:p.price==null?null:Number(p.price),subtotal:p.price==null?null:Number(p.price)*r.qty}}).filter(Boolean);
   const totalKnown=cart.reduce((sum,r)=>{const p=productById(r.id);return p&&p.price!=null?sum+Number(p.price)*r.qty:sum},0);
   const hasUnknownPrice=cart.some(r=>{const p=productById(r.id);return p&&p.price==null});
   if(!window.supabaseClient){if(errorEl){errorEl.hidden=false;errorEl.textContent="Connexion Supabase indisponible. Réessayez dans un instant."}return}
   if(submitBtn){submitBtn.disabled=true;submitBtn.textContent="Enregistrement..."}
-  const normalizedWhatsApp=normalizeWhatsApp(whatsapp);
   const orderCode=createOrderCode();
   try{
     const {error}=await window.supabaseClient.from("orders").insert({order_code:orderCode,customer_name:name,customer_whatsapp:normalizedWhatsApp,items,total:hasUnknownPrice?0:totalKnown,status:"pending",notes:notes||null});
@@ -128,6 +157,7 @@ async function submitOrder(event){
     wa(`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite passer cette commande :\nCommande #${orderId}\nClient : ${name}\nWhatsApp : ${whatsapp}\n\n${lines}\n\nTotal : ${totalText}${notes?`\nNote : ${notes}`:""}\n\nMerci de m'indiquer la procédure de paiement.`);
     clearCart();
     closeCart();
+    showOrderSuccess(orderCode,totalText);
   }catch(err){
     console.error("Création commande impossible :",err);
     if(errorEl){errorEl.hidden=false;errorEl.textContent="Impossible d'enregistrer la commande. Vérifiez votre connexion puis réessayez."}
