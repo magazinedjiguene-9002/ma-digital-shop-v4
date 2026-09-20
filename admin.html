@@ -218,6 +218,8 @@ body{background:#f5f8ff}
   .item>div:nth-child(n+3){display:none}
   .item>div:last-child{display:block}
 }
+
+.category-admin-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:18px}.category-form{display:grid;gap:10px}.category-form input,.category-form textarea{width:100%;padding:12px;border:1px solid #dfe8f3;border-radius:11px}.category-form textarea{min-height:80px;resize:vertical}.category-list{display:grid;gap:9px}.category-admin-item{display:flex;align-items:center;gap:10px;border:1px solid #e7edf6;border-radius:13px;padding:10px}.category-admin-item img{width:52px;height:52px;object-fit:cover;border-radius:10px;background:#f0f4fa}.category-admin-item .cat-info{flex:1;min-width:0}.category-admin-item .cat-info b{display:block}.category-admin-item .cat-info small{color:#66718d}.category-admin-actions{display:flex;gap:6px;flex-wrap:wrap}.category-admin-actions button{font-size:10px;padding:8px 10px}@media(max-width:800px){.category-admin-grid{grid-template-columns:1fr}.category-admin-item{align-items:flex-start}.category-admin-item img{width:46px;height:46px}}
 </style>
 </head>
 
@@ -555,7 +557,25 @@ body{background:#f5f8ff}
       </div>
 
 
-<div class="panel"><div class="toprow"><div><h2 style="margin:0">Commandes</h2><p class="note">Les commandes reçues depuis la boutique en ligne.</p></div><button class="outline" type="button" onclick="loadOrders()">Actualiser</button></div><div id="orders-list" style="margin-top:16px"><div class="loading">Chargement des commandes…</div></div></div>\n\n      <!-- CATALOGUE -->
+<div class="panel"><div class="toprow"><div><h2 style="margin:0">Commandes</h2><p class="note">Les commandes reçues depuis la boutique en ligne.</p></div><button class="outline" type="button" onclick="loadOrders()">Actualiser</button></div><div id="orders-list" style="margin-top:16px"><div class="loading">Chargement des commandes…</div></div></div>\n\n      <!-- CATEGORIES -->
+      <div class="panel">
+        <div class="toprow"><div><h2 style="margin:0">Catégories</h2><p class="note">Ajoutez, modifiez, activez ou supprimez les catégories de la boutique. Les produits restent dans leur catégorie tant que vous ne les modifiez pas.</p></div></div>
+        <div class="category-admin-grid" style="margin-top:16px">
+          <form class="category-form" id="category-form">
+            <input type="hidden" id="category-id">
+            <input id="category-name" placeholder="Nom de la catégorie" required>
+            <input id="category-slug" placeholder="Identifiant (ex. streaming)" required>
+            <input id="category-image" placeholder="Image / chemin (optionnel)" value="">
+            <textarea id="category-description" placeholder="Description de la catégorie"></textarea>
+            <input id="category-order" type="number" min="0" placeholder="Ordre d'affichage" value="0">
+            <label style="font-size:11px"><input id="category-active" type="checkbox" checked> Catégorie visible sur la boutique</label>
+            <div class="admin-actions"><button class="primary" type="submit">Enregistrer la catégorie</button><button class="outline" type="button" onclick="resetCategoryForm()">Nouvelle</button></div>
+          </form>
+          <div><div id="category-list" class="category-list"><div class="loading">Chargement des catégories…</div></div></div>
+        </div>
+      </div>
+
+      <!-- CATALOGUE -->
       <div class="panel">
 
         <div class="toprow">
@@ -711,6 +731,7 @@ function unlock(){
   $("login-gate").style.display = "none";
   $("admin-content").style.display = "block";
 
+  loadCategories();
   loadCatalog();
   loadOrders();
 
@@ -1077,6 +1098,66 @@ function mapRow(p){
 
   };
 
+}
+
+
+
+/* ================================
+   CATEGORIES
+================================ */
+let categories = [];
+
+function categoryLabel(id){
+  return categories.find(c=>String(c.id)===String(id))?.name || id || "";
+}
+
+async function loadCategories(){
+  const el=$("category-list");
+  if(!el || !session)return;
+  el.innerHTML='<div class="loading">Chargement des catégories…</div>';
+  const {data:d,error}=await supabaseClient.from("categories").select("*").order("sort_order",{ascending:true}).order("name",{ascending:true});
+  if(error){el.innerHTML='<p class="note">Impossible de charger les catégories : '+esc(error.message)+'</p>'; return;}
+  categories=d||[];
+  renderCategories();
+  const select=$("category");
+  if(select){const current=select.value;select.innerHTML=categories.map(c=>'<option value="'+attr(c.id)+'">'+esc(c.name)+'</option>').join("");if(categories.some(c=>c.id===current))select.value=current;}
+}
+
+function renderCategories(){
+  const el=$("category-list"); if(!el)return;
+  if(!categories.length){el.innerHTML='<div class="loading">Aucune catégorie.</div>';return;}
+  el.innerHTML=categories.map((c,i)=>'<div class="category-admin-item"><img src="'+attr(c.image_url||"assets/logo.png")+'" onerror="this.src=\'assets/logo.png\'" alt=""><div class="cat-info"><b>'+esc(c.name)+'</b><small>'+esc(c.id)+' · '+(c.active?"Visible":"Masquée")+' · ordre '+Number(c.sort_order||0)+'</small></div><div class="category-admin-actions"><button class="outline" type="button" onclick="editCategory('+i+')">Modifier</button><button class="danger" type="button" onclick="deleteCategory('+i+')">Supprimer</button></div></div>').join("");
+}
+
+function resetCategoryForm(){
+  $("category-form")?.reset(); $("category-id").value=""; $("category-order").value=categories.length+1; $("category-active").checked=true;
+}
+function editCategory(i){
+  const c=categories[i]; if(!c)return;
+  $("category-id").value=c.id; $("category-name").value=c.name||""; $("category-slug").value=c.id||""; $("category-image").value=c.image_url||""; $("category-description").value=c.description||""; $("category-order").value=c.sort_order||0; $("category-active").checked=c.active!==false; scrollTo({top:document.querySelector(".category-form")?.getBoundingClientRect().top+scrollY-100||0,behavior:"smooth"});
+}
+$("category-form")?.addEventListener("submit",async e=>{
+  e.preventDefault(); if(!session)return showLogin();
+  const oldId=$("category-id").value.trim(); const id=slug($("category-slug").value.trim()||$("category-name").value.trim());
+  if(!id){alert("Identifiant de catégorie invalide.");return;}
+  const row={id,name:$("category-name").value.trim(),description:$("category-description").value.trim(),image_url:$("category-image").value.trim()||null,sort_order:Number($("category-order").value||0),active:$("category-active").checked,updated_at:new Date().toISOString()};
+  try{
+    setStatus("Enregistrement…");
+    let res;
+    if(oldId){res=await supabaseClient.from("categories").update(row).eq("id",oldId);}else{res=await supabaseClient.from("categories").insert(row);}
+    if(res.error)throw res.error;
+    await loadCategories(); resetCategoryForm(); await loadCatalog(); alert("Catégorie enregistrée en ligne.");
+  }catch(err){setStatus("Erreur",true);alert("Erreur : "+err.message)}
+});
+
+async function deleteCategory(i){
+  const c=categories[i]; if(!c)return;
+  const count=data.filter(p=>String(p.category)===String(c.id)).length;
+  if(count){alert("Impossible de supprimer cette catégorie : "+count+" produit(s) l'utilisent encore. Modifiez d'abord leur catégorie.");return;}
+  if(!confirm('Supprimer la catégorie « '+c.name+' » ?'))return;
+  const {error}=await supabaseClient.from("categories").delete().eq("id",c.id);
+  if(error){alert("Erreur : "+error.message);return;}
+  await loadCategories(); resetCategoryForm();
 }
 
 
