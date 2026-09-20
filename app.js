@@ -234,10 +234,57 @@ const HERO_FALLBACK=[
 {id:"hero-streaming",badge:"STREAMING PREMIUM",title:"Vos services préférés,<br><span class=\"grad\">au même endroit.</span>",description:"Découvrez notre sélection streaming et trouvez rapidement l'offre qui vous intéresse.",button_text:"Voir le streaming →",button_link:"#streaming",secondary_text:"Voir mon panier",secondary_action:"cart",trust:"✓ Netflix|✓ Prime Video|✓ Crunchyroll",image_url:"assets/category-streaming.jpg",mini_one:"📺 Streaming premium",mini_two:"⚡ Commande rapide"},
 {id:"hero-gaming",badge:"GAMING & ACCESSOIRES",title:"Équipez votre setup,<br><span class=\"grad\">jouez à votre façon.</span>",description:"Jeux PC, manettes, souris, claviers, casques et accessoires : parcourez le catalogue et ajoutez vos choix au panier.",button_text:"Explorer le gaming →",button_link:"#gaming",secondary_text:"Voir les accessoires",secondary_action:"link",secondary_link:"#accessoires",trust:"✓ Jeux PC|✓ Accessoires|✓ Catalogue évolutif",image_url:"assets/category-gaming.jpg",mini_one:"🎮 Jeux PC",mini_two:"🖱️ Accessoires gaming"}];
 function heroSlideMarkup(s){
- const trust=(s.trust||"").split("|").filter(Boolean).map(x=>"<span>"+esc(x)+"</span>").join("");
- let secondary=s.secondary_action==="whatsapp"?'<button class="outline" onclick="wa(\\'Bonjour MA DIGITAL SHOP 👋 Je souhaite avoir des informations.\\')">'+esc(s.secondary_text||"Nous contacter")+"</button>":s.secondary_action==="cart"?'<button class="outline" onclick="openCart()">'+esc(s.secondary_text||"Voir mon panier")+"</button>":'<a class="outline" href="'+attr(s.secondary_link||"#catalogue")+'">'+esc(s.secondary_text||"En savoir plus")+"</a>";
- return '<article class="hero-slide"><div class="container hero-grid"><div class="hero-copy"><span class="pill">'+esc(s.badge||"MA DIGITAL SHOP")+"</span><h1>"+(s.title||"")+"</h1><p>"+esc(s.description||"")+'</p><div class="actions"><a class="primary" href="'+attr(s.button_link||"#catalogue")+'">'+esc(s.button_text||"Découvrir →")+"</a>"+secondary+'</div><div class="trust">'+trust+'</div></div><div class="hero-card hero-showcase"><img class="hero-services" src="'+attr(s.image_url||"assets/logo.png")+'" alt="'+attr(s.badge||"MA DIGITAL SHOP")+'"><div class="mini one">'+esc(s.mini_one||"MA DIGITAL SHOP")+'</div><div class="mini two">'+esc(s.mini_two||"Commande rapide")+"</div></div></div></article>";
+  const trust = (s.trust || "")
+    .split("|")
+    .filter(Boolean)
+    .map(x => "<span>" + esc(x) + "</span>")
+    .join("");
+
+  let secondary = "";
+
+  if(s.secondary_action === "whatsapp"){
+    secondary =
+      '<button class="outline" onclick="wa(\'Bonjour MA DIGITAL SHOP 👋 Je souhaite avoir des informations.\')">'
+      + esc(s.secondary_text || "Nous contacter")
+      + "</button>";
+  }else if(s.secondary_action === "cart"){
+    secondary =
+      '<button class="outline" onclick="openCart()">'
+      + esc(s.secondary_text || "Voir mon panier")
+      + "</button>";
+  }else{
+    secondary =
+      '<a class="outline" href="' + attr(s.secondary_link || "#catalogue") + '">'
+      + esc(s.secondary_text || "En savoir plus")
+      + "</a>";
+  }
+
+  return (
+    '<article class="hero-slide">'
+    + '<div class="container hero-grid">'
+    + '<div class="hero-copy">'
+    + '<span class="pill">' + esc(s.badge || "MA DIGITAL SHOP") + "</span>"
+    + "<h1>" + (s.title || "") + "</h1>"
+    + "<p>" + esc(s.description || "") + "</p>"
+    + '<div class="actions">'
+    + '<a class="primary" href="' + attr(s.button_link || "#catalogue") + '">'
+    + esc(s.button_text || "Découvrir →")
+    + "</a>"
+    + secondary
+    + "</div>"
+    + '<div class="trust">' + trust + "</div>"
+    + "</div>"
+    + '<div class="hero-card hero-showcase">'
+    + '<img class="hero-services" src="' + attr(s.image_url || "assets/logo.png")
+    + '" alt="' + attr(s.badge || "MA DIGITAL SHOP") + '">'
+    + '<div class="mini one">' + esc(s.mini_one || "MA DIGITAL SHOP") + "</div>"
+    + '<div class="mini two">' + esc(s.mini_two || "Commande rapide") + "</div>"
+    + "</div>"
+    + "</div>"
+    + "</article>"
+  );
 }
+
 async function loadHero(){
  const slider=document.getElementById("hero-slider"); if(!slider)return;
  try{const {data,error}=await window.supabaseClient.from("hero_slides").select("*").eq("active",true).order("sort_order",{ascending:true}).order("created_at",{ascending:true});if(error)throw error;heroSlides=data||[]}catch(err){console.warn("Hero Supabase indisponible.",err);heroSlides=HERO_FALLBACK}
