@@ -2,6 +2,7 @@ const WA="221773781096";
 const STORAGE_CART="ma_cart_v3";
 const FALLBACK=[];
 let products=[];
+let categories=[];
 let cart=JSON.parse(localStorage.getItem(STORAGE_CART)||"[]");
 
 const money=p=>p==null?"Prix sur demande":new Intl.NumberFormat("fr-FR").format(p)+" FCFA";
@@ -48,12 +49,55 @@ function renderSection(cat,id,q="",filter=""){
 }
 function renderFeatured(){const el=document.getElementById("featured-grid");if(!el)return;const arr=products.filter(p=>p.featured&&p.stock!==false).slice(0,6);el.innerHTML=arr.map(productCard).join("")||"<div class='empty'>Aucun produit phare pour le moment.</div>"}
 function showAllFeatured(){const el=document.getElementById("featured-grid");const section=document.getElementById("produits-phares");if(!el||!section)return;const all=products.filter(p=>p.featured&&p.stock!==false);el.classList.toggle("featured-expanded");el.innerHTML=(el.classList.contains("featured-expanded")?all:all.slice(0,6)).map(productCard).join("");const btn=section.querySelector(".text-btn");if(btn)btn.textContent=el.classList.contains("featured-expanded")?"← Réduire la sélection":"Voir toute la sélection →"}
+
+async function loadCategories(){
+  try{
+    const result=await window.supabaseClient.from("categories").select("id,name,description,image_url,sort_order,active").eq("active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});
+    if(result.error)throw result.error;
+    categories=result.data||[];
+  }catch(err){
+    console.warn("Catégories Supabase indisponibles.",err);
+    categories=[
+      {id:"streaming",name:"Streaming",description:"Netflix, Prime Video, Crunchyroll et bien plus encore.",image_url:"assets/category-streaming.jpg"},
+      {id:"gaming",name:"Gaming",description:"Jeux PC et bibliothèque gaming.",image_url:"assets/category-gaming.jpg"},
+      {id:"software",name:"Logiciels",description:"Windows, Microsoft, Adobe, macOS et sécurité.",image_url:"assets/category-software.jpg"},
+      {id:"accessory",name:"Accessoires",description:"Manettes, souris, claviers, casques et autres accessoires.",image_url:"assets/category-accessories.jpg"}
+    ];
+  }
+  renderDynamicCategories();
+}
+function renderDynamicCategories(){
+  const track=document.getElementById("category-track");
+  const catalog=document.getElementById("dynamic-catalog");
+  if(!track||!catalog)return;
+  track.innerHTML="";
+  catalog.innerHTML="";
+  categories.forEach(function(cat,index){
+    const link=document.createElement("a");
+    link.className="cat cat-image";
+    link.href="#"+cat.id;
+    link.innerHTML="<img src=\""+attr(cat.image_url||"assets/logo.png")+"\" alt=\""+attr(cat.name)+"\"><div class=\"cat-content\"><h3>"+esc(cat.name)+"</h3><p>"+esc(cat.description||"Découvrez nos produits.")+"</p><span class=\"link\">Visiter la catégorie →</span></div>";
+    track.appendChild(link);
+    const section=document.createElement("section");
+    section.className="section "+(index%2===0?"alt ":"")+"dynamic-category";
+    section.id=cat.id;
+    section.innerHTML="<div class=\"container\"><div class=\"head\"><div><h2>"+esc(cat.name)+"</h2><p class=\"dynamic-category-note\">"+esc(cat.description||"Découvrez nos produits.")+"</p></div><button class=\"text-btn category-visit\" type=\"button\">Voir tous les produits →</button></div><div class=\"products-carousel\"><button class=\"carousel-arrow\" type=\"button\">‹</button><div class=\"grid product-track\" id=\""+attr(cat.id)+"-grid\"></div><button class=\"carousel-arrow\" type=\"button\">›</button></div></div>";
+    section.querySelector(".category-visit").onclick=function(){showAllCategory(cat.id)};
+    const arrows=section.querySelectorAll(".carousel-arrow");
+    arrows[0].onclick=function(){scrollTrack(cat.id+"-grid",-1)};
+    arrows[1].onclick=function(){scrollTrack(cat.id+"-grid",1)};
+    catalog.appendChild(section);
+  });
+  document.querySelectorAll("#streaming,#gaming,#logiciels,#accessoires").forEach(function(el){
+    if(!el.classList.contains("dynamic-category"))el.style.display="none";
+  });
+  categories.forEach(function(cat){renderSection(cat.id,cat.id+"-grid")});
+  initAutoTracks();
+}
+
 function renderHome(){
   renderFeatured();
-  renderSection("streaming","streaming-grid");
-  renderSection("gaming","gaming-grid");
-  renderSection("software","software-grid");
-  renderSection("accessory","accessory-grid");
+  categories.forEach(function(cat){renderSection(cat.id,cat.id+"-grid")});
   updateCartCount();
 }
 function renderFiltered(cat,id,searchId,filterId){renderSection(cat,id,document.getElementById(searchId)?.value||"",document.getElementById(filterId)?.value||"")}
@@ -212,6 +256,7 @@ function showAllCategory(category){
 document.addEventListener("DOMContentLoaded",()=>{
   initHero();
   initAutoTracks();
+  loadCategories();
   loadProducts();
   const s=document.getElementById("global-search");if(s)s.addEventListener("keydown",e=>{if(e.key==="Enter")globalSearch(s.value)});
   document.querySelectorAll(".mobile-link").forEach(a=>a.addEventListener("click",()=>document.getElementById("mobile-nav")?.classList.remove("open")));
