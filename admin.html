@@ -1069,22 +1069,47 @@ function openOrderWhatsApp(number,name,orderCode){
 
 
 // ================================
+// ================================
 // HERO ADMINISTRATION
 // ================================
-let heroAdminData=[],pendingHeroImage="";
-async function loadHeroAdmin(){const el=$("hero-list");if(!el||!session)return;el.innerHTML='<div class="loading">Chargement des slides…</div>';const {data:d,error}=await supabaseClient.from("hero_slides").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true});if(error){el.innerHTML='<p class="note">Impossible de charger le Hero : '+esc(error.message)+'</p>';return}heroAdminData=d||[];renderHeroAdmin()}
+let heroAdminData = [];
+let pendingHeroImage = "";
+
+async function loadHeroAdmin(){
+  const el = $("hero-list");
+  if(!el || !session) return;
+  el.innerHTML = '<div class="loading">Chargement des slides…</div>';
+
+  const result = await supabaseClient
+    .from("hero_slides")
+    .select("*")
+    .order("sort_order",{ascending:true})
+    .order("created_at",{ascending:true});
+
+  if(result.error){
+    el.innerHTML = '<p class="note">Impossible de charger le Hero : ' + esc(result.error.message) + '</p>';
+    return;
+  }
+
+  heroAdminData = result.data || [];
+  renderHeroAdmin();
+}
+
 function renderHeroAdmin(){
   const el = $("hero-list");
   if(!el) return;
+
   if(!heroAdminData.length){
     el.innerHTML = '<div class="loading">Aucune slide. Ajoutez votre première slide.</div>';
     return;
   }
-  el.innerHTML = heroAdminData.map((s,i) => {
+
+  el.innerHTML = heroAdminData.map(function(s,i){
     const image = attr(s.image_url || "assets/logo.png");
     const label = esc(s.badge || s.title || "Slide");
     const description = esc((s.description || "").slice(0,90));
     const visibility = s.active ? "Visible" : "Masquée";
+
     return '<div class="hero-admin-item">'
       + '<img src="' + image + '" alt="">'
       + '<div><b>' + label + '</b><small>Ordre ' + Number(s.sort_order || 0)
@@ -1095,13 +1120,171 @@ function renderHeroAdmin(){
       + '</div></div>';
   }).join("");
 }
-function resetHeroForm(){$("hero-form")?.reset();$("hero-id").value="";$("hero-order").value=heroAdminData.length;$("hero-active").checked=true;$("hero-image-preview").src="assets/hero-services.jpg";$("hero-image-file").value="";pendingHeroImage=""}
-function editHero(i){const s=heroAdminData[i];if(!s)return;$("hero-id").value=s.id;$("hero-badge").value=s.badge||"";$("hero-title").value=s.title||"";$("hero-description").value=s.description||"";$("hero-button-text").value=s.button_text||"";$("hero-button-link").value=s.button_link||"#catalogue";$("hero-secondary-action").value=s.secondary_action||"whatsapp";$("hero-secondary-text").value=s.secondary_text||"";$("hero-secondary-link").value=s.secondary_link||"";$("hero-trust").value=s.trust||"";$("hero-mini-one").value=s.mini_one||"";$("hero-mini-two").value=s.mini_two||"";$("hero-image").value=s.image_url||"";$("hero-image-preview").src=s.image_url||"assets/hero-services.jpg";$("hero-image-file").value="";$("hero-order").value=s.sort_order||0;$("hero-active").checked=s.active!==false;pendingHeroImage="";scrollTo({top:document.querySelector(".hero-form")?.getBoundingClientRect().top+scrollY-100||0,behavior:"smooth"})}
-$("hero-image-file")?.addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;if(!/^image\\/(png|jpe?g|webp|gif)$/i.test(f.type)){alert("Format non supporté.");e.target.value="";return}const r=new FileReader();r.onload=ev=>{pendingHeroImage=ev.target.result;$("hero-image").value="";$("hero-image-preview").src=ev.target.result};r.readAsDataURL(f)});
-$("hero-image")?.addEventListener("input",e=>{pendingHeroImage="";$("hero-image-preview").src=e.target.value||"assets/hero-services.jpg"});
-async function uploadHeroImage(slugName){if(!pendingHeroImage||!pendingHeroImage.startsWith("data:"))return $("hero-image").value.trim();const blob=await(await fetch(pendingHeroImage)).blob();const ext=(blob.type.split("/")[1]||"jpeg").replace("jpeg","jpg");const path=slugName+"-"+Date.now()+"."+ext;const {error}=await supabaseClient.storage.from("hero-images").upload(path,blob,{contentType:blob.type,upsert:false});if(error)throw error;return supabaseClient.storage.from("hero-images").getPublicUrl(path).data.publicUrl}
-$("hero-form")?.addEventListener("submit",async e=>{e.preventDefault();if(!session)return showLogin();try{setStatus("Enregistrement…");const oldId=$("hero-id").value.trim();const baseSlug=slug($("hero-badge").value.trim()||"slide");const image=await uploadHeroImage(baseSlug);const row={badge:$("hero-badge").value.trim(),title:$("hero-title").value,description:$("hero-description").value.trim(),button_text:$("hero-button-text").value.trim(),button_link:$("hero-button-link").value.trim()||"#catalogue",secondary_action:$("hero-secondary-action").value,secondary_text:$("hero-secondary-text").value.trim(),secondary_link:$("hero-secondary-link").value.trim(),trust:$("hero-trust").value.trim(),mini_one:$("hero-mini-one").value.trim(),mini_two:$("hero-mini-two").value.trim(),image_url:image||null,sort_order:Number($("hero-order").value||0),active:$("hero-active").checked,updated_at:new Date().toISOString()};const res=oldId?await supabaseClient.from("hero_slides").update(row).eq("id",oldId):await supabaseClient.from("hero_slides").insert(row);if(res.error)throw res.error;await loadHeroAdmin();resetHeroForm();alert("Slide Hero enregistrée en ligne.")}catch(err){setStatus("Erreur",true);alert("Erreur : "+err.message)}});
-async function deleteHero(i){const s=heroAdminData[i];if(!s)return;if(!confirm("Supprimer cette slide Hero ?"))return;const {error}=await supabaseClient.from("hero_slides").delete().eq("id",s.id);if(error){alert("Erreur : "+error.message);return}await loadHeroAdmin();resetHeroForm()}
+
+function resetHeroForm(){
+  const form = $("hero-form");
+  if(form) form.reset();
+  $("hero-id").value = "";
+  $("hero-order").value = heroAdminData.length;
+  $("hero-active").checked = true;
+  $("hero-image-preview").src = "assets/hero-services.jpg";
+  $("hero-image-file").value = "";
+  pendingHeroImage = "";
+}
+
+function editHero(i){
+  const s = heroAdminData[i];
+  if(!s) return;
+
+  $("hero-id").value = s.id;
+  $("hero-badge").value = s.badge || "";
+  $("hero-title").value = s.title || "";
+  $("hero-description").value = s.description || "";
+  $("hero-button-text").value = s.button_text || "";
+  $("hero-button-link").value = s.button_link || "#catalogue";
+  $("hero-secondary-action").value = s.secondary_action || "whatsapp";
+  $("hero-secondary-text").value = s.secondary_text || "";
+  $("hero-secondary-link").value = s.secondary_link || "";
+  $("hero-trust").value = s.trust || "";
+  $("hero-mini-one").value = s.mini_one || "";
+  $("hero-mini-two").value = s.mini_two || "";
+  $("hero-image").value = s.image_url || "";
+  $("hero-image-preview").src = s.image_url || "assets/hero-services.jpg";
+  $("hero-image-file").value = "";
+  $("hero-order").value = s.sort_order || 0;
+  $("hero-active").checked = s.active !== false;
+  pendingHeroImage = "";
+
+  const form = document.querySelector(".hero-form");
+  if(form){
+    window.scrollTo({
+      top: form.getBoundingClientRect().top + window.scrollY - 100,
+      behavior: "smooth"
+    });
+  }
+}
+
+const heroImageFile = $("hero-image-file");
+if(heroImageFile){
+  heroImageFile.addEventListener("change",function(e){
+    const f = e.target.files[0];
+    if(!f) return;
+
+    if(!/^image\/(png|jpe?g|webp|gif)$/i.test(f.type)){
+      alert("Format non supporté.");
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      pendingHeroImage = ev.target.result;
+      $("hero-image").value = "";
+      $("hero-image-preview").src = ev.target.result;
+    };
+    reader.readAsDataURL(f);
+  });
+}
+
+const heroImageInput = $("hero-image");
+if(heroImageInput){
+  heroImageInput.addEventListener("input",function(e){
+    pendingHeroImage = "";
+    $("hero-image-preview").src = e.target.value || "assets/hero-services.jpg";
+  });
+}
+
+async function uploadHeroImage(slugName){
+  if(!pendingHeroImage || !pendingHeroImage.startsWith("data:")){
+    return $("hero-image").value.trim();
+  }
+
+  const response = await fetch(pendingHeroImage);
+  const blob = await response.blob();
+  const ext = (blob.type.split("/")[1] || "jpeg").replace("jpeg","jpg");
+  const path = slugName + "-" + Date.now() + "." + ext;
+
+  const upload = await supabaseClient.storage
+    .from("hero-images")
+    .upload(path,blob,{contentType:blob.type,upsert:false});
+
+  if(upload.error) throw upload.error;
+
+  return supabaseClient.storage
+    .from("hero-images")
+    .getPublicUrl(path).data.publicUrl;
+}
+
+const heroForm = $("hero-form");
+if(heroForm){
+  heroForm.addEventListener("submit",async function(e){
+    e.preventDefault();
+
+    if(!session){
+      showLogin();
+      return;
+    }
+
+    try{
+      setStatus("Enregistrement…");
+
+      const oldId = $("hero-id").value.trim();
+      const baseSlug = slug($("hero-badge").value.trim() || "slide");
+      const image = await uploadHeroImage(baseSlug);
+
+      const row = {
+        badge:$("hero-badge").value.trim(),
+        title:$("hero-title").value,
+        description:$("hero-description").value.trim(),
+        button_text:$("hero-button-text").value.trim(),
+        button_link:$("hero-button-link").value.trim() || "#catalogue",
+        secondary_action:$("hero-secondary-action").value,
+        secondary_text:$("hero-secondary-text").value.trim(),
+        secondary_link:$("hero-secondary-link").value.trim(),
+        trust:$("hero-trust").value.trim(),
+        mini_one:$("hero-mini-one").value.trim(),
+        mini_two:$("hero-mini-two").value.trim(),
+        image_url:image || null,
+        sort_order:Number($("hero-order").value || 0),
+        active:$("hero-active").checked,
+        updated_at:new Date().toISOString()
+      };
+
+      const res = oldId
+        ? await supabaseClient.from("hero_slides").update(row).eq("id",oldId)
+        : await supabaseClient.from("hero_slides").insert(row);
+
+      if(res.error) throw res.error;
+
+      await loadHeroAdmin();
+      resetHeroForm();
+      alert("Slide Hero enregistrée en ligne.");
+    }catch(err){
+      setStatus("Erreur",true);
+      alert("Erreur : " + err.message);
+    }
+  });
+}
+
+async function deleteHero(i){
+  const s = heroAdminData[i];
+  if(!s) return;
+
+  if(!confirm("Supprimer cette slide Hero ?")) return;
+
+  const result = await supabaseClient
+    .from("hero_slides")
+    .delete()
+    .eq("id",s.id);
+
+  if(result.error){
+    alert("Erreur : " + result.error.message);
+    return;
+  }
+
+  await loadHeroAdmin();
+  resetHeroForm();
+}
 
 /* ================================
    CATALOGUE
