@@ -728,3 +728,23 @@ html,body{max-width:100%;overflow-x:hidden}
   .qty button{width:25px;height:25px}
   .qty span{font-size:10px;font-weight:800}
 }
+
+/* V5.7 — parcours de commande professionnel, identité conservée */
+.checkout-items-wrap{border:1px solid var(--line);border-radius:14px;background:#f9fbff;padding:12px 14px}
+.checkout-items-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-bottom:7px}
+.checkout-items-head span{color:var(--muted);font-size:9px}
+.checkout-item{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #e9eef6}
+.checkout-item:first-child{border-top:0}
+.checkout-item b{display:block;font-size:10px}
+.checkout-item small{display:block;color:var(--muted);font-size:8px;margin-top:3px}
+.checkout-item strong{font-size:10px;white-space:nowrap}
+.checkout-summary strong{font-size:15px}
+.success-box{text-align:center;max-width:460px}
+.success-icon{width:58px;height:58px;margin:0 auto 12px;border-radius:18px;background:#eafbf1;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;box-shadow:0 10px 25px rgba(37,211,102,.14)}
+.success-box h2{font-size:24px;margin:14px 0 8px}
+.success-box p{color:var(--muted);font-size:11px;line-height:1.6;margin:0 auto 18px;max-width:340px}
+.success-code,.success-total{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#f9fbff;margin-top:8px;text-align:left}
+.success-code span,.success-total span{font-size:9px;color:var(--muted)}
+.success-code strong,.success-total strong{font-size:11px}
+.success-close{width:100%;margin-top:15px}
+@media(max-width:700px){.checkout-items-wrap{padding:10px}.checkout-item{padding:8px 0}.checkout-item b{font-size:9px}.checkout-item small,.checkout-items-head span{font-size:7px}.checkout-item strong{font-size:9px}.success-box{padding:18px}.success-box h2{font-size:20px}.success-box p{font-size:9px}.success-code,.success-total{padding:9px 10px}}
