@@ -995,6 +995,27 @@ body{background:#f5f8ff}
             id="description"
             placeholder="Description"
           ></textarea>
+          <div class="product-details-admin full">
+            <strong>Détails client</strong>
+            <small>Renseignez uniquement les informations réellement applicables à cette offre.</small>
+            <div class="details-grid">
+              <input id="detail-platform" placeholder="Plateforme / environnement">
+              <input id="detail-duration" placeholder="Durée / type de licence">
+              <input id="detail-access" placeholder="Type d'accès">
+              <input id="detail-screens" placeholder="Nombre d'écrans">
+              <input id="detail-quality" placeholder="Qualité">
+              <input id="detail-devices" placeholder="Appareils compatibles">
+              <input id="detail-delivery" placeholder="Mode de livraison">
+              <input id="detail-delay" placeholder="Délai indicatif">
+              <input id="detail-payment" placeholder="Moyens de paiement">
+              <input id="detail-compatibility" placeholder="Compatibilité">
+              <input id="detail-license" placeholder="Type de licence">
+              <input id="detail-requirements" placeholder="Prérequis / configuration">
+              <input id="detail-brand" placeholder="Marque">
+              <input id="detail-model" placeholder="Modèle">
+              <input id="detail-condition" placeholder="État">
+            </div>
+          </div>
 
 
           <!-- IMAGE -->
@@ -2226,6 +2247,8 @@ function edit(i){
   $("promo-price").value = p.promo_price ?? "";
   $("promo-start").value = p.promo_start ? new Date(p.promo_start).toISOString().slice(0,16) : "";
   $("promo-end").value = p.promo_end ? new Date(p.promo_end).toISOString().slice(0,16) : "";
+  const details=p.product_details||{};
+  ["platform","duration","access","screens","quality","devices","delivery","delay","payment","compatibility","license","requirements","brand","model","condition"].forEach(k=>{const el=$("detail-"+k);if(el)el.value=details[k]||""});
 
 
   pendingImage =
@@ -2267,6 +2290,7 @@ function resetForm(){
   $("promo-price").value = "";
   $("promo-start").value = "";
   $("promo-end").value = "";
+  ["platform","duration","access","screens","quality","devices","delivery","delay","payment","compatibility","license","requirements","brand","model","condition"].forEach(k=>{const el=$("detail-"+k);if(el)el.value=""});
 
   pendingImage = "";
 
@@ -2605,7 +2629,16 @@ $("product-form").addEventListener(
           ? new Date($("promo-end").value).toISOString()
           : null,
 
-        icon:"✦"
+        icon:"✦",
+        product_details:{
+          platform:$("detail-platform").value.trim(),duration:$("detail-duration").value.trim(),
+          access:$("detail-access").value.trim(),screens:$("detail-screens").value.trim(),
+          quality:$("detail-quality").value.trim(),devices:$("detail-devices").value.trim(),
+          delivery:$("detail-delivery").value.trim(),delay:$("detail-delay").value.trim(),
+          payment:$("detail-payment").value.trim(),compatibility:$("detail-compatibility").value.trim(),
+          license:$("detail-license").value.trim(),requirements:$("detail-requirements").value.trim(),
+          brand:$("detail-brand").value.trim(),model:$("detail-model").value.trim(),condition:$("detail-condition").value.trim()
+        }
 
       };
 
