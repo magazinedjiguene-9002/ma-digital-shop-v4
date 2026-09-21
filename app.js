@@ -40,13 +40,49 @@ function productCard(p){
     </div>
   </article>`;
 }
+function getCatalogControls(cat){
+  const prefix=cat;
+  const id=cat+"-grid";
+  const search=document.getElementById(prefix+"-search");
+  const filter=document.getElementById(cat==="gaming"?"game-filter":cat==="software"?"software-filter":cat+"-filter");
+  const min=document.getElementById(prefix+"-min");
+  const max=document.getElementById(prefix+"-max");
+  const sort=document.getElementById(prefix+"-sort");
+  return {id,search,filter,min,max,sort};
+}
+function sortProducts(arr,sort){
+  const copy=[...arr];
+  if(sort==="price-asc")copy.sort((a,b)=>(a.price??Infinity)-(b.price??Infinity));
+  else if(sort==="price-desc")copy.sort((a,b)=>(b.price??-Infinity)-(a.price??-Infinity));
+  else if(sort==="name-asc")copy.sort((a,b)=>a.name.localeCompare(b.name,"fr",{sensitivity:"base"}));
+  else if(sort==="name-desc")copy.sort((a,b)=>b.name.localeCompare(a.name,"fr",{sensitivity:"base"}));
+  else if(sort==="newest")copy.sort((a,b)=>(Number(b.sort_order)||0)-(Number(a.sort_order)||0));
+  return copy;
+}
+function applyCatalogFilters(cat){
+  const controls=getCatalogControls(cat);
+  if(!controls.id)return;
+  const q=(controls.search?.value||"").trim().toLowerCase();
+  const filter=(controls.filter?.value||"").trim().toLowerCase();
+  const min=controls.min?.value!==""?Number(controls.min.value):null;
+  const max=controls.max?.value!==""?Number(controls.max.value):null;
+  let arr=products.filter(p=>p.category===cat&&p.stock!==false);
+  if(q)arr=arr.filter(p=>(p.name+" "+p.description+" "+p.subtitle+" "+p.badge).toLowerCase().includes(q));
+  if(filter)arr=arr.filter(p=>(p.badge||"").toLowerCase()===filter || (p.subtitle||"").toLowerCase().includes(filter));
+  if(min!==null&&!Number.isNaN(min))arr=arr.filter(p=>p.price!=null&&p.price>=min);
+  if(max!==null&&!Number.isNaN(max))arr=arr.filter(p=>p.price!=null&&p.price<=max);
+  arr=sortProducts(arr,controls.sort?.value||"");
+  const el=document.getElementById(controls.id);
+  if(el)el.innerHTML=arr.map(productCard).join("")||"<div class='empty'>Aucun produit ne correspond à ces critères.</div>";
+}
 function renderSection(cat,id,q="",filter=""){
-  const el=document.getElementById(id); if(!el)return;
-  let arr=products.filter(p=>p.category===cat && p.stock!==false);
+  const el=document.getElementById(id);if(!el)return;
+  let arr=products.filter(p=>p.category===cat&&p.stock!==false);
   if(q)arr=arr.filter(p=>(p.name+" "+p.description+" "+p.subtitle).toLowerCase().includes(q.toLowerCase()));
   if(filter)arr=arr.filter(p=>(p.badge||"")===filter);
   el.innerHTML=arr.map(productCard).join("")||"<div class='empty'>Aucun produit trouvé.</div>";
 }
+
 function renderFeatured(){const el=document.getElementById("featured-grid");if(!el)return;const arr=products.filter(p=>p.featured&&p.stock!==false).slice(0,6);el.innerHTML=arr.map(productCard).join("")||"<div class='empty'>Aucun produit phare pour le moment.</div>"}
 function showAllFeatured(){const el=document.getElementById("featured-grid");const section=document.getElementById("produits-phares");if(!el||!section)return;const all=products.filter(p=>p.featured&&p.stock!==false);el.classList.toggle("featured-expanded");el.innerHTML=(el.classList.contains("featured-expanded")?all:all.slice(0,6)).map(productCard).join("");const btn=section.querySelector(".text-btn");if(btn)btn.textContent=el.classList.contains("featured-expanded")?"← Réduire la sélection":"Voir toute la sélection →"}
 
