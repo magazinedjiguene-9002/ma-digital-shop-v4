@@ -882,7 +882,20 @@ body{background:#f5f8ff}
         </div>
       </section>
 
-      <div class="panel admin-section" id="section-commandes"><div class="toprow"><div><h2 style="margin:0">Commandes</h2><p class="note">Les commandes reçues depuis la boutique en ligne.</p></div><button class="outline" type="button" onclick="loadOrders()">Actualiser</button></div><div id="orders-list" style="margin-top:16px"><div class="loading">Chargement des commandes…</div></div></div>\n\n
+      <div class="panel admin-section" id="section-commandes"><div class="toprow"><div><h2 style="margin:0">Commandes</h2><p class="note">Les commandes reçues depuis la boutique en ligne.</p></div><button class="outline" type="button" onclick="loadOrders()">Actualiser</button></div><div class="orders-toolbar" id="orders-toolbar">
+  <input id="orders-search" type="search" placeholder="Rechercher : commande, client, WhatsApp ou produit…" aria-label="Rechercher une commande">
+  <select id="orders-status-filter" aria-label="Filtrer par statut">
+    <option value="">Tous les statuts</option>
+    <option value="pending">En attente</option>
+    <option value="confirmed">Confirmée</option>
+    <option value="preparing">En préparation</option>
+    <option value="completed">Terminée</option>
+    <option value="cancelled">Annulée</option>
+  </select>
+  <button class="outline" type="button" id="orders-reset">Réinitialiser</button>
+  <span class="orders-count" id="orders-count"></span>
+</div>
+<div id="orders-list" style="margin-top:16px"><div class="loading">Chargement des commandes…</div></div></div>\n\n
 
 
       <!-- AJOUT / MODIFICATION PRODUIT -->
