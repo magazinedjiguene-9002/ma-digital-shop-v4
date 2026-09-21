@@ -2582,6 +2582,24 @@ $("product-form").addEventListener(
         featured:
           $("featured").checked,
 
+        promo_price:
+          $("promo-active").checked && $("promo-price").value !== ""
+          ? Number($("promo-price").value)
+          : null,
+
+        promo_active:
+          $("promo-active").checked,
+
+        promo_start:
+          $("promo-active").checked && $("promo-start").value
+          ? new Date($("promo-start").value).toISOString()
+          : null,
+
+        promo_end:
+          $("promo-active").checked && $("promo-end").value
+          ? new Date($("promo-end").value).toISOString()
+          : null,
+
         icon:"✦"
 
       };
