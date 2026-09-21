@@ -1016,3 +1016,11 @@ body[data-theme="dark"] .promo-admin-box{background:rgba(255,255,255,.025)}
  .product-detail-media img{min-height:185px;max-height:225px}
  .product-detail-info h3{font-size:20px}
 }
+
+
+/* V6 — favoris */
+.favorite-btn{position:absolute;left:9px;top:9px;z-index:5;width:30px;height:30px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(255,255,255,.9);color:#64748b;font-size:17px;line-height:1;cursor:pointer;box-shadow:0 5px 14px rgba(0,0,0,.1)}
+.favorite-btn.active{color:#ef4444}
+.favorite-btn:hover{transform:scale(1.06)}
+.favorites-section .empty{grid-column:1/-1}
+body[data-theme="dark"] .favorite-btn{background:rgba(17,24,42,.9);border-color:#334155;color:#cbd5e1}
