@@ -581,7 +581,7 @@ body{background:#f5f8ff}
           </form>
           <div><div id="category-list" class="category-list"><div class="loading">Chargement des catégories…</div></div></div>
         </div>
-      </div><div class="panel"><div class="toprow"><div><h2 style="margin:0">Hero de la boutique</h2><p class="note">Ajoutez, modifiez, réordonnez ou désactivez les slides du Hero sans modifier l'identité visuelle.</p></div></div><div class="hero-admin-grid" style="margin-top:16px"><form class="hero-form" id="hero-form"><input type="hidden" id="hero-id"><input id="hero-badge" placeholder="Badge / petit titre" required><input id="hero-title" placeholder="Titre HTML" required><textarea id="hero-description" placeholder="Description"></textarea><input id="hero-button-text" placeholder="Texte du bouton principal"><input id="hero-button-link" placeholder="Lien du bouton principal (ex. #catalogue)"><select id="hero-secondary-action"><option value="whatsapp">WhatsApp</option><option value="cart">Panier</option><option value="link">Lien</option></select><input id="hero-secondary-text" placeholder="Texte du 2e bouton"><input id="hero-secondary-link" placeholder="Lien du 2e bouton si lien"><input id="hero-trust" placeholder="Réassurance séparée par |"><input id="hero-mini-one" placeholder="Petit badge image 1"><input id="hero-mini-two" placeholder="Petit badge image 2"><div class="imgpick"><img id="hero-image-preview" src="assets/hero-services.jpg" alt="Aperçu Hero"><div class="imgpick-controls"><input type="file" id="hero-image-file" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"><small>PNG, JPG/JPEG, WEBP ou GIF. Image envoyée dans Supabase Storage.</small><input id="hero-image" placeholder="ou coller une URL / chemin d'image"></div></div><input id="hero-order" type="number" min="0" placeholder="Ordre d'affichage" value="0"><label style="font-size:11px"><input id="hero-active" type="checkbox" checked> Slide visible</label><div class="admin-actions"><button class="primary" type="submit">Enregistrer la slide</button><button class="outline" type="button" onclick="resetHeroForm()">Nouvelle</button></div></form><div><div id="hero-list" class="hero-list"><div class="loading">Chargement des slides…</div></div></div></div></div>
+      </div><div class="panel"><div class="toprow"><div><h2 style="margin:0">Hero de la boutique</h2><p class="note">Ajoutez, modifiez, réordonnez ou désactivez les slides du Hero sans modifier l'identité visuelle.</p></div><button class="outline" type="button" onclick="importDefaultHeroes()">Importer les 3 Hero actuels</button></div><div class="hero-admin-grid" style="margin-top:16px"><form class="hero-form" id="hero-form"><input type="hidden" id="hero-id"><input id="hero-badge" placeholder="Badge / petit titre" required><input id="hero-title" placeholder="Titre HTML" required><textarea id="hero-description" placeholder="Description"></textarea><input id="hero-button-text" placeholder="Texte du bouton principal"><input id="hero-button-link" placeholder="Lien du bouton principal (ex. #catalogue)"><select id="hero-secondary-action"><option value="whatsapp">WhatsApp</option><option value="cart">Panier</option><option value="link">Lien</option></select><input id="hero-secondary-text" placeholder="Texte du 2e bouton"><input id="hero-secondary-link" placeholder="Lien du 2e bouton si lien"><input id="hero-trust" placeholder="Réassurance séparée par |"><input id="hero-mini-one" placeholder="Petit badge image 1"><input id="hero-mini-two" placeholder="Petit badge image 2"><div class="imgpick"><img id="hero-image-preview" src="assets/hero-services.jpg" alt="Aperçu Hero"><div class="imgpick-controls"><input type="file" id="hero-image-file" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"><small>PNG, JPG/JPEG, WEBP ou GIF. Image envoyée dans Supabase Storage.</small><input id="hero-image" placeholder="ou coller une URL / chemin d'image"></div></div><input id="hero-order" type="number" min="0" placeholder="Ordre d'affichage" value="0"><label style="font-size:11px"><input id="hero-active" type="checkbox" checked> Slide visible</label><div class="admin-actions"><button class="primary" type="submit">Enregistrer la slide</button><button class="outline" type="button" onclick="resetHeroForm()">Nouvelle</button></div></form><div><div id="hero-list" class="hero-list"><div class="loading">Chargement des slides…</div></div></div></div></div>
 <!-- CATALOGUE -->
       <div class="panel">
 
@@ -1100,7 +1100,7 @@ function renderHeroAdmin(){
   if(!el) return;
 
   if(!heroAdminData.length){
-    el.innerHTML = '<div class="loading">Aucune slide. Ajoutez votre première slide.</div>';
+    el.innerHTML = '<div class="loading">Aucune slide enregistrée.<br><small>Les 3 Hero actuels sont encore en mode secours du site public.</small><br><button class="primary" type="button" style="margin-top:12px" onclick="importDefaultHeroes()">Importer les 3 Hero actuels dans l’administration</button></div>';
     return;
   }
 
@@ -1119,6 +1119,91 @@ function renderHeroAdmin(){
       + '<button class="danger" type="button" onclick="deleteHero(' + i + ')">Supprimer</button>'
       + '</div></div>';
   }).join("");
+}
+
+const HERO_ADMIN_DEFAULTS = [
+  {
+    badge:"VOTRE BOUTIQUE DIGITALE",
+    title:"Tout le digital,<br><span class="grad">au même endroit.</span>",
+    description:"Streaming, jeux PC, logiciels et accessoires. Choisissez vos produits, ajoutez-les au panier et envoyez votre commande sur WhatsApp.",
+    button_text:"Découvrir la boutique →",
+    button_link:"#catalogue",
+    secondary_action:"whatsapp",
+    secondary_text:"Nous contacter",
+    secondary_link:"",
+    trust:"✓ Panier simple|✓ Commande WhatsApp|✓ Mobile & PC",
+    mini_one:"🎮 Gaming & logiciels",
+    mini_two:"🛒 Panier prêt à commander",
+    image_url:"assets/hero-services.jpg",
+    sort_order:0,
+    active:true
+  },
+  {
+    badge:"STREAMING PREMIUM",
+    title:"Vos services préférés,<br><span class="grad">au même endroit.</span>",
+    description:"Découvrez notre sélection streaming et trouvez rapidement l'offre qui vous intéresse.",
+    button_text:"Voir le streaming →",
+    button_link:"#streaming",
+    secondary_action:"cart",
+    secondary_text:"Voir mon panier",
+    secondary_link:"",
+    trust:"✓ Netflix|✓ Prime Video|✓ Crunchyroll",
+    mini_one:"📺 Streaming premium",
+    mini_two:"⚡ Commande rapide",
+    image_url:"assets/category-streaming.jpg",
+    sort_order:1,
+    active:true
+  },
+  {
+    badge:"GAMING & ACCESSOIRES",
+    title:"Équipez votre setup,<br><span class="grad">jouez à votre façon.</span>",
+    description:"Jeux PC, manettes, souris, claviers, casques et accessoires : parcourez le catalogue et ajoutez vos choix au panier.",
+    button_text:"Explorer le gaming →",
+    button_link:"#gaming",
+    secondary_action:"link",
+    secondary_text:"Voir les accessoires",
+    secondary_link:"#accessoires",
+    trust:"✓ Jeux PC|✓ Accessoires|✓ Catalogue évolutif",
+    mini_one:"🎮 Jeux PC",
+    mini_two:"🖱️ Accessoires gaming",
+    image_url:"assets/category-gaming.jpg",
+    sort_order:2,
+    active:true
+  }
+];
+
+async function importDefaultHeroes(){
+  if(!session){
+    showLogin();
+    return;
+  }
+
+  if(heroAdminData.length){
+    alert("Des Hero sont déjà enregistrés. Utilise « Modifier » pour les changer ou « Nouvelle » pour en ajouter un.");
+    return;
+  }
+
+  if(!confirm("Importer les 3 Hero actuellement utilisés par le site dans l’administration ?")){
+    return;
+  }
+
+  try{
+    setStatus("Import des Hero…");
+
+    const {error}=await supabaseClient
+      .from("hero_slides")
+      .insert(HERO_ADMIN_DEFAULTS);
+
+    if(error) throw error;
+
+    await loadHeroAdmin();
+    resetHeroForm();
+    setStatus("Hero importés");
+    alert("Les 3 Hero actuels ont été importés. Tu peux maintenant les modifier depuis l’administration.");
+  }catch(err){
+    setStatus("Erreur",true);
+    alert("Impossible d’importer les Hero : " + err.message);
+  }
 }
 
 function resetHeroForm(){
