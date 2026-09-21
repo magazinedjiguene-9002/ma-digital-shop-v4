@@ -285,8 +285,8 @@ async function submitOrder(event){
   if(!name){if(errorEl){errorEl.hidden=false;errorEl.textContent="Veuillez renseigner votre nom complet."}return;}
   const normalizedWhatsApp=normalizeWhatsApp(whatsapp);
   if(normalizedWhatsApp.length<9){if(errorEl){errorEl.hidden=false;errorEl.textContent="Veuillez renseigner un numéro WhatsApp valide."}return;}
-  const items=cart.map(r=>{const p=productById(r.id);if(!p)return null;return {product_id:p.dbId??p.id,name:p.name,quantity:r.qty,unit_price:p.price==null?null:Number(p.price),subtotal:p.price==null?null:Number(p.price)*r.qty}}).filter(Boolean);
-  const totalKnown=cart.reduce((sum,r)=>{const p=productById(r.id);return p&&p.price!=null?sum+Number(p.price)*r.qty:sum},0);
+  const items=cart.map(r=>{const p=productById(r.id);if(!p)return null;return {product_id:p.dbId??p.id,name:p.name,quantity:r.qty,unit_price:promoInfo(p).price==null?null:Number(promoInfo(p).price),subtotal:promoInfo(p).price==null?null:Number(promoInfo(p).price)*r.qty}}).filter(Boolean);
+  const totalKnown=cart.reduce((sum,r)=>{const p=productById(r.id),pi=p&&promoInfo(p);return pi&&pi.price!=null?sum+Number(pi.price)*r.qty:sum},0);
   const hasUnknownPrice=cart.some(r=>{const p=productById(r.id);return p&&p.price==null});
   if(!window.supabaseClient){if(errorEl){errorEl.hidden=false;errorEl.textContent="Connexion Supabase indisponible. Réessayez dans un instant."}return}
   if(submitBtn){submitBtn.disabled=true;submitBtn.textContent="Enregistrement..."}
