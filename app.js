@@ -424,6 +424,6 @@ document.addEventListener("DOMContentLoaded",async()=>{
   initAutoTracks();
   loadCategories();
   loadProducts();
-  const s=document.getElementById("global-search");if(s)s.addEventListener("keydown",e=>{if(e.key==="Enter")globalSearch(s.value)});
+  const s=document.getElementById("global-search");if(s){s.addEventListener("input",()=>updateSearchSuggestions(s.value));s.addEventListener("keydown",e=>{if(e.key==="Enter"){globalSearch(s.value)}else if(e.key==="Escape"){closeSearchSuggestions()}});s.addEventListener("focus",()=>updateSearchSuggestions(s.value));}document.addEventListener("click",e=>{if(!e.target.closest("#global-searchbox"))closeSearchSuggestions();});
   document.querySelectorAll(".mobile-link").forEach(a=>a.addEventListener("click",()=>document.getElementById("mobile-nav")?.classList.remove("open")));
 });
