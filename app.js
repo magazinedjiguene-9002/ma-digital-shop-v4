@@ -23,6 +23,14 @@ function openProductDetail(id){
   if(title)title.textContent=p.name;
   const info=promoInfo(p); const price=info.price==null?"Prix sur demande":money(info.price);
   const cat=label(p.category);
+  const details=p.product_details||{};
+  const detailItems=[
+    ["Plateforme",details.platform],["Durée",details.duration],["Type d'accès",details.access],
+    ["Écrans",details.screens],["Qualité",details.quality],["Appareils compatibles",details.devices],
+    ["Livraison",details.delivery],["Délai indicatif",details.delay],["Paiement",details.payment],
+    ["Compatibilité",details.compatibility],["Type de licence",details.license],["Prérequis",details.requirements],
+    ["Marque",details.brand],["Modèle",details.model],["État",details.condition]
+  ].filter(function(x){return x[1]});
   const related=products.filter(x=>x.id!==p.id&&x.category===p.category&&x.stock!==false).slice(0,4);
   const fallback="assets/category-"+(p.category==="streaming"?"streaming":p.category==="gaming"?"gaming":p.category==="software"?"software":"accessories")+".jpg";
   const image=p.image||fallback;
@@ -40,7 +48,8 @@ function openProductDetail(id){
     +'<p class="detail-subtitle">'+esc(p.subtitle||"")+'</p>'
     +'<p class="detail-description">'+esc(p.description||"")+'</p>'
     +'<div class="detail-price">'+(info.old!=null?'<strong>'+price+'</strong><del>'+money(info.old)+'</del><span class="promo-percent">-'+info.percent+'%</span>':price)+'</div>'
-    +'<div class="detail-meta"><span>✓ Disponible</span><span>✓ Commande WhatsApp</span><span>✓ Livraison/activation selon produit</span></div>'
+    +'<div class="detail-meta"><span>✓ Disponible</span><span>✓ Commande WhatsApp</span></div>'
+    +(detailItems.length?'<div class="detail-specs"><h4>Informations du produit</h4><div class="detail-specs-grid">'+detailItems.map(function(x){return '<div class="detail-spec"><small>'+esc(x[0])+'</small><b>'+esc(x[1])+'</b></div>'}).join("")+'</div></div>':"")
     +'<div class="detail-quantity"><span>Quantité</span><div class="detail-qty"><button type="button" onclick="changeDetailQty(-1)">−</button><strong id="detail-qty-value">1</strong><button type="button" onclick="changeDetailQty(1)">+</button></div></div>'
     +'<div class="detail-actions"><button class="primary" onclick="addFromDetailQty(\''+attr(p.id)+'\')">Ajouter au panier</button><button class="outline" onclick="order(\''+attr(p.id)+'\')">Commander sur WhatsApp</button><button class="detail-share" onclick="shareProduct(\''+attr(p.id)+'\')">↗ Partager ce produit</button></div>'
     +'</div></div>'
