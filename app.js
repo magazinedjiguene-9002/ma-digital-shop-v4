@@ -76,7 +76,7 @@ function renderDynamicCategories(){
     const link=document.createElement("a");
     link.className="cat cat-image";
     link.href="#"+cat.id;
-    link.innerHTML="<img src=\""+attr(cat.image_url||"assets/logo.png")+"\" alt=\""+attr(cat.name)+"\"><div class=\"cat-content\"><h3>"+esc(cat.name)+"</h3><p>"+esc(cat.description||"Découvrez nos produits.")+"</p><span class=\"link\">Visiter la catégorie →</span></div>";
+    link.innerHTML="<img loading=\"lazy\" src=\""+attr(cat.image_url||"assets/logo.png")+"\" alt=\""+attr(cat.name)+"\"><div class=\"cat-content\"><h3>"+esc(cat.name)+"</h3><p>"+esc(cat.description||"Découvrez nos produits.")+"</p><span class=\"link\">Visiter la catégorie →</span></div>";
     track.appendChild(link);
     const section=document.createElement("section");
     section.className="section "+(index%2===0?"alt ":"")+"dynamic-category";
@@ -208,7 +208,32 @@ async function submitOrder(event){
   }finally{if(submitBtn){submitBtn.disabled=false;submitBtn.textContent="Confirmer la commande"}}
 }
 function goSearch(){document.getElementById("global-search")?.focus()}
-function globalSearch(v){const q=v.toLowerCase().trim();if(!q)return;const found=products.find(p=>(p.name+" "+p.description+" "+p.subtitle).toLowerCase().includes(q));if(!found){document.getElementById("search-message").textContent="Aucun produit ne correspond à votre recherche.";return}const section=document.getElementById(found.category);section?.scrollIntoView({behavior:"smooth",block:"start"});const gridId=found.category+"-grid";const searchId={gaming:"game-search",software:"software-search"}[found.category];if(searchId){document.getElementById(searchId).value=v;renderFiltered(found.category,gridId,searchId,found.category==="gaming"?"game-filter":"software-filter")}}
+function globalSearch(v){
+  const q=String(v||"").toLowerCase().trim();
+  const msg=document.getElementById("search-message");
+  if(!q){if(msg)msg.textContent="";return;}
+  const found=products.filter(p=>(p.name+" "+p.description+" "+p.subtitle+" "+p.badge).toLowerCase().includes(q));
+  if(!found.length){
+    if(msg){msg.textContent="Aucun produit ne correspond à « "+v+" ».";msg.classList.add("show");}
+    return;
+  }
+  const first=found[0];
+  const section=document.getElementById(first.category);
+  section?.scrollIntoView({behavior:"smooth",block:"start"});
+  const searchId={gaming:"game-search",software:"software-search"}[first.category];
+  if(searchId){
+    const input=document.getElementById(searchId);
+    if(input)input.value=v;
+    renderFiltered(first.category,first.category+"-grid",searchId,first.category==="gaming"?"game-filter":"software-filter");
+  }else{
+    renderSection(first.category,first.category+"-grid",v,"");
+  }
+  if(msg){
+    msg.textContent=found.length+" produit"+(found.length>1?"s":"")+" trouvé"+(found.length>1?"s":"")+" pour « "+v+" ».";
+    msg.classList.add("show");
+    setTimeout(()=>msg.classList.remove("show"),3500);
+  }
+}
 function openMobileNav(){document.getElementById("mobile-nav")?.classList.toggle("open")}
 
 async function loadProducts(){
