@@ -963,6 +963,16 @@ body{background:#f5f8ff}
             placeholder="Prix en FCFA (laisser vide = sur demande)"
           >
 
+          <div class="promo-admin-box full">
+            <label class="promo-toggle"><input id="promo-active" type="checkbox"> Activer la promotion</label>
+            <div class="promo-fields">
+              <input id="promo-price" type="number" min="0" placeholder="Prix promotionnel en FCFA">
+              <input id="promo-start" type="datetime-local" aria-label="Début promotion">
+              <input id="promo-end" type="datetime-local" aria-label="Fin promotion">
+            </div>
+            <small>Le prix promotionnel doit être inférieur au prix normal. Les dates sont facultatives.</small>
+          </div>
+
           <label
             class="full"
             style="font-size:11px;display:flex;gap:16px;align-items:center"
