@@ -61,16 +61,32 @@ async function shareProduct(id){
 function addFromDetail(id){ add(id); closeProductDetail(); }
 function closeProductDetail(){document.getElementById('product-modal')?.classList.remove('open')}
 
+function isPromoActive(p){
+  if(!p||!p.promo_active||p.promo_price==null||p.price==null||p.promo_price>=p.price)return false;
+  const now=Date.now();
+  if(p.promo_start&&new Date(p.promo_start).getTime()>now)return false;
+  if(p.promo_end&&new Date(p.promo_end).getTime()<now)return false;
+  return true;
+}
+function promoInfo(p){
+  if(!isPromoActive(p))return {price:p.price,old:null,percent:0};
+  const old=Number(p.price),price=Number(p.promo_price);
+  return {price,old,percent:Math.max(0,Math.round((1-price/old)*100))};
+}
+function productPriceMarkup(p){
+  const info=promoInfo(p);
+  if(info.old==null)return '<div class="price">'+(info.price==null?'Sur demande':money(info.price))+'</div>';
+  return '<div class="price promo-price"><strong>'+money(info.price)+'</strong><del>'+money(info.old)+'</del><span class="promo-percent">-'+info.percent+'%</span></div>';
+}
 function productCard(p){
-  const price=p.price==null?"Sur demande":money(p.price);
-  const disabled=p.stock===false;
-  return `<article class="card" onclick="if(!event.target.closest('button'))openProductDetail('${attr(p.id)}')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')openProductDetail('${attr(p.id)}')">
-    <div class="visual ${p.image?'has-image':''}">${productImage(p)}<div class="cover"><span>${esc(p.icon||"✦")}</span><b>${esc(p.name)}</b></div>${p.featured?'<span class="featured">Populaire</span>':''}</div>
-    <div class="body"><span class="badge">${esc(p.badge||label(p.category))}</span><h3>${esc(p.name)}</h3><p>${esc(p.description||p.subtitle||"")}</p>
-      <div class="price">${price}</div>
-      <div class="row"><button ${disabled?'disabled':''} onclick="add('${attr(p.id)}')">${disabled?'Indisponible':'Ajouter'}</button><button class="buy" onclick="order('${attr(p.id)}')">WhatsApp</button></div>
-    </div>
-  </article>`;
+  const disabled=p.stock===false,info=promoInfo(p);
+  const detail="onclick=\"if(!event.target.closest('button'))openProductDetail('"+attr(p.id)+"')\"";
+  return '<article class="card" '+detail+' tabindex="0" role="button">'+
+    '<div class="visual '+(p.image?'has-image':'')+'">'+productImage(p)+'<div class="cover"><span>'+esc(p.icon||'✦')+'</span><b>'+esc(p.name)+'</b></div>'+(p.featured?'<span class="featured">Populaire</span>':'')+(info.old!=null?'<span class="promo-badge">-'+info.percent+'%</span>':'')+'</div>'+
+    '<div class="body"><span class="badge">'+esc(p.badge||label(p.category))+'</span><h3>'+esc(p.name)+'</h3><p>'+esc(p.description||p.subtitle||'')+'</p>'+
+      productPriceMarkup(p)+
+      '<div class="row"><button '+(disabled?'disabled':'')+' onclick="add(\''+attr(p.id)+'\')">'+(disabled?'Indisponible':'Ajouter')+'</button><button class="buy" onclick="order(\''+attr(p.id)+'\')">WhatsApp</button></div>'+
+    '</div></article>';
 }
 function getCatalogControls(cat){
   const prefix=cat;
