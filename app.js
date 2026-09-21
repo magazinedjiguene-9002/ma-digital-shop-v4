@@ -142,6 +142,11 @@ function renderSection(cat,id,q="",filter=""){
   el.innerHTML=arr.map(productCard).join("")||"<div class='empty'>Aucun produit trouvé.</div>";
 }
 
+function renderFavorites(){
+  const el=document.getElementById("favorites-grid");if(!el)return;
+  const arr=favorites.map(id=>productById(id)).filter(Boolean).filter(p=>p.stock!==false);
+  el.innerHTML=arr.length?arr.map(productCard).join(""):"<div class='empty'>Aucun favori pour le moment.</div>";
+}
 function renderFeatured(){const el=document.getElementById("featured-grid");if(!el)return;const arr=products.filter(p=>p.featured&&p.stock!==false).slice(0,6);el.innerHTML=arr.map(productCard).join("")||"<div class='empty'>Aucun produit phare pour le moment.</div>"}
 function showAllFeatured(){const el=document.getElementById("featured-grid");const section=document.getElementById("produits-phares");if(!el||!section)return;const all=products.filter(p=>p.featured&&p.stock!==false);el.classList.toggle("featured-expanded");el.innerHTML=(el.classList.contains("featured-expanded")?all:all.slice(0,6)).map(productCard).join("");const btn=section.querySelector(".text-btn");if(btn)btn.textContent=el.classList.contains("featured-expanded")?"← Réduire la sélection":"Voir toute la sélection →"}
 
@@ -191,7 +196,7 @@ function renderDynamicCategories(){
 }
 
 function renderHome(){
-  renderFeatured();
+  renderFeatured();renderFavorites();
   categories.forEach(function(cat){renderSection(cat.id,cat.id+"-grid")});
   updateCartCount();
 }
