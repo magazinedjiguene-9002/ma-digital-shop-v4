@@ -208,32 +208,74 @@ async function submitOrder(event){
   }finally{if(submitBtn){submitBtn.disabled=false;submitBtn.textContent="Confirmer la commande"}}
 }
 function goSearch(){document.getElementById("global-search")?.focus()}
+function getSearchMatches(query){
+  const q=String(query||"").toLowerCase().trim();
+  if(!q)return [];
+  return products.filter(p=>(p.name+" "+p.description+" "+p.subtitle+" "+p.badge+" "+label(p.category)).toLowerCase().includes(q)).slice(0,8);
+}
+function updateSearchSuggestions(value){
+  const box=document.getElementById("search-suggestions");
+  const input=document.getElementById("global-search");
+  if(!box||!input)return;
+  const matches=getSearchMatches(value);
+  box.innerHTML="";
+  if(!String(value||"").trim()||!matches.length){
+    box.hidden=true;
+    input.setAttribute("aria-expanded","false");
+    return;
+  }
+  matches.forEach(function(p,index){
+    const item=document.createElement("button");
+    item.type="button";
+    item.className="search-suggestion";
+    item.setAttribute("role","option");
+    item.dataset.index=index;
+    item.innerHTML=(p.image?'<img src="'+attr(p.image)+'" alt="" loading="lazy">':'<span class="search-suggestion-icon">✦</span>')+
+      '<span class="search-suggestion-copy"><b>'+esc(p.name)+'</b><small>'+esc(label(p.category))+' · '+esc(p.price==null?"Prix sur demande":money(p.price))+'</small></span>'+
+      '<span class="search-suggestion-arrow">→</span>';
+    item.addEventListener("click",function(){selectSearchProduct(p.id)});
+    box.appendChild(item);
+  });
+  box.hidden=false;
+  input.setAttribute("aria-expanded","true");
+}
+function closeSearchSuggestions(){
+  const box=document.getElementById("search-suggestions");
+  const input=document.getElementById("global-search");
+  if(box)box.hidden=true;
+  if(input)input.setAttribute("aria-expanded","false");
+}
+function selectSearchProduct(id){
+  const p=productById(id);
+  if(!p)return;
+  const input=document.getElementById("global-search");
+  if(input)input.value=p.name;
+  closeSearchSuggestions();
+  const msg=document.getElementById("search-message");
+  if(msg){msg.textContent="Produit sélectionné : "+p.name;msg.classList.add("show");setTimeout(()=>msg.classList.remove("show"),2500)}
+  openProductDetail(p.id);
+}
 function globalSearch(v){
   const q=String(v||"").toLowerCase().trim();
   const msg=document.getElementById("search-message");
-  if(!q){if(msg)msg.textContent="";return;}
-  const found=products.filter(p=>(p.name+" "+p.description+" "+p.subtitle+" "+p.badge).toLowerCase().includes(q));
+  if(!q){if(msg)msg.textContent="";closeSearchSuggestions();return;}
+  const found=getSearchMatches(v);
+  closeSearchSuggestions();
   if(!found.length){
     if(msg){msg.textContent="Aucun produit ne correspond à « "+v+" ».";msg.classList.add("show");}
     return;
   }
   const first=found[0];
   const section=document.getElementById(first.category);
-  section?.scrollIntoView({behavior:"smooth",block:"start"});
-  const searchId={gaming:"game-search",software:"software-search"}[first.category];
-  if(searchId){
-    const input=document.getElementById(searchId);
-    if(input)input.value=v;
-    renderFiltered(first.category,first.category+"-grid",searchId,first.category==="gaming"?"game-filter":"software-filter");
-  }else{
-    renderSection(first.category,first.category+"-grid",v,"");
-  }
+  if(section)section.scrollIntoView({behavior:"smooth",block:"start"});
+  renderSection(first.category,(first.category==="accessory"?"accessory":first.category)+"-grid",v,"");
   if(msg){
     msg.textContent=found.length+" produit"+(found.length>1?"s":"")+" trouvé"+(found.length>1?"s":"")+" pour « "+v+" ».";
     msg.classList.add("show");
     setTimeout(()=>msg.classList.remove("show"),3500);
   }
 }
+
 function openMobileNav(){document.getElementById("mobile-nav")?.classList.toggle("open")}
 
 async function loadProducts(){
