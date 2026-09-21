@@ -999,3 +999,20 @@ body[data-theme="dark"] .promo-admin-box{background:rgba(255,255,255,.025)}
  .detail-price strong{font-size:20px}
  .promo-badge{font-size:7px;padding:4px 6px}
 }
+
+
+/* V6.0 — compact product detail */
+.product-detail-box{max-width:760px}
+.product-detail{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px}
+.product-detail-media{min-height:300px;max-height:340px}
+.product-detail-media img{min-height:300px;max-height:340px}
+.product-detail-info h3{font-size:25px}
+.detail-description{font-size:13px;line-height:1.55;margin-bottom:14px}
+.detail-meta{margin-bottom:14px}
+.related-products{margin-top:17px;padding-top:14px}
+@media(max-width:700px){
+ .product-detail-box{max-width:none}
+ .product-detail-media{min-height:185px;max-height:225px}
+ .product-detail-media img{min-height:185px;max-height:225px}
+ .product-detail-info h3{font-size:20px}
+}
