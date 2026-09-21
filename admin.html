@@ -1573,6 +1573,11 @@ function formatOrderDate(value){
   return new Intl.DateTimeFormat("fr-FR",{dateStyle:"medium",timeStyle:"short"}).format(new Date(value));
 }
 
+function statusLabel(status){
+  const labels={pending:"En attente",confirmed:"Confirmée",preparing:"En préparation",completed:"Terminée",cancelled:"Annulée"};
+  return labels[String(status||"pending")]||String(status||"En attente");
+}
+
 function getFilteredOrders(){
   const q=String($("orders-search")?.value||"").trim().toLowerCase();
   const status=String($("orders-status-filter")?.value||"");
@@ -1628,7 +1633,6 @@ async function updateOrderStatus(id,status){
   setStatus("Commande mise à jour");
 }
 
-function openOrderWhatsApp(number,name,orderCode){
 document.getElementById("orders-search")?.addEventListener("input",renderOrders);
 document.getElementById("orders-status-filter")?.addEventListener("change",renderOrders);
 document.getElementById("orders-reset")?.addEventListener("click",function(){
@@ -1637,6 +1641,7 @@ document.getElementById("orders-reset")?.addEventListener("click",function(){
   renderOrders();
 });
 
+function openOrderWhatsApp(number,name,orderCode){
   const digits=String(number||"").replace(/\D/g,"");
   const text=`Bonjour ${name} 👋\n\nConcernant votre commande #${orderCode} chez MA DIGITAL SHOP.`;
   window.open("https://wa.me/"+digits+"?text="+encodeURIComponent(text),"_blank","noopener,noreferrer");
