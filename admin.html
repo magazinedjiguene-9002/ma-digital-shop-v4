@@ -221,7 +221,153 @@ body{background:#f5f8ff}
 
 .category-admin-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:18px}.category-form{display:grid;gap:10px}.category-form input,.category-form textarea{width:100%;padding:12px;border:1px solid #dfe8f3;border-radius:11px}.category-form textarea{min-height:80px;resize:vertical}.category-list{display:grid;gap:9px}.category-admin-item{display:flex;align-items:center;gap:10px;border:1px solid #e7edf6;border-radius:13px;padding:10px}.category-admin-item img{width:52px;height:52px;object-fit:cover;border-radius:10px;background:#f0f4fa}.category-admin-item .cat-info{flex:1;min-width:0}.category-admin-item .cat-info b{display:block}.category-admin-item .cat-info small{color:#66718d}.category-admin-actions{display:flex;gap:6px;flex-wrap:wrap}.category-admin-actions button{font-size:10px;padding:8px 10px}@media(max-width:800px){.category-admin-grid{grid-template-columns:1fr}.category-admin-item{align-items:flex-start}.category-admin-item img{width:46px;height:46px}}
 .category-form .imgpick{grid-column:1/-1}.category-form .imgpick img{width:120px;height:80px;object-fit:cover;border-radius:12px;border:1px solid #e7edf6;background:#f5f7fb}.category-form .imgpick-controls{flex:1}.category-form .imgpick{display:flex;gap:14px;align-items:center}@media(max-width:600px){.category-form .imgpick{align-items:flex-start}.category-form .imgpick img{width:90px;height:64px}}
-<style>.hero-admin-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:18px}.hero-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hero-form input,.hero-form select,.hero-form textarea{width:100%;padding:12px;border:1px solid #dfe8f3;border-radius:11px;box-sizing:border-box}.hero-form textarea{min-height:85px;resize:vertical;grid-column:1/-1}.hero-form .imgpick{grid-column:1/-1}.hero-list{display:grid;gap:9px}.hero-admin-item{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;border:1px solid #e7edf6;border-radius:13px;padding:10px}.hero-admin-item img{width:90px;height:58px;object-fit:cover;border-radius:9px}.hero-admin-item small{color:#66718d;line-height:1.5}.hero-admin-actions{display:flex;gap:6px;flex-wrap:wrap}.hero-admin-actions button{font-size:10px;padding:8px 10px}@media(max-width:800px){.hero-admin-grid{grid-template-columns:1fr}.hero-form{grid-template-columns:1fr}.hero-admin-item{grid-template-columns:64px 1fr}.hero-admin-item img{width:64px;height:48px}.hero-admin-actions{grid-column:1/-1}}</style></style>
+<style>.hero-admin-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:18px}.hero-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hero-form input,.hero-form select,.hero-form textarea{width:100%;padding:12px;border:1px solid #dfe8f3;border-radius:11px;box-sizing:border-box}.hero-form textarea{min-height:85px;resize:vertical;grid-column:1/-1}.hero-form .imgpick{grid-column:1/-1}.hero-list{display:grid;gap:9px}.hero-admin-item{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;border:1px solid #e7edf6;border-radius:13px;padding:10px}.hero-admin-item img{width:90px;height:58px;object-fit:cover;border-radius:9px}.hero-admin-item small{color:#66718d;line-height:1.5}.hero-admin-actions{display:flex;gap:6px;flex-wrap:wrap}.hero-admin-actions button{font-size:10px;padding:8px 10px}@media(max-width:800px){.hero-admin-grid{grid-template-columns:1fr}.hero-form{grid-template-columns:1fr}.hero-admin-item{grid-template-columns:64px 1fr}.hero-admin-item img{width:64px;height:48px}.hero-admin-actions{grid-column:1/-1}}</style>
+/* =========================================
+   ADMIN UI — organisation & confort
+   ========================================= */
+.admin-quicknav{
+  position:sticky;
+  top:0;
+  z-index:80;
+  background:rgba(255,255,255,.94);
+  border-bottom:1px solid #e6edf7;
+  backdrop-filter:blur(12px);
+  box-shadow:0 4px 18px rgba(10,15,45,.04);
+}
+.admin-quicknav-inner{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:48px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.admin-quicknav-inner::-webkit-scrollbar{display:none}
+.admin-quicknav-label{
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#8a96ad;
+  margin-right:4px;
+  white-space:nowrap;
+}
+.admin-quicknav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border:1px solid #e1e9f4;
+  border-radius:999px;
+  background:#fff;
+  color:#263653;
+  font-size:11px;
+  font-weight:700;
+  text-decoration:none;
+  white-space:nowrap;
+  transition:.18s ease;
+}
+.admin-quicknav a:hover{
+  border-color:#b9d2f3;
+  background:#f4f8ff;
+  transform:translateY(-1px);
+}
+.admin-intro{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+  padding:20px 22px;
+  border:1px solid #e1eaf6;
+  border-radius:20px;
+  background:linear-gradient(135deg,#fff,#f7faff);
+  box-shadow:0 8px 26px rgba(10,15,45,.045);
+}
+.admin-kicker{
+  display:block;
+  margin-bottom:5px;
+  color:var(--blue);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.12em;
+}
+.admin-intro h1{
+  margin:0 0 5px;
+  font-size:22px;
+  line-height:1.2;
+  color:var(--navy);
+}
+.admin-intro p{
+  margin:0;
+  color:#66718d;
+  font-size:11px;
+  line-height:1.55;
+}
+.admin-intro-tip{
+  flex:0 0 auto;
+  padding:10px 13px;
+  border:1px solid #dce8f7;
+  border-radius:12px;
+  background:#fff;
+  color:#66718d;
+  font-size:10px;
+  font-weight:700;
+}
+.admin-intro-tip span{color:var(--navy)}
+.admin-section{
+  scroll-margin-top:68px;
+}
+.admin-section > .toprow h2{
+  font-size:17px;
+  color:var(--navy);
+}
+.admin-section > .toprow{
+  padding-bottom:4px;
+}
+.admin-section .primary,
+.admin-section .outline,
+.admin-section .danger,
+.admin-section .lockbtn{
+  transition:.18s ease;
+}
+.admin-section .primary:hover,
+.admin-section .outline:hover,
+.admin-section .lockbtn:hover{
+  transform:translateY(-1px);
+}
+#section-produits .form{
+  gap:14px;
+}
+#section-commandes #orders-list,
+#section-categories .category-list,
+#section-hero .hero-list,
+#section-catalogue #list{
+  margin-top:14px;
+}
+@media(max-width:800px){
+  .admin{padding:18px 0 30px}
+  .admin-quicknav-inner{
+    padding:0 14px;
+    min-height:46px;
+  }
+  .admin-quicknav-label{display:none}
+  .admin-intro{
+    align-items:flex-start;
+    flex-direction:column;
+    padding:17px;
+    margin-bottom:13px;
+  }
+  .admin-intro h1{font-size:19px}
+  .admin-intro-tip{width:100%;box-sizing:border-box}
+  .panel{
+    padding:16px;
+    border-radius:17px;
+    margin-bottom:13px;
+  }
+}
+
+</style>
 </head>
 
 <body>
@@ -368,14 +514,32 @@ body{background:#f5f8ff}
 
   </header>
 
+  <nav class="admin-quicknav" aria-label="Navigation administration">
+    <div class="container admin-quicknav-inner">
+      <span class="admin-quicknav-label">Gestion rapide</span>
+      <a href="#section-produits">Produits</a>
+      <a href="#section-commandes">Commandes</a>
+      <a href="#section-categories">Catégories</a>
+      <a href="#section-hero">Hero</a>
+      <a href="#section-catalogue">Catalogue</a>
+    </div>
+  </nav>
 
   <main class="admin">
 
     <div class="container">
 
+      <div class="admin-intro">
+        <div>
+          <span class="admin-kicker">ESPACE ADMINISTRATEUR</span>
+          <h1>Pilotez votre boutique</h1>
+          <p>Gérez les produits, commandes, catégories et le Hero depuis un seul espace.</p>
+        </div>
+        <div class="admin-intro-tip">✨ <span>Améliorer sans dénaturer</span></div>
+      </div>
 
       <!-- AJOUT / MODIFICATION PRODUIT -->
-      <div class="panel">
+      <div class="panel admin-section" id="section-produits">
 
         <div class="toprow">
 
@@ -558,7 +722,7 @@ body{background:#f5f8ff}
       </div>
 
 
-<div class="panel"><div class="toprow"><div><h2 style="margin:0">Commandes</h2><p class="note">Les commandes reçues depuis la boutique en ligne.</p></div><button class="outline" type="button" onclick="loadOrders()">Actualiser</button></div><div id="orders-list" style="margin-top:16px"><div class="loading">Chargement des commandes…</div></div></div>\n\n      <!-- CATEGORIES -->
+<div class="panel admin-section" id="section-commandes"><div class="toprow"><div><h2 style="margin:0">Commandes</h2><p class="note">Les commandes reçues depuis la boutique en ligne.</p></div><button class="outline" type="button" onclick="loadOrders()">Actualiser</button></div><div id="orders-list" style="margin-top:16px"><div class="loading">Chargement des commandes…</div></div></div>\n\n      <!-- CATEGORIES -->
       <div class="panel">
         <div class="toprow"><div><h2 style="margin:0">Catégories</h2><p class="note">Ajoutez, modifiez, activez ou supprimez les catégories de la boutique. Les produits restent dans leur catégorie tant que vous ne les modifiez pas.</p></div></div>
         <div class="category-admin-grid" style="margin-top:16px">
@@ -581,7 +745,7 @@ body{background:#f5f8ff}
           </form>
           <div><div id="category-list" class="category-list"><div class="loading">Chargement des catégories…</div></div></div>
         </div>
-      </div><div class="panel"><div class="toprow"><div><h2 style="margin:0">Hero de la boutique</h2><p class="note">Ajoutez, modifiez, réordonnez ou désactivez les slides du Hero sans modifier l'identité visuelle.</p></div><button class="outline" type="button" onclick="importDefaultHeroes()">Importer les 3 Hero actuels</button></div><div class="hero-admin-grid" style="margin-top:16px"><form class="hero-form" id="hero-form"><input type="hidden" id="hero-id"><input id="hero-badge" placeholder="Badge / petit titre" required><input id="hero-title" placeholder="Titre HTML" required><textarea id="hero-description" placeholder="Description"></textarea><input id="hero-button-text" placeholder="Texte du bouton principal"><input id="hero-button-link" placeholder="Lien du bouton principal (ex. #catalogue)"><select id="hero-secondary-action"><option value="whatsapp">WhatsApp</option><option value="cart">Panier</option><option value="link">Lien</option></select><input id="hero-secondary-text" placeholder="Texte du 2e bouton"><input id="hero-secondary-link" placeholder="Lien du 2e bouton si lien"><input id="hero-trust" placeholder="Réassurance séparée par |"><input id="hero-mini-one" placeholder="Petit badge image 1"><input id="hero-mini-two" placeholder="Petit badge image 2"><div class="imgpick"><img id="hero-image-preview" src="assets/hero-services.jpg" alt="Aperçu Hero"><div class="imgpick-controls"><input type="file" id="hero-image-file" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"><small>PNG, JPG/JPEG, WEBP ou GIF. Image envoyée dans Supabase Storage.</small><input id="hero-image" placeholder="ou coller une URL / chemin d'image"></div></div><input id="hero-order" type="number" min="0" placeholder="Ordre d'affichage" value="0"><label style="font-size:11px"><input id="hero-active" type="checkbox" checked> Slide visible</label><div class="admin-actions"><button class="primary" type="submit">Enregistrer la slide</button><button class="outline" type="button" onclick="resetHeroForm()">Nouvelle</button></div></form><div><div id="hero-list" class="hero-list"><div class="loading">Chargement des slides…</div></div></div></div></div>
+      </div><div class="panel admin-section" id="section-hero"><div class="toprow"><div><h2 style="margin:0">Hero de la boutique</h2><p class="note">Ajoutez, modifiez, réordonnez ou désactivez les slides du Hero sans modifier l'identité visuelle.</p></div><button class="outline" type="button" onclick="importDefaultHeroes()">Importer les 3 Hero actuels</button></div><div class="hero-admin-grid" style="margin-top:16px"><form class="hero-form" id="hero-form"><input type="hidden" id="hero-id"><input id="hero-badge" placeholder="Badge / petit titre" required><input id="hero-title" placeholder="Titre HTML" required><textarea id="hero-description" placeholder="Description"></textarea><input id="hero-button-text" placeholder="Texte du bouton principal"><input id="hero-button-link" placeholder="Lien du bouton principal (ex. #catalogue)"><select id="hero-secondary-action"><option value="whatsapp">WhatsApp</option><option value="cart">Panier</option><option value="link">Lien</option></select><input id="hero-secondary-text" placeholder="Texte du 2e bouton"><input id="hero-secondary-link" placeholder="Lien du 2e bouton si lien"><input id="hero-trust" placeholder="Réassurance séparée par |"><input id="hero-mini-one" placeholder="Petit badge image 1"><input id="hero-mini-two" placeholder="Petit badge image 2"><div class="imgpick"><img id="hero-image-preview" src="assets/hero-services.jpg" alt="Aperçu Hero"><div class="imgpick-controls"><input type="file" id="hero-image-file" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"><small>PNG, JPG/JPEG, WEBP ou GIF. Image envoyée dans Supabase Storage.</small><input id="hero-image" placeholder="ou coller une URL / chemin d'image"></div></div><input id="hero-order" type="number" min="0" placeholder="Ordre d'affichage" value="0"><label style="font-size:11px"><input id="hero-active" type="checkbox" checked> Slide visible</label><div class="admin-actions"><button class="primary" type="submit">Enregistrer la slide</button><button class="outline" type="button" onclick="resetHeroForm()">Nouvelle</button></div></form><div><div id="hero-list" class="hero-list"><div class="loading">Chargement des slides…</div></div></div></div></div>
 <!-- CATALOGUE -->
       <div class="panel">
 
