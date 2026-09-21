@@ -394,9 +394,9 @@ function openMobileNav(){document.getElementById("mobile-nav")?.classList.toggle
 async function loadProducts(){
   try{
     if(!window.supabaseClient) throw new Error("Supabase non initialisé");
-    const {data,error}=await window.supabaseClient.from("products").select("id,slug,name,subtitle,category,badge,price,promo_price,promo_active,promo_start,promo_end,image_url,description,available,featured,sort_order,icon").eq("available",true).order("sort_order",{ascending:true});
+    const {data,error}=await window.supabaseClient.from("products").select("id,slug,name,subtitle,category,badge,price,promo_price,promo_active,promo_start,promo_end,image_url,description,product_details,available,featured,sort_order,icon").eq("available",true).order("sort_order",{ascending:true});
     if(error)throw error;
-    products=(data||[]).map(p=>({id:p.slug||String(p.id),dbId:p.id,category:p.category,name:p.name,subtitle:p.subtitle||"",price:p.price==null?null:Number(p.price),promo_price:p.promo_price==null?null:Number(p.promo_price),promo_active:!!p.promo_active,promo_start:p.promo_start||null,promo_end:p.promo_end||null,badge:p.badge||"",image:p.image_url||"",description:p.description||"",stock:p.available,featured:!!p.featured,sort_order:p.sort_order,icon:p.icon||"✦"}));
+    products=(data||[]).map(p=>({id:p.slug||String(p.id),dbId:p.id,category:p.category,name:p.name,subtitle:p.subtitle||"",price:p.price==null?null:Number(p.price),promo_price:p.promo_price==null?null:Number(p.promo_price),promo_active:!!p.promo_active,promo_start:p.promo_start||null,promo_end:p.promo_end||null,badge:p.badge||"",image:p.image_url||"",description:p.description||"",product_details:p.product_details||{},stock:p.available,featured:!!p.featured,sort_order:p.sort_order,icon:p.icon||"✦"}));
   }catch(err){
     console.warn("Catalogue Supabase indisponible, utilisation du catalogue local.",err);
     try{const r=await fetch("products.json",{cache:"no-store"});products=await r.json()}catch{products=FALLBACK}
