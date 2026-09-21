@@ -1952,40 +1952,15 @@ async function deleteHero(i){
 ================================ */
 
 function mapRow(p){
-
   return {
-
-    dbId:p.id,
-
-    id:p.slug || String(p.id),
-
-    name:p.name,
-
-    subtitle:p.subtitle || "",
-
-    category:p.category,
-
-    badge:p.badge || "",
-
-    price:
-      p.price == null
-      ? null
-      : Number(p.price),
-
-    image:p.image_url || "",
-
-    description:p.description || "",
-
-    stock:p.available,
-
-    featured:!!p.featured,
-
-    icon:p.icon || "✦",
-
-    sort_order:p.sort_order || 0
-
+    dbId:p.id,id:p.slug||String(p.id),name:p.name,subtitle:p.subtitle||"",
+    category:p.category,badge:p.badge||"",
+    price:p.price==null?null:Number(p.price),
+    promo_price:p.promo_price==null?null:Number(p.promo_price),
+    promo_active:!!p.promo_active,promo_start:p.promo_start||null,promo_end:p.promo_end||null,
+    image:p.image_url||"",description:p.description||"",stock:p.available,
+    featured:!!p.featured,icon:p.icon||"✦",sort_order:p.sort_order||0
   };
-
 }
 
 
@@ -2242,6 +2217,11 @@ function edit(i){
   $("featured").checked =
     !!p.featured;
 
+  $("promo-active").checked = !!p.promo_active;
+  $("promo-price").value = p.promo_price ?? "";
+  $("promo-start").value = p.promo_start ? new Date(p.promo_start).toISOString().slice(0,16) : "";
+  $("promo-end").value = p.promo_end ? new Date(p.promo_end).toISOString().slice(0,16) : "";
+
 
   pendingImage =
     p.image || "";
@@ -2277,6 +2257,11 @@ function resetForm(){
   $("stock").checked = true;
 
   $("featured").checked = false;
+
+  $("promo-active").checked = false;
+  $("promo-price").value = "";
+  $("promo-start").value = "";
+  $("promo-end").value = "";
 
   pendingImage = "";
 
