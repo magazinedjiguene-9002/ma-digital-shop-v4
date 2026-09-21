@@ -821,3 +821,82 @@ body[data-theme="dark"] .theme-toggle{background:#151e32;border-color:#34415e}
   .theme-toggle{display:flex}
   .theme-mobile{display:block}
 }
+
+/* ================================
+   DARK MODE — CARTES & IMAGES
+   Réduit les aplats blancs sans modifier les images elles-mêmes.
+   ================================ */
+body[data-theme="dark"] .products-carousel .card,
+body[data-theme="dark"] .featured-grid .card{
+  background:#11182a;
+  border-color:#283653;
+  box-shadow:0 14px 34px rgba(0,0,0,.30);
+}
+body[data-theme="dark"] .products-carousel .visual,
+body[data-theme="dark"] .featured-grid .visual{
+  background:linear-gradient(145deg,#101a30,#162641);
+  border-bottom:1px solid #24324d;
+}
+body[data-theme="dark"] .products-carousel .visual img,
+body[data-theme="dark"] .featured-grid .visual img{
+  background:transparent;
+}
+body[data-theme="dark"] .products-carousel .body,
+body[data-theme="dark"] .featured-grid .body{
+  background:#11182a;
+}
+body[data-theme="dark"] .products-carousel .badge,
+body[data-theme="dark"] .featured-grid .badge{
+  background:#172a45;
+  color:#55c8ff;
+}
+body[data-theme="dark"] .products-carousel .row button,
+body[data-theme="dark"] .featured-grid .row button{
+  background:#172137;
+  color:#edf3ff;
+  border-color:#30405e;
+}
+body[data-theme="dark"] .products-carousel .row .buy,
+body[data-theme="dark"] .featured-grid .row .buy{
+  background:var(--green);
+  border-color:var(--green);
+  color:#fff;
+}
+body[data-theme="dark"] .products-carousel .featured,
+body[data-theme="dark"] .featured-grid .featured{
+  color:#fff;
+}
+body[data-theme="dark"] .category-carousel .cat{
+  background:#11182a;
+  border-color:#283653;
+}
+body[data-theme="dark"] .category-carousel .cat-image>img{
+  background:#101a30;
+}
+body[data-theme="dark"] .category-carousel .cat-content{
+  background:#11182a;
+}
+body[data-theme="dark"] .about-image img{
+  background:#101a30;
+  border:1px solid #283653;
+}
+body[data-theme="dark"] .hero-v5 .hero-showcase{
+  background:#101a30;
+  border-color:#263650;
+}
+body[data-theme="dark"] .hero-v5 .hero-showcase .hero-services{
+  background:#101a30;
+}
+body[data-theme="dark"] .hero-v5 .mini{
+  background:#172137;
+  color:#edf3ff;
+  border:1px solid #30405e;
+  box-shadow:0 14px 30px rgba(0,0,0,.30);
+}
+body[data-theme="dark"] .hero-arrow,
+body[data-theme="dark"] .carousel-arrow{
+  background:#151f34;
+  color:#edf3ff;
+  border-color:#30405e;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
