@@ -216,13 +216,13 @@ function renderCart(){
 }
 function openCart(){document.getElementById("cart").classList.add("open");renderCart()}
 function closeCart(){document.getElementById("cart").classList.remove("open")}
-function order(id){const p=productById(id);if(!p)return;wa(`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite commander :\nProduit : ${p.name}\nCatégorie : ${label(p.category)}\nPrix affiché : ${money(p.price)}\n\nMerci de m'indiquer la procédure de paiement.`)}
+function order(id){const p=productById(id);if(!p)return;wa(`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite commander :\nProduit : ${p.name}\nCatégorie : ${label(p.category)}\nPrix affiché : ${promoInfo(p).price==null?"Prix sur demande":money(promoInfo(p).price)}\n\nMerci de m'indiquer la procédure de paiement.`)}
 function checkout(){
   if(!cart.length)return;
   const modal=document.getElementById("checkout-modal");
   if(!modal)return;
   renderCheckoutSummary();
-  const total=cart.reduce((sum,r)=>{const p=productById(r.id);return p&&p.price!=null?sum+Number(p.price)*r.qty:sum},0);
+  const total=cart.reduce((sum,r)=>{const p=productById(r.id),pi=p&&promoInfo(p);return pi&&pi.price!=null?sum+Number(pi.price)*r.qty:sum},0);
   const hasUnknownPrice=cart.some(r=>{const p=productById(r.id);return p&&p.price==null});
   const totalEl=document.getElementById("checkout-total");
   if(totalEl)totalEl.textContent=hasUnknownPrice?"À confirmer":money(total);
@@ -241,9 +241,9 @@ function renderCheckoutSummary(){
     const row=document.createElement("div"); row.className="checkout-item";
     const info=document.createElement("div");
     const name=document.createElement("b"); name.textContent=p.name;
-    const meta=document.createElement("small"); meta.textContent=r.qty+" × "+(p.price==null?"Prix sur demande":money(p.price));
+    const meta=document.createElement("small"); meta.textContent=r.qty+" × "+(promoInfo(p).price==null?"Prix sur demande":money(promoInfo(p).price));
     info.append(name,meta);
-    const subtotal=document.createElement("strong"); subtotal.textContent=p.price==null?"À confirmer":money(Number(p.price)*r.qty);
+    const subtotal=document.createElement("strong"); subtotal.textContent=promoInfo(p).price==null?"À confirmer":money(Number(promoInfo(p).price)*r.qty);
     row.append(info,subtotal); el.appendChild(row);
   });
   const count=document.getElementById("checkout-item-count");
