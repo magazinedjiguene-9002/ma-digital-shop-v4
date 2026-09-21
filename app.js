@@ -308,6 +308,10 @@ async function submitOrder(event){
   }finally{if(submitBtn){submitBtn.disabled=false;submitBtn.textContent="Confirmer la commande"}}
 }
 function goSearch(){document.getElementById("global-search")?.focus()}
+function filterFavorites(){
+  const arr=favorites.map(id=>productById(id)).filter(Boolean).filter(p=>p.stock!==false);
+  return arr;
+}
 function getSearchMatches(query){
   const q=String(query||"").toLowerCase().trim();
   if(!q)return [];
