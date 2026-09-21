@@ -276,6 +276,95 @@ body{background:#f5f8ff}
   #orders-list{grid-template-columns:1fr}
 }
 
+/* DASHBOARD — vue d'ensemble */
+.admin-stats{
+  margin:0 0 16px;
+  padding:18px;
+  border:1px solid #e1eaf6;
+  border-radius:20px;
+  background:#fff;
+  box-shadow:0 8px 26px rgba(10,15,45,.045);
+}
+.admin-stats-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:13px;
+}
+.admin-stats-head h2{
+  margin:0;
+  font-size:16px;
+  color:var(--navy);
+}
+.admin-stats-head .admin-kicker{margin-bottom:3px}
+.admin-refresh{font-size:10px !important;padding:8px 11px !important}
+.admin-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.stat-card{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+  padding:13px;
+  border:1px solid #e4ecf7;
+  border-radius:15px;
+  background:linear-gradient(145deg,#fff,#f8fbff);
+  color:inherit;
+  text-decoration:none;
+  transition:.18s ease;
+}
+.stat-card:hover{
+  transform:translateY(-2px);
+  border-color:#c8dbf4;
+  box-shadow:0 8px 20px rgba(20,90,180,.07);
+}
+.stat-icon{
+  display:grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  border-radius:11px;
+  background:#edf5ff;
+  font-size:18px;
+}
+.stat-card small,.stat-card strong,.stat-card em{display:block}
+.stat-card small{
+  color:#7b88a2;
+  font-size:9px;
+  font-weight:700;
+  line-height:1.3;
+}
+.stat-card strong{
+  margin-top:2px;
+  color:var(--navy);
+  font-size:20px;
+  line-height:1.15;
+}
+.stat-card em{
+  margin-top:3px;
+  color:#98a3b6;
+  font-size:8px;
+  font-style:normal;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.stat-orders .stat-icon{background:#eef8f2}
+@media(max-width:900px){
+  .admin-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  .admin-stats{padding:14px;border-radius:17px}
+  .admin-stats-head{align-items:flex-start}
+  .admin-stats-grid{grid-template-columns:1fr}
+  .stat-card{padding:11px}
+}
+
 /* =========================================
    ADMIN UI — organisation & confort
    ========================================= */
@@ -592,6 +681,34 @@ body{background:#f5f8ff}
         <div class="admin-intro-tip">✨ <span>Améliorer sans dénaturer</span></div>
       </div>
 
+      <section class="admin-stats" aria-label="Vue d'ensemble">
+        <div class="admin-stats-head">
+          <div>
+            <span class="admin-kicker">VUE D'ENSEMBLE</span>
+            <h2>Activité de la boutique</h2>
+          </div>
+          <button class="outline admin-refresh" type="button" onclick="refreshAdminData()">↻ Actualiser</button>
+        </div>
+        <div class="admin-stats-grid">
+          <a class="stat-card stat-orders" href="#section-commandes">
+            <span class="stat-icon">🛒</span>
+            <span><small>Commandes en attente</small><strong id="stat-pending">—</strong><em id="stat-total-orders">— commande(s) au total</em></span>
+          </a>
+          <a class="stat-card" href="#section-produits">
+            <span class="stat-icon">📦</span>
+            <span><small>Produits actifs</small><strong id="stat-products">—</strong><em>Disponibles sur la boutique</em></span>
+          </a>
+          <a class="stat-card" href="#section-categories">
+            <span class="stat-icon">🗂️</span>
+            <span><small>Catégories actives</small><strong id="stat-categories">—</strong><em>Sections du catalogue</em></span>
+          </a>
+          <a class="stat-card" href="#section-hero">
+            <span class="stat-icon">🖼️</span>
+            <span><small>Slides Hero visibles</small><strong id="stat-hero">—</strong><em>Présentes sur la boutique</em></span>
+          </a>
+        </div>
+      </section>
+
       <div class="panel admin-section" id="section-commandes"><div class="toprow"><div><h2 style="margin:0">Commandes</h2><p class="note">Les commandes reçues depuis la boutique en ligne.</p></div><button class="outline" type="button" onclick="loadOrders()">Actualiser</button></div><div id="orders-list" style="margin-top:16px"><div class="loading">Chargement des commandes…</div></div></div>\n\n
 
 
@@ -878,6 +995,7 @@ const $ = id => document.getElementById(id);
 let data = [];
 let pendingImage = "";
 let session = null;
+let ordersAdminData = [];
 
 
 /* ================================
@@ -916,6 +1034,35 @@ function slug(s){
 
 }
 
+
+function refreshDashboardStats(){
+  const pending = ordersAdminData.filter(o => String(o.status || "pending") === "pending").length;
+  const products = data.filter(p => p.stock !== false).length;
+  const activeCategories = categories.filter(c => c.active !== false).length;
+  const activeHero = heroAdminData.filter(s => s.active !== false).length;
+
+  if($("stat-pending")) $("stat-pending").textContent = pending;
+  if($("stat-total-orders")) $("stat-total-orders").textContent = ordersAdminData.length + " commande(s) au total";
+  if($("stat-products")) $("stat-products").textContent = products;
+  if($("stat-categories")) $("stat-categories").textContent = activeCategories;
+  if($("stat-hero")) $("stat-hero").textContent = activeHero;
+}
+
+async function refreshAdminData(){
+  const btn = document.querySelector(".admin-refresh");
+  if(btn) btn.disabled = true;
+  try{
+    await Promise.all([
+      loadOrders(),
+      loadCatalog(),
+      loadCategories(),
+      loadHeroAdmin()
+    ]);
+    setStatus("Données actualisées");
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+}
 
 function money(p){
 
@@ -1245,6 +1392,9 @@ async function loadOrders(){
     return;
   }
 
+  ordersAdminData = orders || [];
+  refreshDashboardStats();
+
   if(!orders?.length){
     el.innerHTML='<div class="orders-empty">Aucune commande reçue pour le moment.</div>';
     return;
@@ -1313,6 +1463,7 @@ async function loadHeroAdmin(){
   }
 
   heroAdminData = result.data || [];
+  refreshDashboardStats();
   renderHeroAdmin();
 }
 
@@ -1651,6 +1802,7 @@ async function loadCategories(){
   const {data:d,error}=await supabaseClient.from("categories").select("*").order("sort_order",{ascending:true}).order("name",{ascending:true});
   if(error){el.innerHTML='<p class="note">Impossible de charger les catégories : '+esc(error.message)+'</p>'; return;}
   categories=d||[];
+  refreshDashboardStats();
   renderCategories();
   const select=$("category");
   if(select){const current=select.value;select.innerHTML=categories.map(c=>'<option value="'+attr(c.id)+'">'+esc(c.name)+'</option>').join("");if(categories.some(c=>c.id===current))select.value=current;}
