@@ -61,6 +61,17 @@ async function shareProduct(id){
 function addFromDetail(id){ add(id); closeProductDetail(); }
 function closeProductDetail(){document.getElementById('product-modal')?.classList.remove('open')}
 
+const FAVORITES_KEY="ma_favorites_v1";
+let favorites=JSON.parse(localStorage.getItem(FAVORITES_KEY)||"[]");
+function isFavorite(id){return favorites.includes(id)}
+function toggleFavorite(id){
+  favorites=isFavorite(id)?favorites.filter(x=>x!==id):[...favorites,id];
+  localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));
+  renderHome();
+  const p=productById(id);if(p)openProductDetail(id);
+}
+function favoriteButton(p){return '<button type="button" class="favorite-btn '+(isFavorite(p.id)?'active':'')+'" aria-label="'+(isFavorite(p.id)?'Retirer des favoris':'Ajouter aux favoris')+'" onclick="event.stopPropagation();toggleFavorite(\''+attr(p.id)+'\')">'+(isFavorite(p.id)?'♥':'♡')+'</button>'}
+
 function isPromoActive(p){
   if(!p||!p.promo_active||p.promo_price==null||p.price==null||p.promo_price>=p.price)return false;
   const now=Date.now();
