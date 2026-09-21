@@ -900,3 +900,11 @@ body[data-theme="dark"] .carousel-arrow{
   border-color:#30405e;
   box-shadow:0 8px 24px rgba(0,0,0,.28);
 }
+
+/* Admin order filters */
+.orders-toolbar{display:grid;grid-template-columns:minmax(240px,1fr) 180px auto auto;gap:10px;align-items:center;margin:0 0 16px}
+.orders-toolbar input,.orders-toolbar select{width:100%;min-height:42px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;color:var(--text);outline:0}
+.orders-toolbar input:focus,.orders-toolbar select:focus{border-color:#87baff;box-shadow:0 0 0 3px rgba(8,119,255,.08)}
+.orders-count{font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
+@media(max-width:800px){.orders-toolbar{grid-template-columns:1fr 1fr}.orders-toolbar .orders-count{grid-column:1/-1}.orders-toolbar button{width:100%}}
+@media(max-width:460px){.orders-toolbar{grid-template-columns:1fr}.orders-count{grid-column:auto}}
