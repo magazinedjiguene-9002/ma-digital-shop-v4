@@ -93,7 +93,7 @@ function productCard(p){
   const disabled=p.stock===false,info=promoInfo(p);
   const detail="onclick=\"if(!event.target.closest('button'))openProductDetail('"+attr(p.id)+"')\"";
   return '<article class="card" '+detail+' tabindex="0" role="button">'+
-    '<div class="visual '+(p.image?'has-image':'')+'">'+productImage(p)+'<div class="cover"><span>'+esc(p.icon||'✦')+'</span><b>'+esc(p.name)+'</b></div>'+(p.featured?'<span class="featured">Populaire</span>':'')+(info.old!=null?'<span class="promo-badge">-'+info.percent+'%</span>':'')+'</div>'+
+    '<div class="visual '+(p.image?'has-image':'')+'">'+favoriteButton(p)+productImage(p)+'<div class="cover"><span>'+esc(p.icon||'✦')+'</span><b>'+esc(p.name)+'</b></div>'+(p.featured?'<span class="featured">Populaire</span>':'')+(info.old!=null?'<span class="promo-badge">-'+info.percent+'%</span>':'')+'</div>'+
     '<div class="body"><span class="badge">'+esc(p.badge||label(p.category))+'</span><h3>'+esc(p.name)+'</h3><p>'+esc(p.description||p.subtitle||'')+'</p>'+
       productPriceMarkup(p)+
       '<div class="row"><button '+(disabled?'disabled':'')+' onclick="add(\''+attr(p.id)+'\')">'+(disabled?'Indisponible':'Ajouter')+'</button><button class="buy" onclick="order(\''+attr(p.id)+'\')">WhatsApp</button></div>'+
