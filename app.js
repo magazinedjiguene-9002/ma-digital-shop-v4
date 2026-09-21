@@ -17,15 +17,47 @@ function productImage(p){
   return "";
 }
 function openProductDetail(id){
-  const p=productById(id); if(!p)return;
-  const modal=document.getElementById('product-modal'), content=document.getElementById('product-detail-content'), title=document.getElementById('detail-title');
+  const p=productById(id);if(!p)return;
+  const modal=document.getElementById("product-modal"),content=document.getElementById("product-detail-content"),title=document.getElementById("detail-title");
   if(!modal||!content)return;
   if(title)title.textContent=p.name;
-  const price=p.price==null?'Prix sur demande':money(p.price);
+  const price=p.price==null?"Prix sur demande":money(p.price);
   const cat=label(p.category);
-  content.innerHTML=`<div class="product-detail"><div class="product-detail-media">${productImage(p)}</div><div class="product-detail-info"><span class="badge">${esc(p.badge||cat)}</span><h3>${esc(p.name)}</h3><p class="detail-subtitle">${esc(p.subtitle||'')}</p><p class="detail-description">${esc(p.description||'')}</p><div class="detail-price">${price}</div><div class="detail-meta"><span>✓ Produit disponible</span><span>✓ Commande WhatsApp</span></div><div class="detail-actions"><button class="primary" onclick="addFromDetail('${attr(p.id)}')">Ajouter au panier</button><button class="outline" onclick="order('${attr(p.id)}')">Commander sur WhatsApp</button></div></div></div>`;
-  modal.classList.add('open');
+  const related=products.filter(x=>x.id!==p.id&&x.category===p.category&&x.stock!==false).slice(0,4);
+  const fallback="assets/category-"+(p.category==="streaming"?"streaming":p.category==="gaming"?"gaming":p.category==="software"?"software":"accessories")+".jpg";
+  const image=p.image||fallback;
+  const shareText="Bonjour MA DIGITAL SHOP 👋 Je souhaite avoir des informations sur : "+p.name;
+  content.innerHTML=
+    '<div class="product-detail">'
+    +'<div class="product-detail-media">'
+    +'<img id="detail-main-image" src="'+attr(image)+'" alt="'+attr(p.name)+'" loading="eager" onerror="this.onerror=null;this.src=\''+attr(fallback)+'\'">'
+    +'<span class="detail-category">'+esc(cat)+'</span>'
+    +(p.featured?'<span class="detail-popular">★ Populaire</span>':"")
+    +'</div>'
+    +'<div class="product-detail-info">'
+    +'<span class="badge">'+esc(p.badge||cat)+'</span>'
+    +'<h3>'+esc(p.name)+'</h3>'
+    +'<p class="detail-subtitle">'+esc(p.subtitle||"")+'</p>'
+    +'<p class="detail-description">'+esc(p.description||"")+'</p>'
+    +'<div class="detail-price">'+price+'</div>'
+    +'<div class="detail-meta"><span>✓ Disponible</span><span>✓ Commande WhatsApp</span><span>✓ Livraison/activation selon produit</span></div>'
+    +'<div class="detail-quantity"><span>Quantité</span><div class="detail-qty"><button type="button" onclick="changeDetailQty(-1)">−</button><strong id="detail-qty-value">1</strong><button type="button" onclick="changeDetailQty(1)">+</button></div></div>'
+    +'<div class="detail-actions"><button class="primary" onclick="addFromDetailQty(\''+attr(p.id)+'\')">Ajouter au panier</button><button class="outline" onclick="order(\''+attr(p.id)+'\')">Commander sur WhatsApp</button><button class="detail-share" onclick="shareProduct(\''+attr(p.id)+'\')">↗ Partager ce produit</button></div>'
+    +'</div></div>'
+    +(related.length?'<div class="related-products"><div class="related-head"><div><span class="pill">À DÉCOUVRIR</span><h4>Produits similaires</h4></div></div><div class="related-grid">'+related.map(function(x){return '<button type="button" class="related-card" onclick="openProductDetail(\''+attr(x.id)+'\')">'+productImage(x)+'<span><b>'+esc(x.name)+'</b><small>'+esc(x.price==null?"Prix sur demande":money(x.price))+'</small></span></button>'}).join("")+'</div></div>':"");
+  modal.classList.add("open");
+  window.detailQty=1;
 }
+function changeDetailQty(delta){window.detailQty=Math.max(1,Math.min(99,(window.detailQty||1)+delta));const el=document.getElementById("detail-qty-value");if(el)el.textContent=window.detailQty}
+function addFromDetailQty(id){const qty=window.detailQty||1;for(let i=0;i<qty;i++)add(id);closeProductDetail()}
+async function shareProduct(id){
+  const p=productById(id);if(!p)return;
+  const text="MA DIGITAL SHOP — "+p.name+"\n"+(p.price==null?"Prix sur demande":money(p.price));
+  if(navigator.share){try{await navigator.share({title:p.name,text,url:window.location.href.split("#")[0]+"#produit-"+encodeURIComponent(p.id)});return}catch(e){}}
+  if(navigator.clipboard){try{await navigator.clipboard.writeText(text+"\n"+window.location.href);const msg=document.getElementById("search-message");if(msg){msg.textContent="Lien du produit copié.";msg.classList.add("show");setTimeout(()=>msg.classList.remove("show"),2500)}return}catch(e){}}
+  wa("Je suis intéressé par : "+p.name);
+}
+
 function addFromDetail(id){ add(id); closeProductDetail(); }
 function closeProductDetail(){document.getElementById('product-modal')?.classList.remove('open')}
 
