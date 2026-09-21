@@ -928,3 +928,16 @@ body[data-theme="dark"] .search-suggestion:hover,body[data-theme="dark"] .search
   .search-suggestion{padding:8px}
   .search-suggestion img,.search-suggestion-icon{width:34px;height:34px;flex-basis:34px}
 }
+
+
+/* V6.0 — catalogue filters */
+.catalog-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0}
+.catalog-toolbar .search,.catalog-toolbar .select{min-width:145px}
+.catalog-toolbar .price-filter{max-width:110px}
+@media(max-width:700px){
+  .catalog-toolbar{display:grid;grid-template-columns:1fr 1fr}
+  .catalog-toolbar .search,.catalog-toolbar .select,.catalog-toolbar .price-filter{width:100%;min-width:0;max-width:none;box-sizing:border-box}
+}
+@media(max-width:420px){
+  .catalog-toolbar{grid-template-columns:1fr}
+}
