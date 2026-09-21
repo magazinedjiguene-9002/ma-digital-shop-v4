@@ -941,3 +941,38 @@ body[data-theme="dark"] .search-suggestion:hover,body[data-theme="dark"] .search
 @media(max-width:420px){
   .catalog-toolbar{grid-template-columns:1fr}
 }
+
+
+/* V6.0 — fiche produit enrichie */
+.product-detail-media{min-height:410px}
+.detail-category,.detail-popular{position:absolute;top:14px;z-index:2;padding:7px 10px;border-radius:999px;font-size:9px;font-weight:800;backdrop-filter:blur(10px)}
+.detail-category{left:14px;background:rgba(255,255,255,.88);color:#27466e}
+.detail-popular{right:14px;background:rgba(8,119,255,.9);color:#fff}
+.detail-quantity{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 14px}
+.detail-quantity>span{font-size:10px;font-weight:700;color:var(--muted)}
+.detail-qty{display:flex;align-items:center;gap:8px}
+.detail-qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--white,#fff);cursor:pointer}
+.detail-qty strong{min-width:20px;text-align:center;font-size:11px}
+.detail-share{width:100%;padding:9px;border:1px dashed var(--line);background:transparent;color:var(--text);border-radius:9px;cursor:pointer;font-size:10px}
+.related-products{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.related-head h4{margin:7px 0 12px;font-size:17px}
+.related-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.related-card{display:flex;align-items:center;gap:8px;min-width:0;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--white,#fff);text-align:left;cursor:pointer}
+.related-card img{width:46px;height:46px;flex:0 0 46px;object-fit:cover;border-radius:9px}
+.related-card span{min-width:0}
+.related-card b,.related-card small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.related-card b{font-size:9px;color:var(--text)}
+.related-card small{font-size:8px;color:var(--muted);margin-top:3px}
+body[data-theme="dark"] .detail-category{background:rgba(17,24,42,.88);color:#dbeafe}
+body[data-theme="dark"] .related-card{background:#11182a}
+@media(max-width:700px){
+ .product-detail-media{min-height:210px;max-height:270px}
+ .detail-category,.detail-popular{top:9px;font-size:7px;padding:5px 7px}
+ .detail-category{left:9px}.detail-popular{right:9px}
+ .detail-quantity{margin-bottom:10px}
+ .related-products{margin-top:17px;padding-top:14px}
+ .related-grid{grid-template-columns:1fr 1fr;gap:7px}
+ .related-card{padding:6px;gap:6px}
+ .related-card img{width:38px;height:38px;flex-basis:38px}
+ .related-card b{font-size:8px}.related-card small{font-size:7px}
+}
