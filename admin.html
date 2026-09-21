@@ -1563,49 +1563,49 @@ function formatOrderDate(value){
   return new Intl.DateTimeFormat("fr-FR",{dateStyle:"medium",timeStyle:"short"}).format(new Date(value));
 }
 
+function getFilteredOrders(){
+  const q=String($("orders-search")?.value||"").trim().toLowerCase();
+  const status=String($("orders-status-filter")?.value||"");
+  return ordersAdminData.filter(function(order){
+    if(status && String(order.status||"pending")!==status) return false;
+    if(!q) return true;
+    const items=Array.isArray(order.items)?order.items:[];
+    const hay=[order.order_code,order.customer_name,order.customer_whatsapp,order.notes,...items.map(i=>i.name)].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+}
+
+function renderOrders(){
+  const el=$("orders-list"); if(!el)return;
+  const list=getFilteredOrders();
+  const count=$("orders-count");
+  if(count) count.textContent=list.length+" commande"+(list.length>1?"s":"");
+  if(!list.length){
+    el.innerHTML='<div class="orders-empty">Aucune commande ne correspond aux filtres.</div>';
+    return;
+  }
+  el.innerHTML=list.map(function(order){
+    const items=Array.isArray(order.items)?order.items:[];
+    const hasUnknown=items.some(i=>i.unit_price==null);
+    const totalText=hasUnknown?"À confirmer":money(order.total);
+    const itemsHtml=items.map(i=>'<div>• '+esc(i.name)+' × '+(Number(i.quantity)||0)+(i.unit_price==null?" — Prix sur demande":" — "+money(i.subtotal))+'</div>').join("");
+    const current=String(order.status||"pending");
+    return '<article class="order-card"><div class="order-top"><div><b>Commande #'+esc(order.order_code||order.id)+'</b><div class="order-meta">'+esc(order.customer_name||"Client")+' · '+esc(order.customer_whatsapp)+'<br>'+esc(formatOrderDate(order.created_at))+'</div></div><div class="order-total">'+totalText+'</div></div><div class="order-items">'+(itemsHtml||"Aucun article")+'</div>'+(order.notes?'<div class="note" style="margin-top:10px"><b>Note :</b> '+esc(order.notes)+'</div>':"")+'<div class="order-actions"><select class="order-status" onchange="updateOrderStatus('+order.id+',this.value)">'+["pending","confirmed","preparing","completed","cancelled"].map(function(s){return '<option value="'+s+'" '+(current===s?"selected":"")+'>'+statusLabel(s)+'</option>'}).join("")+'</select><button class="outline" type="button" onclick="openOrderWhatsApp(\''+attr(order.customer_whatsapp)+'\',\''+attr(order.customer_name||"Client")+'\',\''+attr(order.order_code||order.id)+'\')">WhatsApp</button></div></article>';
+  }).join("");
+}
+
 async function loadOrders(){
   const el=$("orders-list");
   if(!el || !session)return;
   el.innerHTML='<div class="loading">Chargement des commandes…</div>';
-
-  const {data:orders,error}=await supabaseClient
-    .from("orders")
-    .select("id,order_code,customer_name,customer_whatsapp,items,total,status,notes,created_at,updated_at")
-    .order("created_at",{ascending:false});
-
-  if(error){
-    el.innerHTML='<p class="note">Impossible de charger les commandes : '+esc(error.message)+'</p>';
+  const result=await supabaseClient.from("orders").select("id,order_code,customer_name,customer_whatsapp,items,total,status,notes,created_at,updated_at").order("created_at",{ascending:false});
+  if(result.error){
+    el.innerHTML='<p class="note">Impossible de charger les commandes : '+esc(result.error.message)+'</p>';
     return;
   }
-
-  ordersAdminData = orders || [];
+  ordersAdminData=result.data||[];
   refreshDashboardStats();
-
-  if(!orders?.length){
-    el.innerHTML='<div class="orders-empty">Aucune commande reçue pour le moment.</div>';
-    return;
-  }
-
-  el.innerHTML=orders.map(order=>{
-    const items=Array.isArray(order.items)?order.items:[];
-    const hasUnknown=items.some(i=>i.unit_price==null);
-    const totalText=hasUnknown?"À confirmer":money(order.total);
-    const itemsHtml=items.map(i=>`<div>• ${esc(i.name)} × ${Number(i.quantity)||0}${i.unit_price==null?" — Prix sur demande":" — "+money(i.subtotal)}</div>`).join("");
-    return `<article class="order-card">
-      <div class="order-top">
-        <div><b>Commande #${esc(order.order_code||order.id)}</b><div class="order-meta">${esc(order.customer_name||"Client")} · ${esc(order.customer_whatsapp)}<br>${esc(formatOrderDate(order.created_at))}</div></div>
-        <div class="order-total">${totalText}</div>
-      </div>
-      <div class="order-items">${itemsHtml||"Aucun article"}</div>
-      ${order.notes?`<div class="note" style="margin-top:10px"><b>Note :</b> ${esc(order.notes)}</div>`:""}
-      <div class="order-actions">
-        <select class="order-status" onchange="updateOrderStatus(${order.id},this.value)">
-          ${["pending","confirmed","preparing","completed","cancelled"].map(st=>`<option value="${st}" ${order.status===st?"selected":""}>${orderStatusLabel(st)}</option>`).join("")}
-        </select>
-        <button class="outline" type="button" onclick="openOrderWhatsApp('${attr(order.customer_whatsapp)}','${attr(order.customer_name||"Client")}','${attr(order.order_code||order.id)}')">WhatsApp</button>
-      </div>
-    </article>`;
-  }).join("");
+  renderOrders();
 }
 
 async function updateOrderStatus(id,status){
@@ -1619,6 +1619,14 @@ async function updateOrderStatus(id,status){
 }
 
 function openOrderWhatsApp(number,name,orderCode){
+document.getElementById("orders-search")?.addEventListener("input",renderOrders);
+document.getElementById("orders-status-filter")?.addEventListener("change",renderOrders);
+document.getElementById("orders-reset")?.addEventListener("click",function(){
+  const s=$("orders-search"), f=$("orders-status-filter");
+  if(s)s.value=""; if(f)f.value="";
+  renderOrders();
+});
+
   const digits=String(number||"").replace(/\D/g,"");
   const text=`Bonjour ${name} 👋\n\nConcernant votre commande #${orderCode} chez MA DIGITAL SHOP.`;
   window.open("https://wa.me/"+digits+"?text="+encodeURIComponent(text),"_blank","noopener,noreferrer");
