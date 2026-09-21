@@ -21,7 +21,7 @@ function openProductDetail(id){
   const modal=document.getElementById("product-modal"),content=document.getElementById("product-detail-content"),title=document.getElementById("detail-title");
   if(!modal||!content)return;
   if(title)title.textContent=p.name;
-  const price=p.price==null?"Prix sur demande":money(p.price);
+  const info=promoInfo(p); const price=info.price==null?"Prix sur demande":money(info.price);
   const cat=label(p.category);
   const related=products.filter(x=>x.id!==p.id&&x.category===p.category&&x.stock!==false).slice(0,4);
   const fallback="assets/category-"+(p.category==="streaming"?"streaming":p.category==="gaming"?"gaming":p.category==="software"?"software":"accessories")+".jpg";
@@ -39,7 +39,7 @@ function openProductDetail(id){
     +'<h3>'+esc(p.name)+'</h3>'
     +'<p class="detail-subtitle">'+esc(p.subtitle||"")+'</p>'
     +'<p class="detail-description">'+esc(p.description||"")+'</p>'
-    +'<div class="detail-price">'+price+'</div>'
+    +'<div class="detail-price">'+(info.old!=null?'<strong>'+price+'</strong><del>'+money(info.old)+'</del><span class="promo-percent">-'+info.percent+'%</span>':price)+'</div>'
     +'<div class="detail-meta"><span>✓ Disponible</span><span>✓ Commande WhatsApp</span><span>✓ Livraison/activation selon produit</span></div>'
     +'<div class="detail-quantity"><span>Quantité</span><div class="detail-qty"><button type="button" onclick="changeDetailQty(-1)">−</button><strong id="detail-qty-value">1</strong><button type="button" onclick="changeDetailQty(1)">+</button></div></div>'
     +'<div class="detail-actions"><button class="primary" onclick="addFromDetailQty(\''+attr(p.id)+'\')">Ajouter au panier</button><button class="outline" onclick="order(\''+attr(p.id)+'\')">Commander sur WhatsApp</button><button class="detail-share" onclick="shareProduct(\''+attr(p.id)+'\')">↗ Partager ce produit</button></div>'
