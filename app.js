@@ -225,6 +225,35 @@ async function loadProducts(){
 }
 
 
+
+/* ================================
+   THEME CLAIR / SOMBRE
+   ================================ */
+function applyTheme(theme){
+  const selected=theme==="dark"?"dark":"light";
+  document.body?.setAttribute("data-theme",selected);
+  const buttons=document.querySelectorAll("#theme-toggle,#theme-toggle-mobile");
+  buttons.forEach(function(btn){
+    const dark=selected==="dark";
+    btn.innerHTML=dark?"☀":"☾";
+    btn.setAttribute("aria-label",dark?"Activer le mode clair":"Activer le mode sombre");
+    btn.setAttribute("title",dark?"Mode clair":"Mode sombre");
+    if(btn.id==="theme-toggle-mobile"){
+      btn.innerHTML=(dark?"☀":"☾")+" <span>"+(dark?"Mode clair":"Mode sombre")+"</span>";
+    }
+  });
+}
+function toggleTheme(){
+  const next=document.body?.getAttribute("data-theme")==="dark"?"light":"dark";
+  localStorage.setItem("ma_theme",next);
+  applyTheme(next);
+}
+function initTheme(){
+  const saved=localStorage.getItem("ma_theme");
+  const preferred=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+  applyTheme(saved||preferred);
+}
+
 // ================================
 // HERO DYNAMIQUE
 // ================================
@@ -323,6 +352,7 @@ function showAllCategory(category){
 }
 
 document.addEventListener("DOMContentLoaded",async()=>{
+  initTheme();
   await loadHero();
   initAutoTracks();
   loadCategories();
