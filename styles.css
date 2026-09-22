@@ -746,7 +746,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .success-code,.success-total{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#f9fbff;margin-top:8px;text-align:left}
 .success-code span,.success-total span{font-size:9px;color:var(--muted)}
 .success-code strong,.success-total strong{font-size:11px}
-.success-close{width:100%;margin-top:15px}
+.success-steps{display:grid;gap:7px;margin:14px 0;text-align:left}.success-step{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--white)}.success-step strong{width:22px;height:22px;flex:0 0 22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#eafbf1;color:#16a34a;font-size:9px}.success-step span{font-size:9px;color:var(--text);line-height:1.35}.success-whatsapp{width:100%;margin-top:12px}.success-close{width:100%;margin-top:7px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--text);font-weight:700;cursor:pointer}.success-close{width:100%;margin-top:15px}
 @media(max-width:700px){.checkout-items-wrap{padding:10px}.checkout-item{padding:8px 0}.checkout-item b{font-size:9px}.checkout-item small,.checkout-items-head span{font-size:7px}.checkout-item strong{font-size:9px}.success-box{padding:18px}.success-box h2{font-size:20px}.success-box p{font-size:9px}.success-code,.success-total{padding:9px 10px}}
 /* ================================
    THEME CLAIR / SOMBRE
