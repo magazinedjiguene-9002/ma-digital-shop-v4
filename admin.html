@@ -2069,11 +2069,28 @@ function renderCategories(){
 }
 
 function resetCategoryForm(){
-  $("category-form")?.reset(); $("category-id").value=""; $("category-order").value=categories.length+1; $("category-active").checked=true; $("category-image-preview").src="assets/logo.png"; $("category-image-file").value="";
+  $("category-form")?.reset();
+  $("category-id").value="";
+  $("category-slug").readOnly=false;
+  $("category-order").value=categories.length+1;
+  $("category-active").checked=true;
+  $("category-image-preview").src="assets/logo.png";
+  $("category-image-file").value="";
+  pendingCategoryImage="";
 }
 function editCategory(i){
   const c=categories[i]; if(!c)return;
-  $("category-id").value=c.id; $("category-name").value=c.name||""; $("category-slug").value=c.id||""; $("category-image").value=c.image_url||""; $("category-image-preview").src=c.image_url||"assets/logo.png"; $("category-image-file").value=""; $("category-description").value=c.description||""; $("category-order").value=c.sort_order||0; $("category-active").checked=c.active!==false; scrollTo({top:document.querySelector(".category-form")?.getBoundingClientRect().top+scrollY-100||0,behavior:"smooth"});
+  $("category-id").value=c.id;
+  $("category-name").value=c.name||"";
+  $("category-slug").value=c.id||"";
+  $("category-slug").readOnly=true;
+  $("category-image").value=c.image_url||"";
+  $("category-image-preview").src=c.image_url||"assets/logo.png";
+  $("category-image-file").value="";
+  $("category-description").value=c.description||"";
+  $("category-order").value=c.sort_order||0;
+  $("category-active").checked=c.active!==false;
+  scrollTo({top:document.querySelector(".category-form")?.getBoundingClientRect().top+scrollY-100||0,behavior:"smooth"});
 }
 let pendingCategoryImage="";
 $("category-image-file")?.addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;if(!/^image\/(png|jpe?g|webp|gif)$/i.test(f.type)){alert("Format non supporté.");e.target.value="";return;}const reader=new FileReader();reader.onload=ev=>{pendingCategoryImage=ev.target.result;$("category-image").value="";$("category-image-preview").src=ev.target.result};reader.readAsDataURL(f)});
@@ -2087,7 +2104,16 @@ $("category-form")?.addEventListener("submit",async e=>{
   try{
     setStatus("Enregistrement…");
     let res;
-    if(oldId){res=await supabaseClient.from("categories").update(row).eq("id",oldId);}else{res=await supabaseClient.from("categories").insert(row);}
+    if(oldId){
+      // L'identifiant d'une catégorie existante est sa clé primaire et peut être
+      // référencé par les produits : on le conserve pendant une modification.
+      row.id=oldId;
+      res=await supabaseClient.from("categories").update(row).eq("id",oldId);
+    }else{
+      const existing=categories.some(c=>String(c.id)===String(id));
+      if(existing) throw new Error("Cet identifiant de catégorie existe déjà. Clique sur « Nouvelle » et choisis un autre identifiant.");
+      res=await supabaseClient.from("categories").insert(row);
+    }
     if(res.error)throw res.error;
     await loadCategories(); resetCategoryForm(); await loadCatalog(); alert("Catégorie enregistrée en ligne.");
   }catch(err){setStatus("Erreur",true);alert("Erreur : "+err.message)}
@@ -2639,12 +2665,21 @@ $("product-form").addEventListener(
         $("id").value;
 
 
-      const slugName =
-        existingId ||
-        slug(
-          $("name").value
-        );
+      let slugName = existingId || slug($("name").value);
+      if(!slugName) throw new Error("Nom de produit invalide.");
 
+      // Sur un nouveau produit, éviter une collision sur la clé unique slug.
+      // En modification, on conserve exactement le slug existant.
+      if(!existingId){
+        const baseSlug=slugName;
+        let n=2;
+        while(true){
+          const check=await supabaseClient.from("products").select("id").eq("slug",slugName).maybeSingle();
+          if(check.error) throw check.error;
+          if(!check.data) break;
+          slugName=baseSlug+"-"+n++;
+        }
+      }
 
       let image =
         await uploadImage(
