@@ -879,6 +879,14 @@ body{background:#f5f8ff}
             <span class="stat-icon">🖼️</span>
             <span><small>Slides Hero visibles</small><strong id="stat-hero">—</strong><em>Présentes sur la boutique</em></span>
           </a>
+          <a class="stat-card" href="#section-commandes">
+            <span class="stat-icon">✅</span>
+            <span><small>Commandes terminées</small><strong id="stat-completed">—</strong><em>Statut terminé</em></span>
+          </a>
+          <a class="stat-card" href="#section-commandes">
+            <span class="stat-icon">💰</span>
+            <span><small>Valeur terminée</small><strong id="stat-completed-value">—</strong><em>Total des commandes terminées</em></span>
+          </a>
         </div>
       </section>
 
@@ -1238,6 +1246,8 @@ function slug(s){
 
 function refreshDashboardStats(){
   const pending = ordersAdminData.filter(o => String(o.status || "pending") === "pending").length;
+  const completedOrders = ordersAdminData.filter(o => String(o.status || "") === "completed");
+  const completedValue = completedOrders.reduce((sum,o) => sum + (Number(o.total) || 0), 0);
   const products = data.filter(p => p.stock !== false).length;
   const activeCategories = categories.filter(c => c.active !== false).length;
   const activeHero = heroAdminData.filter(s => s.active !== false).length;
@@ -1247,6 +1257,8 @@ function refreshDashboardStats(){
   if($("stat-products")) $("stat-products").textContent = products;
   if($("stat-categories")) $("stat-categories").textContent = activeCategories;
   if($("stat-hero")) $("stat-hero").textContent = activeHero;
+  if($("stat-completed")) $("stat-completed").textContent = completedOrders.length;
+  if($("stat-completed-value")) $("stat-completed-value").textContent = money(completedValue);
 }
 
 async function refreshAdminData(){
