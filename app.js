@@ -258,6 +258,8 @@ function renderCheckoutSummary(){
   const count=document.getElementById("checkout-item-count");
   if(count)count.textContent=cart.reduce((s,r)=>s+r.qty,0)+" article(s)";
 }
+let lastOrderWhatsAppText="";
+function reopenLastOrderWhatsApp(){if(lastOrderWhatsAppText)wa(lastOrderWhatsAppText)}
 function showOrderSuccess(orderCode,totalText){
   const modal=document.getElementById("order-success-modal");
   if(!modal)return;
@@ -306,8 +308,7 @@ async function submitOrder(event){
     const orderId=orderCode;
     const lines=items.map(item=>`- ${item.name} × ${item.quantity} — ${item.unit_price==null?"Prix sur demande":money(item.subtotal)}`).join("\n");
     const totalText=hasUnknownPrice?"À confirmer":money(totalKnown);
-    closeCheckout();
-    wa(`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite passer cette commande :\nCommande #${orderId}\nClient : ${name}\nWhatsApp : ${whatsapp}\n\n${lines}\n\nTotal : ${totalText}${notes?`\nNote : ${notes}`:""}\n\nMerci de m'indiquer la procédure de paiement.`);
+    const whatsappMessage=`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite passer cette commande :\nCommande #${orderId}\nClient : ${name}\nWhatsApp : ${whatsapp}\n\n${lines}\n\nTotal : ${totalText}${notes?`\nNote : ${notes}`:""}\n\nMerci de m'indiquer la procédure de paiement.`);
     clearCart();
     closeCart();
     showOrderSuccess(orderCode,totalText);
