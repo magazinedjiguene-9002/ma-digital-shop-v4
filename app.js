@@ -3,7 +3,22 @@ const STORAGE_CART="ma_cart_v3";
 const FALLBACK=[];
 let products=[];
 let categories=[];
-let cart=JSON.parse(localStorage.getItem(STORAGE_CART)||"[]");
+
+// Lecture robuste du panier : une donnée localStorage corrompue ne doit jamais
+// empêcher le reste du site (Hero, catalogue, catégories, etc.) de se charger.
+function readCart(){
+  try{
+    const raw=localStorage.getItem(STORAGE_CART);
+    const parsed=raw?JSON.parse(raw):[];
+    return Array.isArray(parsed)?parsed:[];
+  }catch(err){
+    console.warn("Panier local invalide, réinitialisation.",err);
+    try{localStorage.removeItem(STORAGE_CART)}catch(_e){}
+    return [];
+  }
+}
+
+let cart=readCart();
 
 const money=p=>p==null?"Prix sur demande":new Intl.NumberFormat("fr-FR").format(p)+" FCFA";
 const label=c=>({streaming:"Streaming",gaming:"Gaming",software:"Logiciel",accessory:"Accessoire"}[c]||c);
