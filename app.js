@@ -196,11 +196,26 @@ function renderDynamicCategories(){
   if(!track||!catalog)return;
   track.innerHTML="";
   catalog.innerHTML="";
+  const categoryIcons={
+    streaming:"🎬",
+    gaming:"🎮",
+    software:"💻",
+    accessory:"🎧",
+    accessories:"🎧",
+    music:"🎵",
+    design:"🎨",
+    security:"🛡️",
+    education:"🎓",
+    blog:"📄",
+    gifts:"🎁",
+    "cartes-cadeaux":"🎁"
+  };
   categories.forEach(function(cat,index){
     const link=document.createElement("a");
     link.className="cat cat-image";
     link.href="#"+cat.id;
-    link.innerHTML="<img loading=\"lazy\" src=\""+attr(cat.image_url||"assets/logo.png")+"\" alt=\""+attr(cat.name)+"\"><div class=\"cat-content\"><h3>"+esc(cat.name)+"</h3><p>"+esc(cat.description||"Découvrez nos produits.")+"</p><span class=\"link\">Visiter la catégorie →</span></div>";
+    const icon=categoryIcons[String(cat.id).toLowerCase()]||"✨";
+    link.innerHTML="<img loading=\"lazy\" src=\""+attr(cat.image_url||"assets/logo.png")+"\" alt=\""+attr(cat.name)+"\"><div class=\"cat-content\"><div class=\"cat-icon\" aria-hidden=\"true\">"+icon+"</div><h3>"+esc(cat.name)+"</h3><p>"+esc(cat.description||"Découvrez nos produits.")+"</p><span class=\"link\">Visiter la catégorie →</span></div>";
     track.appendChild(link);
     const section=document.createElement("section");
     section.className="section "+(index%2===0?"alt ":"")+"dynamic-category";
