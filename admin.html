@@ -995,26 +995,10 @@ body{background:#f5f8ff}
             id="description"
             placeholder="Description"
           ></textarea>
-          <div class="product-details-admin full">
+          <div class="product-details-admin full" id="product-details-panel">
             <strong>Détails client</strong>
-            <small>Renseignez uniquement les informations réellement applicables à cette offre.</small>
-            <div class="details-grid">
-              <input id="detail-platform" placeholder="Plateforme / environnement">
-              <input id="detail-duration" placeholder="Durée / type de licence">
-              <input id="detail-access" placeholder="Type d'accès">
-              <input id="detail-screens" placeholder="Nombre d'écrans">
-              <input id="detail-quality" placeholder="Qualité">
-              <input id="detail-devices" placeholder="Appareils compatibles">
-              <input id="detail-delivery" placeholder="Mode de livraison">
-              <input id="detail-delay" placeholder="Délai indicatif">
-              <input id="detail-payment" placeholder="Moyens de paiement">
-              <input id="detail-compatibility" placeholder="Compatibilité">
-              <input id="detail-license" placeholder="Type de licence">
-              <input id="detail-requirements" placeholder="Prérequis / configuration">
-              <input id="detail-brand" placeholder="Marque">
-              <input id="detail-model" placeholder="Modèle">
-              <input id="detail-condition" placeholder="État">
-            </div>
+            <small id="product-details-help">Les champs s'adaptent automatiquement à la catégorie sélectionnée.</small>
+            <div class="details-grid" id="details-fields"></div>
           </div>
 
 
@@ -2215,6 +2199,36 @@ function render(){
    MODIFIER
 ================================ */
 
+const DETAIL_FIELDS = {
+  streaming:[
+    ["duration","Durée","Ex. 1 mois, 3 mois"],["access","Type d'accès","Ex. compte / profil"],["screens","Nombre d'écrans","Ex. 1 écran"],["quality","Qualité","Ex. HD / Full HD / 4K"],["devices","Appareils compatibles","TV, mobile, tablette, PC"],["delivery","Mode de livraison","Ex. activation numérique"],["delay","Délai indicatif","Ex. après confirmation du paiement"],["payment","Moyens de paiement","Ex. Wave / Orange Money si réellement disponible"]
+  ],
+  gaming:[
+    ["platform","Plateforme","Ex. PC"],["requirements","Configuration / prérequis","Ex. Windows 10/11, RAM…"],["compatibility","Compatibilité","Ex. clavier/souris, manette"],["license","Type de licence","Ex. numérique"],["delivery","Mode de livraison","Ex. livraison numérique"],["delay","Délai indicatif","Selon traitement de la commande"],["payment","Moyens de paiement","Uniquement les moyens réellement disponibles"]
+  ],
+  software:[
+    ["platform","Système / environnement","Ex. Windows / macOS"],["license","Type de licence","Ex. abonnement / licence"],["duration","Durée","Ex. 1 mois / 1 an / permanente"],["compatibility","Compatibilité / version","Ex. Windows 11, macOS…"],["access","Type d'activation / accès","Ex. clé / compte / activation"],["requirements","Prérequis","Configuration ou version requise"],["delivery","Mode de livraison","Ex. livraison numérique"],["delay","Délai indicatif","Selon traitement de la commande"],["payment","Moyens de paiement","Uniquement les moyens réellement disponibles"]
+  ],
+  accessory:[
+    ["brand","Marque","Ex. Logitech"],["model","Modèle","Référence du produit"],["compatibility","Compatibilité","PC, PS4, PS5…"],["access","Connexion","Filaire / Bluetooth / USB"],["condition","État","Neuf / autre état réel"],["delivery","Mode de livraison","Selon votre service"],["delay","Délai indicatif","Selon traitement de la commande"],["payment","Moyens de paiement","Uniquement les moyens réellement disponibles"]
+  ]
+};
+
+function renderDetailFields(category, values){
+  const wrap=$("details-fields"); if(!wrap)return;
+  const fields=DETAIL_FIELDS[category]||DETAIL_FIELDS.streaming;
+  wrap.innerHTML=fields.map(function(f){
+    const value=values&&values[f[0]]?attr(values[f[0]]):"";
+    return '<label class="detail-field"><span>'+esc(f[1])+'</span><input id="detail-'+f[0]+'" data-detail-key="'+f[0]+'" value="'+value+'" placeholder="'+attr(f[2])+'"></label>';
+  }).join("");
+}
+function currentDetailValues(){
+  const values={}; document.querySelectorAll("#details-fields [data-detail-key]").forEach(function(el){values[el.dataset.detailKey]=el.value.trim()}); return values;
+}
+function refreshDetailFields(category, values){
+  renderDetailFields(category, values||currentDetailValues());
+}
+
 function edit(i){
 
   const p = data[i];
@@ -2247,8 +2261,7 @@ function edit(i){
   $("promo-price").value = p.promo_price ?? "";
   $("promo-start").value = p.promo_start ? new Date(p.promo_start).toISOString().slice(0,16) : "";
   $("promo-end").value = p.promo_end ? new Date(p.promo_end).toISOString().slice(0,16) : "";
-  const details=p.product_details||{};
-  ["platform","duration","access","screens","quality","devices","delivery","delay","payment","compatibility","license","requirements","brand","model","condition"].forEach(k=>{const el=$("detail-"+k);if(el)el.value=details[k]||""});
+  renderDetailFields(p.category,p.product_details||{});
 
 
   pendingImage =
@@ -2272,6 +2285,12 @@ function edit(i){
 }
 
 
+const categorySelect=$("category");
+if(categorySelect){
+  categorySelect.addEventListener("change",function(){ refreshDetailFields(this.value,{}); });
+  renderDetailFields(categorySelect.value||"streaming",{});
+}
+
 /* ================================
    NOUVEAU PRODUIT
 ================================ */
@@ -2290,7 +2309,7 @@ function resetForm(){
   $("promo-price").value = "";
   $("promo-start").value = "";
   $("promo-end").value = "";
-  ["platform","duration","access","screens","quality","devices","delivery","delay","payment","compatibility","license","requirements","brand","model","condition"].forEach(k=>{const el=$("detail-"+k);if(el)el.value=""});
+  renderDetailFields($("category")?.value||"streaming",{});
 
   pendingImage = "";
 
@@ -2630,15 +2649,7 @@ $("product-form").addEventListener(
           : null,
 
         icon:"✦",
-        product_details:{
-          platform:$("detail-platform").value.trim(),duration:$("detail-duration").value.trim(),
-          access:$("detail-access").value.trim(),screens:$("detail-screens").value.trim(),
-          quality:$("detail-quality").value.trim(),devices:$("detail-devices").value.trim(),
-          delivery:$("detail-delivery").value.trim(),delay:$("detail-delay").value.trim(),
-          payment:$("detail-payment").value.trim(),compatibility:$("detail-compatibility").value.trim(),
-          license:$("detail-license").value.trim(),requirements:$("detail-requirements").value.trim(),
-          brand:$("detail-brand").value.trim(),model:$("detail-model").value.trim(),condition:$("detail-condition").value.trim()
-        }
+        product_details:currentDetailValues()
 
       };
 
