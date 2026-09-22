@@ -308,7 +308,7 @@ async function submitOrder(event){
     const orderId=orderCode;
     const lines=items.map(item=>`- ${item.name} × ${item.quantity} — ${item.unit_price==null?"Prix sur demande":money(item.subtotal)}`).join("\n");
     const totalText=hasUnknownPrice?"À confirmer":money(totalKnown);
-    const whatsappMessage=`Bonjour MA DIGITAL SHOP 👋\n\nJe souhaite passer cette commande :\nCommande #${orderId}\nClient : ${name}\nWhatsApp : ${whatsapp}\n\n${lines}\n\nTotal : ${totalText}${notes?`\nNote : ${notes}`:""}\n\nMerci de m'indiquer la procédure de paiement.`);
+    const whatsappMessage="Bonjour MA DIGITAL SHOP 👋\\n\\nJe souhaite passer cette commande :\\nCommande #"+orderId+"\\nClient : "+name+"\\nWhatsApp : "+whatsapp+"\\n\\n"+lines+"\\n\\nTotal : "+totalText+(notes?"\\nNote : "+notes:"")+"\\n\\nMerci de vous indiquer la procédure de paiement.";
     lastOrderWhatsAppText=whatsappMessage;
     closeCheckout();
     wa(whatsappMessage);
