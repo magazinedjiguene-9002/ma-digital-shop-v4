@@ -900,6 +900,12 @@ body{background:#f5f8ff}
     <option value="completed">Terminée</option>
     <option value="cancelled">Annulée</option>
   </select>
+  <select id="orders-period-filter" aria-label="Filtrer par période">
+    <option value="">Toutes les dates</option>
+    <option value="today">Aujourd'hui</option>
+    <option value="7">7 derniers jours</option>
+    <option value="30">30 derniers jours</option>
+  </select>
   <button class="outline" type="button" id="orders-reset">Réinitialiser</button>
   <span class="orders-count" id="orders-count"></span>
 </div>
@@ -1599,12 +1605,20 @@ function statusLabel(status){
 function getFilteredOrders(){
   const q=String($("orders-search")?.value||"").trim().toLowerCase();
   const status=String($("orders-status-filter")?.value||"");
+  const period=String($("orders-period-filter")?.value||"");
+  const now=Date.now();
+  const days=period==="today"?1:(period?Number(period):0);
   return ordersAdminData.filter(function(order){
+    const hay=[order.order_code,order.customer_name,order.customer_whatsapp,order.notes]
+      .concat(Array.isArray(order.items)?order.items.map(i=>i.name):[])
+      .join(" ").toLowerCase();
+    if(q && !hay.includes(q)) return false;
     if(status && String(order.status||"pending")!==status) return false;
-    if(!q) return true;
-    const items=Array.isArray(order.items)?order.items:[];
-    const hay=[order.order_code,order.customer_name,order.customer_whatsapp,order.notes,...items.map(i=>i.name)].join(" ").toLowerCase();
-    return hay.includes(q);
+    if(days){
+      const created=new Date(order.created_at).getTime();
+      if(!Number.isFinite(created) || now-created > days*86400000) return false;
+    }
+    return true;
   });
 }
 
@@ -1690,9 +1704,10 @@ async function updateOrderStatus(id,status,selectEl){
 
 document.getElementById("orders-search")?.addEventListener("input",renderOrders);
 document.getElementById("orders-status-filter")?.addEventListener("change",renderOrders);
+document.getElementById("orders-period-filter")?.addEventListener("change",renderOrders);
 document.getElementById("orders-reset")?.addEventListener("click",function(){
-  const s=$("orders-search"), f=$("orders-status-filter");
-  if(s)s.value=""; if(f)f.value="";
+  const s=$("orders-search"), f=$("orders-status-filter"), p=$("orders-period-filter");
+  if(s)s.value=""; if(f)f.value=""; if(p)p.value="";
   renderOrders();
 });
 
