@@ -320,6 +320,52 @@ async function submitOrder(event){
     if(errorEl){errorEl.hidden=false;errorEl.textContent="Impossible d'enregistrer la commande. Vérifiez votre connexion puis réessayez."}
   }finally{if(submitBtn){submitBtn.disabled=false;submitBtn.textContent="Confirmer la commande"}}
 }
+
+async function trackCustomerOrder(event){
+  event.preventDefault();
+  const code=document.getElementById("tracking-code")?.value.trim()||"";
+  const whatsapp=document.getElementById("tracking-whatsapp")?.value.trim()||"";
+  const result=document.getElementById("order-tracking-result");
+  if(!result)return;
+  if(!code||normalizeWhatsApp(whatsapp).length<9){
+    result.innerHTML='<div class="tracking-error">Veuillez renseigner un numéro de commande et un numéro WhatsApp valide.</div>';
+    return;
+  }
+  result.innerHTML='<div class="tracking-loading">Recherche de votre commande…</div>';
+  if(!window.supabaseClient){
+    result.innerHTML='<div class="tracking-error">Le suivi est momentanément indisponible. Réessayez dans un instant.</div>';
+    return;
+  }
+  const {data,error}=await window.supabaseClient.rpc("track_order",{p_order_code:code,p_whatsapp:whatsapp});
+  if(error){
+    console.error("Suivi commande impossible :",error);
+    result.innerHTML='<div class="tracking-error">Le suivi est momentanément indisponible. Réessayez dans un instant.</div>';
+    return;
+  }
+  const order=Array.isArray(data)?data[0]:data;
+  if(!order){
+    result.innerHTML='<div class="tracking-error">Aucune commande ne correspond à ces informations.</div>';
+    return;
+  }
+  const labels={pending:"En attente",confirmed:"Confirmée",preparing:"En préparation",completed:"Terminée",cancelled:"Annulée"};
+  const steps=["pending","confirmed","preparing","completed"];
+  const current=order.status||"pending";
+  const currentIndex=steps.indexOf(current);
+  const stepMarkup=steps.map(function(step,index){
+    const done=current!=="cancelled"&&currentIndex>=index;
+    return '<div class="tracking-step '+(done?'done ':'')+(current===step?'current':'')+'"><span>'+(done?'✓':index+1)+'</span><b>'+labels[step]+'</b></div>';
+  }).join("");
+  if(current==="cancelled")stepMarkup+='<div class="tracking-step cancelled current"><span>×</span><b>Annulée</b></div>';
+  const items=Array.isArray(order.items)?order.items:[];
+  const itemText=items.map(function(item){return esc(item.name)+" × "+esc(item.quantity)}).join(" · ");
+  const total=order.total>0?money(Number(order.total)):"À confirmer";
+  result.innerHTML='<div class="tracking-card"><div class="tracking-card-head"><div><small>COMMANDE</small><strong>#'+esc(order.order_code)+'</strong></div><span class="order-status-badge status-'+esc(current)+'">'+esc(labels[current]||current)+'</span></div><div class="tracking-steps">'+stepMarkup+'</div><div class="tracking-summary"><p><b>Produits</b><span>'+itemText+'</span></p><p><b>Total</b><span>'+esc(total)+'</span></p><p><b>Dernière mise à jour</b><span>'+esc(formatTrackingDate(order.updated_at||order.created_at))+'</span></p></div></div>';
+}
+function formatTrackingDate(value){
+  if(!value)return "—";
+  return new Intl.DateTimeFormat("fr-FR",{dateStyle:"medium",timeStyle:"short"}).format(new Date(value));
+}
+
 function goSearch(){document.getElementById("global-search")?.focus()}
 function filterFavorites(){
   const arr=favorites.map(id=>productById(id)).filter(Boolean).filter(p=>p.stock!==false);
