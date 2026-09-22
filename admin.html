@@ -1611,7 +1611,9 @@ function renderOrders(){
     const totalText=hasUnknown?"À confirmer":money(order.total);
     const itemsHtml=items.map(i=>'<div>• '+esc(i.name)+' × '+(Number(i.quantity)||0)+(i.unit_price==null?" — Prix sur demande":" — "+money(i.subtotal))+'</div>').join("");
     const current=String(order.status||"pending");
-    return '<article class="order-card"><div class="order-top"><div><b>Commande #'+esc(order.order_code||order.id)+'</b><div class="order-meta">'+esc(order.customer_name||"Client")+' · '+esc(order.customer_whatsapp)+'<br>'+esc(formatOrderDate(order.created_at))+'</div></div><div class="order-total">'+totalText+'</div></div><div class="order-items">'+(itemsHtml||"Aucun article")+'</div>'+(order.notes?'<div class="note" style="margin-top:10px"><b>Note :</b> '+esc(order.notes)+'</div>':"")+'<div class="order-actions"><select class="order-status" onchange="updateOrderStatus('+order.id+',this.value)">'+["pending","confirmed","preparing","completed","cancelled"].map(function(s){return '<option value="'+s+'" '+(current===s?"selected":"")+'>'+statusLabel(s)+'</option>'}).join("")+'</select><button class="outline" type="button" onclick="openOrderWhatsApp(\''+attr(order.customer_whatsapp)+'\',\''+attr(order.customer_name||"Client")+'\',\''+attr(order.order_code||order.id)+'\')">WhatsApp</button></div></article>';
+    const statusText=statusLabel(current);
+    const updatedText=order.updated_at&&order.updated_at!==order.created_at?formatOrderDate(order.updated_at):"";
+    return '<article class="order-card" data-status="'+esc(current)+'"><div class="order-top"><div><b>Commande #'+esc(order.order_code||order.id)+'</b><div class="order-meta">'+esc(order.customer_name||"Client")+' · '+esc(order.customer_whatsapp)+'<br>'+esc(formatOrderDate(order.created_at))+(updatedText?'<br><span class="order-updated">Mise à jour : '+esc(updatedText)+'</span>':"")+'</div></div><div class="order-total">'+totalText+'</div></div><div class="order-status-line"><span class="order-status-badge status-'+esc(current)+'">'+esc(statusText)+'</span></div><div class="order-items">'+(itemsHtml||"Aucun article")+'</div>'+(order.notes?'<div class="note" style="margin-top:10px"><b>Note :</b> '+esc(order.notes)+'</div>':"")+'<div class="order-actions"><select class="order-status status-select-'+esc(current)+'" onchange="updateOrderStatus('+order.id+',this.value,this)">'+["pending","confirmed","preparing","completed","cancelled"].map(function(s){return '<option value="'+s+'" '+(current===s?"selected":"")+'>'+statusLabel(s)+'</option>}).join("")+'</select><button class="outline" type="button" onclick="openOrderWhatsApp(\''+attr(order.customer_whatsapp)+'\',\''+attr(order.customer_name||"Client")+'\',\''+attr(order.order_code||order.id)+'\')">WhatsApp</button></div></article>';
   }).join("");
 }
 
@@ -1642,14 +1644,16 @@ function startOrdersAutoRefresh(){
   clearInterval(ordersAutoRefreshTimer);
   ordersAutoRefreshTimer=setInterval(refreshOrdersSilently,10000);
 }
-async function updateOrderStatus(id,status){
+async function updateOrderStatus(id,status,selectEl){
   const {error}=await supabaseClient.from("orders").update({status,updated_at:new Date().toISOString()}).eq("id",id);
   if(error){
     alert("Erreur : "+error.message);
     await loadOrders();
     return;
   }
-  setStatus("Commande mise à jour");
+  if(selectEl) selectEl.className="order-status status-select-"+status;
+  setStatus("Commande mise à jour : "+statusLabel(status));
+  await refreshOrdersSilently();
 }
 
 document.getElementById("orders-search")?.addEventListener("input",renderOrders);
