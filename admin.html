@@ -1191,7 +1191,15 @@ body{background:#f5f8ff}
 <script>
 window.supabaseClient = supabase.createClient(
   window.SUPABASE_URL,
-  window.SUPABASE_PUBLISHABLE_KEY
+  window.SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      storage: window.sessionStorage,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
 );
 </script>
 
