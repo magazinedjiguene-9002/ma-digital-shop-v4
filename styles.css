@@ -1296,3 +1296,7 @@ body[data-theme="dark"] .favorite-btn{background:rgba(17,24,42,.9);border-color:
     background:#f8fbff;
   }
 }
+
+
+/* Informations légales du checkout */
+.checkout-legal{padding:12px 14px;border:1px solid var(--line,#e3ebf6);border-radius:12px;background:var(--soft,#f7faff);font-size:13px}.checkout-legal label{display:flex;align-items:flex-start;gap:9px;line-height:1.5;color:var(--muted,#66718d)}.checkout-legal input{margin-top:3px;flex:0 0 auto}.checkout-legal a{font-weight:700;text-decoration:underline}
