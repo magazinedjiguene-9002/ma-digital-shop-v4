@@ -1197,3 +1197,27 @@ body[data-theme="dark"] .favorite-btn{background:rgba(17,24,42,.9);border-color:
     font-size:7px;
   }
 }
+
+
+/* Finition mobile — libellés catégories + favoris sur toutes les fiches */
+@media(max-width:700px){
+  .cat-content h3{
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    line-clamp:2;
+  }
+
+  /* Favoris à droite sur toutes les cartes produits */
+  .favorite-btn{
+    left:auto;
+    right:7px;
+    top:7px;
+    width:26px;
+    height:26px;
+    font-size:15px;
+  }
+}
