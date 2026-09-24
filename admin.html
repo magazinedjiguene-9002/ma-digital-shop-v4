@@ -1220,6 +1220,41 @@ let pendingImage = "";
 let session = null;
 let ordersAdminData = [];
 
+/* ================================
+   SECURITE SESSION ADMIN
+   - sessionStorage : session liée à l'onglet
+   - expiration après 15 min d'inactivité
+================================ */
+
+const ADMIN_IDLE_TIMEOUT = 15 * 60 * 1000;
+let adminIdleTimer = null;
+let adminActivityHandler = null;
+
+function resetAdminIdleTimer(){
+  if(!session)return;
+  clearTimeout(adminIdleTimer);
+  adminIdleTimer=setTimeout(async()=>{
+    if(!session)return;
+    await supabaseClient.auth.signOut();
+    alert("Votre session administrateur a expiré après 15 minutes d'inactivité.");
+  },ADMIN_IDLE_TIMEOUT);
+}
+
+function startAdminIdleTimeout(){
+  if(adminActivityHandler)return;
+  adminActivityHandler=()=>resetAdminIdleTimer();
+  ["click","keydown","mousemove","mousedown","touchstart","scroll"].forEach(eventName=>{
+    window.addEventListener(eventName,adminActivityHandler,{passive:true});
+  });
+  resetAdminIdleTimer();
+}
+
+function stopAdminIdleTimeout(){
+  clearTimeout(adminIdleTimer);
+  adminIdleTimer=null;
+}
+
+
 
 /* ================================
    UTILITAIRES
@@ -1338,6 +1373,7 @@ function unlock(){
   loadCatalog();
   loadOrders();
   startOrdersAutoRefresh();
+  startAdminIdleTimeout();
 
 }
 
@@ -1402,6 +1438,7 @@ async function start(){
 
       }else{
 
+        stopAdminIdleTimeout();
         showLogin();
 
       }
@@ -1587,6 +1624,7 @@ $("reset-form").addEventListener(
 
 async function logout(){
 
+  stopAdminIdleTimeout();
   await supabaseClient.auth.signOut();
 
 }
