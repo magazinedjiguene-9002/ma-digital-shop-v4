@@ -1108,3 +1108,173 @@ body[data-theme="dark"] .favorite-btn{background:rgba(17,24,42,.9);border-color:
   .category-carousel .cat-content{padding-top:9px}
   .category-carousel .cat-content h3{font-size:10px}
 }
+
+
+/* ================================
+   AJUSTEMENTS UI — CATEGORIES & FICHES
+   ================================ */
+
+/* Catégories : cartes plus compactes et images mieux mises en valeur */
+.category-carousel .cats{
+  gap:10px;
+  padding:6px 2px 12px;
+}
+.category-carousel .cat{
+  min-width:calc((100% - 30px)/4);
+}
+.cat-image{
+  border-radius:15px;
+}
+.cat-image>img{
+  height:125px;
+  object-fit:cover;
+}
+.cat-content{
+  padding:11px 12px 13px;
+}
+.cat-content h3{
+  font-size:13px;
+  margin:4px 0 5px;
+}
+.cat-content p{
+  font-size:10px;
+  line-height:1.4;
+  margin-bottom:8px;
+}
+.cat-content .link{
+  font-size:9px;
+}
+
+/* Favoris déplacé en haut à droite pour laisser "Populaire" visible */
+.favorite-btn{
+  left:auto;
+  right:9px;
+  top:9px;
+}
+.promo-badge{
+  right:auto;
+  left:9px;
+  top:auto;
+  bottom:9px;
+}
+
+/* Fiches produits plus compactes */
+.card{
+  border-radius:15px;
+}
+.visual{
+  height:155px;
+}
+.body{
+  padding:12px;
+}
+.body h3{
+  font-size:13px;
+}
+.body p{
+  min-height:28px;
+  margin-bottom:10px;
+  font-size:9px;
+}
+.price{
+  font-size:14px;
+  margin-bottom:10px;
+}
+.row{
+  gap:6px;
+}
+.row button{
+  padding:8px 4px;
+  font-size:9px;
+}
+
+/* Sur téléphone : les catégories tiennent toutes sur une seule ligne */
+@media(max-width:700px){
+  .category-carousel{
+    gap:4px;
+  }
+  .category-carousel .carousel-arrow{
+    display:none;
+  }
+  .category-carousel .cats{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:6px;
+    width:100%;
+    padding:4px 0 8px;
+    overflow:visible;
+  }
+  .category-carousel .cat{
+    min-width:0;
+    width:100%;
+    border-radius:12px;
+  }
+  .cat-image>img{
+    height:78px;
+  }
+  .cat-content{
+    padding:7px 4px 9px;
+    text-align:center;
+  }
+  .cat-content h3{
+    font-size:9px;
+    line-height:1.2;
+    margin:0;
+  }
+  .cat-content p,
+  .cat-content .link{
+    display:none;
+  }
+
+  .products-carousel .product-track{
+    gap:10px;
+    padding:5px 1px 12px;
+  }
+  .products-carousel .product-track .card{
+    min-width:calc((100% - 10px)/2);
+  }
+  .visual{
+    height:125px;
+  }
+  .body{
+    padding:9px;
+  }
+  .body h3{
+    font-size:11px;
+    margin-bottom:4px;
+  }
+  .body p{
+    min-height:25px;
+    margin-bottom:7px;
+    font-size:8px;
+    line-height:1.35;
+  }
+  .price{
+    font-size:12px;
+    margin-bottom:7px;
+  }
+  .row button{
+    padding:7px 3px;
+    font-size:8px;
+    border-radius:8px;
+  }
+  .favorite-btn{
+    width:26px;
+    height:26px;
+    right:7px;
+    top:7px;
+    font-size:15px;
+  }
+  .featured{
+    left:7px;
+    top:7px;
+    padding:5px 7px;
+    font-size:7px;
+  }
+  .promo-badge{
+    left:7px;
+    bottom:7px;
+    font-size:7px;
+    padding:4px 6px;
+  }
+}
