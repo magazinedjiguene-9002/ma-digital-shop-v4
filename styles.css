@@ -1221,3 +1221,33 @@ body[data-theme="dark"] .favorite-btn{background:rgba(17,24,42,.9);border-color:
     font-size:15px;
   }
 }
+
+
+/* Catégories en bandeau horizontal continu — desktop + mobile */
+.category-carousel .cats{
+  display:flex;
+  flex-wrap:nowrap;
+  overflow:visible;
+}
+.category-carousel .cat{
+  flex:0 0 calc((100% - 54px)/4);
+}
+@media(max-width:1050px){
+  .category-carousel .cat{
+    flex-basis:calc((100% - 18px)/2);
+  }
+}
+@media(max-width:700px){
+  .category-carousel .cats{
+    display:flex;
+    flex-wrap:nowrap;
+    gap:6px;
+    overflow:visible;
+    width:max-content;
+    padding:4px 0 10px;
+  }
+  .category-carousel .cat{
+    flex:0 0 calc((100vw - 52px)/4);
+    min-width:calc((100vw - 52px)/4);
+  }
+}
