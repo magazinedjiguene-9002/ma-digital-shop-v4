@@ -1283,3 +1283,16 @@ body[data-theme="dark"] .favorite-btn{background:rgba(17,24,42,.9);border-color:
     min-width:calc((100vw - 52px)/4);
   }
 }
+
+
+/* Catégories desktop — icônes/images entièrement visibles */
+@media(min-width:701px){
+  .category-carousel .cat-image>img{
+    height:125px;
+    object-fit:contain;
+    object-position:center;
+    padding:10px 14px;
+    box-sizing:border-box;
+    background:#f8fbff;
+  }
+}
