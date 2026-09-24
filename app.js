@@ -190,6 +190,13 @@ async function loadCategories(){
   }
   renderDynamicCategories();
 }
+
+function alignCategoryTrack(){
+  const track=document.getElementById("category-track");
+  if(!track)return;
+  track.classList.toggle("is-scrollable",track.scrollWidth>track.clientWidth+2);
+}
+
 function renderDynamicCategories(){
   const track=document.getElementById("category-track");
   const catalog=document.getElementById("dynamic-catalog");
@@ -217,6 +224,7 @@ function renderDynamicCategories(){
   });
   categories.forEach(function(cat){renderSection(cat.id,cat.id+"-grid")});
   initAutoTracks();
+  requestAnimationFrame(alignCategoryTrack);
 }
 
 function renderHome(){
@@ -606,3 +614,5 @@ document.addEventListener("DOMContentLoaded",async()=>{
   document.querySelectorAll(".mobile-link").forEach(a=>a.addEventListener("click",()=>document.getElementById("mobile-nav")?.classList.remove("open")));
   document.getElementById("order-tracking-form")?.addEventListener("submit",trackCustomerOrder);
 });
+
+window.addEventListener("resize",alignCategoryTrack);
